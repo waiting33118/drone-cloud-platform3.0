@@ -21,16 +21,31 @@
           @change="handleLanding"
         />
       </v-col>
+      <v-col align-self="center">
+        <v-btn
+          elevation="2"
+          rounded
+          :disabled="!isTakeOff"
+          :loading="goToIsLoading"
+          color="primary"
+          @click="handleGoTo"
+        >
+          GoTo
+        </v-btn>
+      </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12">
+      <v-col>
         <v-slider
-          v-model="flyHeight"
-          label="Fly Height (m)"
+          v-model="altitude"
+          label="Altitude (m)"
           thumb-color="blue"
           thumb-label="always"
+          hide-details
+          :disabled="!isTakeOff"
           min="1"
           max="30"
+          @change="handleFlyHeightChange"
         />
       </v-col>
     </v-row>
@@ -59,30 +74,51 @@
 
 <script>
 import { ref } from '@vue/composition-api'
+import { Toast } from './../utils/sendAlert'
+import droneControl from './../services/droneControl'
 export default {
   name: 'ControlPanel',
   props: {
     coords: {
       type: Object,
       required: true,
-      default: (lng = 0, lat = 0) => ({ lng, lat })
+      default: (lng = -1, lat = -1) => ({ lng, lat })
     }
   },
-  setup (props) {
+  emits: ['resetDestination'],
+  setup (props, { emit }) {
     const isTakeOff = ref(false)
-    const flyHeight = ref(3)
+    const altitude = ref(3)
+    const goToIsLoading = ref(false)
 
-    const handleTakeOff = (boolean) => {
-      console.log(boolean)
+    const handleTakeOff = () => droneControl.takeOff(altitude.value)
+
+    const handleLanding = () => {
+      emit('resetDestination')
+      altitude.value = 3
+      droneControl.land()
     }
-    const handleLanding = (boolean) => {
-      console.log(boolean)
+
+    const handleGoTo = () => {
+      if (props.coords.lat === -1 && props.coords.lng === -1) {
+        Toast.fire({ icon: 'error', title: 'Please set the destination point!' })
+        return
+      }
+      goToIsLoading.value = true
+      droneControl.goTo(Number(props.coords.lng).toFixed(6), Number(props.coords.lat).toFixed(6), altitude.value)
+      goToIsLoading.value = false
     }
+
+    const handleFlyHeightChange = () => droneControl.changeFlightHeight(altitude.value)
+
     return {
       isTakeOff,
-      flyHeight,
+      goToIsLoading,
+      altitude,
       handleTakeOff,
       handleLanding,
+      handleGoTo,
+      handleFlyHeightChange,
       props
     }
   }
