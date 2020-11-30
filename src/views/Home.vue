@@ -3,6 +3,7 @@
     <ControlPanel
       class="control"
       :coords="coords"
+      @resetDestination="resetCoords"
     />
     <Mapbox
       id="map"
@@ -26,8 +27,8 @@ export default {
   },
   setup () {
     const coords = reactive({
-      lng: 0,
-      lat: 0
+      lng: -1,
+      lat: -1
     })
 
     /**
@@ -38,10 +39,18 @@ export default {
       coords.lng = lng
       coords.lat = lat
     }
+    /**
+     * When landing, need to reset the destination coordinate
+     */
+    const resetCoords = () => {
+      coords.lng = -1
+      coords.lat = -1
+    }
 
     return {
       coords,
-      getCurrentPosition
+      getCurrentPosition,
+      resetCoords
     }
   }
 }
