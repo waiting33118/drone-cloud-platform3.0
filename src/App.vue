@@ -16,3 +16,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+* {
+  font-family: 'Roboto', sans-serif;
+}
+</style>
