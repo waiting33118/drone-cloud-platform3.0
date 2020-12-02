@@ -3,10 +3,36 @@ import { Toast } from './../utils/sendAlert'
 
 export default {
   /**
-   * Drone takeoff
-   * @param number flight altitude
+   * Drone security
+   * @method arm
    */
-  async takeOff  (altitude) {
+  async arm () {
+    try {
+      const { data } = await axiosInstance.post('/arm')
+      if (data.status === 'success')Toast.fire({ icon: 'success', title: 'ARM!' })
+    } catch (error) {
+      Toast.fire({ icon: 'error', title: error.message })
+    }
+  },
+
+  /**
+   * Drone security
+   * @method disArm
+   */
+  async disArm () {
+    try {
+      const { data } = await axiosInstance.post('/disarm')
+      if (data.status === 'success')Toast.fire({ icon: 'warning', title: 'DISARM!' })
+    } catch (error) {
+      Toast.fire({ icon: 'error', title: error.message })
+    }
+  },
+
+  /**
+   * Drone takeoff
+   * @param {number} altitude Set drone's altitude
+   */
+  async takeOff (altitude) {
     try {
       const { data } = await axiosInstance.post('/takeoff', { altitude })
       if (data.status === 'success')Toast.fire({ icon: 'success', title: 'Drone takeoff!' })
@@ -17,6 +43,7 @@ export default {
 
   /**
    * Drone landing
+   * @method land
    */
   async land () {
     try {
@@ -28,10 +55,10 @@ export default {
   },
 
   /**
-   * Set drone's destination
-   * @param number longitude
-   * @param number latitude
-   * @param number altitude
+   * Let the drone go to the specific coordinate
+   * @param {number} lng Set drone's longitude
+   * @param {number} lat Set drone's latitude
+   * @param {number} altitude Set drone's altitude
    */
   async goTo (lng, lat, altitude) {
     try {
@@ -43,8 +70,8 @@ export default {
   },
 
   /**
-   * Change drone's flight altitude
-   * @param Number flight altitude
+   * Changing drone's flight altitude
+   * @param {number} altitude Set drone's altitude
    */
   async changeFlightHeight (altitude) {
     try {
@@ -55,7 +82,16 @@ export default {
     }
   },
 
-  returnToLand () {
-
+  /**
+ * Change drone's flight mode
+ * @param {string} mode Set drone's flight mode
+ */
+  async changeFlightMode (mode) {
+    try {
+      const { data } = await axiosInstance.post('/cfm', { mode })
+      if (data.status === 'success')Toast.fire({ icon: 'success', title: `Change drone's flight mode to ${mode}` })
+    } catch (error) {
+      Toast.fire({ icon: 'error', title: error.message })
+    }
   }
 }
