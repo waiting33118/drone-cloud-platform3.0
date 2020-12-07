@@ -3,10 +3,13 @@
     <ControlPanel
       class="control"
       :coords="coords"
+      :is-connected="isConnected"
+      :handle-connect="handleConnect"
       @resetDestination="resetCoords"
     />
     <Mapbox
       id="map"
+      :drone-status="droneStatus"
       @getCurrentPosition="getCurrentPosition"
     />
     <Stream class="stream" />
@@ -14,7 +17,8 @@
 </template>
 
 <script>
-import { reactive } from '@vue/composition-api'
+import { reactive, ref } from '@vue/composition-api'
+import { subscribeDroneMsg, unSubscribeDroneMsg } from './../utils/socketIO.js'
 import ControlPanel from './../components/ControlPanel'
 import Mapbox from './../components/Mapbox'
 import Stream from './../components/Stream'
@@ -30,6 +34,11 @@ export default {
       lng: -1,
       lat: -1
     })
+    const droneStatus = ref({})
+    const isConnected = ref(false)
+
+    // socket.on('drone_status', data => { droneStatus.value = { ...data } })
+    // socket.on('phone_status', data => {})
 
     /**
      * @param lng number
@@ -47,10 +56,25 @@ export default {
       coords.lat = -1
     }
 
+    /**
+     * Handle connection status
+     */
+    const handleConnect = () => {
+      isConnected.value = !isConnected.value
+      if (isConnected.value) {
+        droneStatus.value = subscribeDroneMsg()
+        return
+      }
+      unSubscribeDroneMsg()
+    }
+
     return {
       coords,
+      isConnected,
       getCurrentPosition,
-      resetCoords
+      resetCoords,
+      droneStatus,
+      handleConnect
     }
   }
 }
@@ -72,6 +96,7 @@ export default {
       grid-column: 2 / 8;
       grid-row: 1 / span 2;
       border: 2px solid gainsboro;
+      position: relative;
     }
     > .stream {
       width: 500px;
