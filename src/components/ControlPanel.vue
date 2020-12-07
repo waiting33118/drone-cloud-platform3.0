@@ -1,32 +1,48 @@
 <template>
   <v-container>
     <v-row>
-      <v-col>
+      <v-col
+        cols="3"
+        align-self="center"
+      >
+        <v-btn
+          elevation="3"
+          :color="props.isConnected?'red':'light-green'"
+          rounded
+          @click="props.handleConnect"
+        >
+          {{ props.isConnected?'Stop':'Start' }}
+        </v-btn>
+      </v-col>
+      <v-col cols="3">
         <v-switch
           v-model="isArm"
           :disabled="isTakeOff"
           color="success"
           inset
+          dense
           :label="isArm?'Arm':'Disarm'"
           @change="handleDroneSecurity"
         />
       </v-col>
-      <v-col>
+      <v-col cols="3">
         <v-switch
           v-model="isTakeOff"
           :disabled="!isArm || isTakeOff"
           color="success"
           inset
+          dense
           label="TakeOff"
           @change="handleTakeOff"
         />
       </v-col>
-      <v-col>
+      <v-col cols="3">
         <v-switch
           v-model="isTakeOff"
           :disabled="!isTakeOff"
           color="red"
           inset
+          dense
           label="Land"
           @change="handleLanding"
         />
@@ -117,6 +133,16 @@ export default {
       type: Object,
       required: true,
       default: (lng = -1, lat = -1) => ({ lng, lat })
+    },
+    isConnected: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    handleConnect: {
+      type: Function,
+      required: true,
+      default: () => {}
     }
   },
   emits: ['resetDestination'],
@@ -127,7 +153,7 @@ export default {
     const altitude = ref(3)
     const flightMode = ref(0)
     const goToIsLoading = ref(false)
-    const btnGroupLabel = reactive(['STABILIZE', 'ACRO', 'ALT_HOLD', 'AUTO', 'GUIDED', 'LOITER', 'RTL', 'CIRCLE'])
+    const btnGroupLabel = reactive(['STABILIZE', 'GUIDED', 'RTL'])
 
     const handleDroneSecurity = (isArm) => {
       isArm
@@ -181,20 +207,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.mode-selection{
-  overflow-x:scroll;
-  overflow-y: hidden;
-  &::-webkit-scrollbar {
-    height: 10px;
-  }
-  &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    border-radius: 10px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: rgba(132, 217, 238, 0.8);
-    box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-  }
-}
+// .mode-selection{
+//   overflow-x:scroll;
+//   overflow-y: hidden;
+//   &::-webkit-scrollbar {
+//     height: 10px;
+//   }
+//   &::-webkit-scrollbar-track {
+//     box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+//     border-radius: 10px;
+//   }
+//   &::-webkit-scrollbar-thumb {
+//     border-radius: 10px;
+//     background: rgba(132, 217, 238, 0.8);
+//     box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+//   }
+// }
 </style>
