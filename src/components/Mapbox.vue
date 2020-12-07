@@ -7,20 +7,41 @@
       indeterminate
       color="purple"
     />
+    <v-card
+      elevation="2"
+      max-width="250"
+    >
+      <ul>
+        <li>
+          {{ props }}
+        </li>
+      </ul>
+    </v-card>
   </div>
 </template>
 
 <script>
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
-import { onMounted, ref } from '@vue/composition-api'
+import { onMounted, reactive, ref } from '@vue/composition-api'
 import { getUserLocation } from './../utils/getUserInfo'
 export default {
   name: 'Mapbox',
+  props: {
+    droneStatus: {
+      type: Object,
+      required: true,
+      default: () => ({})
+    }
+  },
   setup (props, { emit }) {
     const isLoading = ref(true)
     const longitude = ref(0)
     const latitude = ref(0)
+    const drone = reactive({})
 
+    // watch(() => props.droneStatus.drone_message, (newValue) => {
+    //   console.log(newValue)
+    // })
     onMounted(async () => {
       /**
        * set costum location
@@ -133,7 +154,9 @@ export default {
       })
     })
     return {
-      isLoading
+      isLoading,
+      drone,
+      props
     }
   }
 }
@@ -149,5 +172,11 @@ export default {
     top:50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+  .v-card{
+    z-index: 10;
+    position: absolute;
+    top: 10px;
+    left: 45px;
   }
 </style>
