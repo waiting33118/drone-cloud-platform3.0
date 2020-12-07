@@ -13,7 +13,7 @@
     "core-js": "^3.6.5",
     "mapbox-gl": "^1.13.0",
     "socket.io-client": "^3.0.3",
-    "sweetalert2": "^10.10.4",
+    "sweetalert2": "^10.12.0",
     "vue": "^2.6.11",
     "vue-router": "3.4.9",
     "vuetify": "^2.2.11",
