@@ -71,7 +71,6 @@ export default {
 
   /**
    * Changing drone's flight altitude
-   * @deprecated replace by goto
    * @param {number} altitude Set drone's altitude
    */
   async changeFlightHeight (altitude) {
