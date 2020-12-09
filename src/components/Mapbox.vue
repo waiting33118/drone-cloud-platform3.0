@@ -167,14 +167,14 @@ export default {
     outline: none;
   }
   .v-progress-circular {
-    z-index: 10;
+    z-index: 1;
     position: absolute;
     top:50%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
   .v-card{
-    z-index: 10;
+    z-index: 1;
     position: absolute;
     top: 10px;
     left: 45px;
