@@ -51,6 +51,7 @@
     <v-row>
       <v-col>
         <v-slider
+          ref="altitudeEl"
           v-model="altitude"
           label="Altitude(m)"
           thumb-color="blue"
@@ -59,7 +60,7 @@
           :disabled="!isTakeOff"
           min="1"
           max="50"
-          @change="handleGoTo"
+          @change="handleGoTo('altitude')"
         />
       </v-col>
       <v-col>
@@ -217,7 +218,11 @@ export default {
       droneControl.land()
     }
 
-    const handleGoTo = () => {
+    const handleGoTo = (cmd) => {
+      if (props.coords.lat === -1 && props.coords.lng === -1 && cmd === 'altitude') {
+        droneControl.changeFlightHeight(altitude.value)
+        return
+      }
       if (props.coords.lat === -1 && props.coords.lng === -1) {
         Toast.fire({ icon: 'error', title: 'Please set the destination point!' })
         return
