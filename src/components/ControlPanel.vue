@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="pa-2">
     <v-row>
       <v-col
         cols="3"
@@ -19,8 +19,8 @@
           v-model="isArm"
           :disabled="isTakeOff"
           color="success"
-          inset
           dense
+          hide-details
           :label="isArm?'Arm':'Disarm'"
           @change="handleDroneSecurity"
         />
@@ -30,8 +30,8 @@
           v-model="isTakeOff"
           :disabled="!isArm || isTakeOff"
           color="success"
-          inset
           dense
+          hide-details
           label="TakeOff"
           @change="handleTakeOff"
         />
@@ -41,8 +41,8 @@
           v-model="isTakeOff"
           :disabled="!isTakeOff"
           color="red"
-          inset
           dense
+          hide-details
           label="Land"
           @change="handleLanding"
         />
@@ -52,14 +52,27 @@
       <v-col>
         <v-slider
           v-model="altitude"
-          label="Altitude (m)"
+          label="Altitude(m)"
           thumb-color="blue"
           thumb-label="always"
           hide-details
           :disabled="!isTakeOff"
           min="1"
-          max="30"
-          @change="handleFlyHeightChange"
+          max="50"
+          @change="handleGoTo"
+        />
+      </v-col>
+      <v-col>
+        <v-slider
+          v-model="speed"
+          label="Speed(m/s)"
+          thumb-color="orange"
+          thumb-label="always"
+          hide-details
+          :disabled="!isTakeOff"
+          min="1"
+          max="14"
+          @change="handleSpeedChange"
         />
       </v-col>
     </v-row>
@@ -70,6 +83,7 @@
           hide-details
           color="blue"
           label="Latitude"
+          dense
           outlined
           readonly
         />
@@ -80,6 +94,7 @@
           hide-details
           color="blue"
           label="Longitude"
+          dense
           outlined
           readonly
         />
@@ -107,16 +122,46 @@
           color="blue"
           rounded
           dense
-          @change="handleModeChange"
+          @change="handleFlightModeChange"
         >
           <v-btn
-            v-for="label in btnGroupLabel"
+            v-for="label in flightModeBtnGroup"
             :key="label"
-            :disabled="!isArm"
           >
             {{ label }}
           </v-btn>
         </v-btn-toggle>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+          class="mx-1"
+          elevation="3"
+          rounded
+          color="light-blue"
+          @click="handleServoControl"
+        >
+          SERVO_UP
+        </v-btn>
+        <v-btn
+          class="mx-1"
+          elevation="3"
+          rounded
+          color="light-green"
+          @click="handleServoControl"
+        >
+          SERVO_DOWN
+        </v-btn>
+        <v-btn
+          class="mx-1"
+          elevation="3"
+          rounded
+          color="pink"
+          @click="handleServoControl"
+        >
+          SERVO_STOP
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -151,9 +196,10 @@ export default {
     const isTakeOff = ref(false)
     const isLand = ref(false)
     const altitude = ref(3)
+    const speed = ref(3)
     const flightMode = ref(0)
     const goToIsLoading = ref(false)
-    const btnGroupLabel = reactive(['STABILIZE', 'GUIDED', 'RTL'])
+    const flightModeBtnGroup = reactive(['STABILIZE', 'GUIDED', 'RTL'])
 
     const handleDroneSecurity = (isArm) => {
       isArm
@@ -161,13 +207,12 @@ export default {
         : droneControl.disArm()
     }
 
-    const handleTakeOff = () => {
-      droneControl.takeOff(altitude.value)
-    }
+    const handleTakeOff = () => droneControl.takeOff(altitude.value)
 
     const handleLanding = () => {
       emit('resetDestination')
       altitude.value = 3
+      speed.value = 3
       flightMode.value = 0
       droneControl.land()
     }
@@ -182,45 +227,29 @@ export default {
       goToIsLoading.value = false
     }
 
-    const handleFlyHeightChange = () => droneControl.changeFlightHeight(altitude.value)
-
-    const handleModeChange = (mode) => droneControl.changeFlightMode(btnGroupLabel[mode])
+    // const handleFlyHeightChange = () => droneControl.changeFlightHeight(altitude.value)
+    const handleSpeedChange = () => droneControl.changeAirSpeed(speed.value)
+    const handleFlightModeChange = (mode) => droneControl.changeFlightMode(flightModeBtnGroup[mode])
+    const handleServoControl = (cmd) => droneControl.sendServoControl(cmd.target.innerText)
 
     return {
-      isArm,
-      isTakeOff,
-      isLand,
-      goToIsLoading,
       altitude,
       flightMode,
-      btnGroupLabel,
+      flightModeBtnGroup,
+      goToIsLoading,
       handleDroneSecurity,
-      handleTakeOff,
-      handleLanding,
+      handleFlightModeChange,
       handleGoTo,
-      handleFlyHeightChange,
-      handleModeChange,
-      props
+      handleLanding,
+      handleServoControl,
+      handleSpeedChange,
+      handleTakeOff,
+      isArm,
+      isLand,
+      isTakeOff,
+      props,
+      speed
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-// .mode-selection{
-//   overflow-x:scroll;
-//   overflow-y: hidden;
-//   &::-webkit-scrollbar {
-//     height: 10px;
-//   }
-//   &::-webkit-scrollbar-track {
-//     box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-//     border-radius: 10px;
-//   }
-//   &::-webkit-scrollbar-thumb {
-//     border-radius: 10px;
-//     background: rgba(132, 217, 238, 0.8);
-//     box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-//   }
-// }
-</style>
