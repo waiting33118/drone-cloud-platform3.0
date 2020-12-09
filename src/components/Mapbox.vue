@@ -13,7 +13,37 @@
     >
       <ul>
         <li>
-          {{ props }}
+          timestamp: {{ droneInfo.timestamp }}
+        </li>
+        <li>
+          pitch: {{ droneInfo.pitch }}
+        </li>
+        <li>
+          roll: {{ droneInfo.roll }}
+        </li>
+        <li>
+          yaw: {{ droneInfo.yaw }}
+        </li>
+        <li>
+          GPS: {{ droneInfo.lng }},{{ droneInfo.lat }}
+        </li>
+        <li>
+          Altitude: {{ droneInfo.relativeAlt }}
+        </li>
+        <li>
+          Heading: {{ droneInfo.heading }}
+        </li>
+        <li>
+          Battery: {{ droneInfo.voltage }}V /{{ droneInfo.percentage }} %
+        </li>
+        <li>
+          Air Speed: {{ droneInfo.airSpeed }}
+        </li>
+        <li>
+          Filght mode: {{ droneInfo.customMode }}
+        </li>
+        <li>
+          Arm status: {{ droneInfo.isArmed === '0' ? 'DISARM' : 'ARM' }}
         </li>
       </ul>
     </v-card>
@@ -22,26 +52,44 @@
 
 <script>
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
-import { onMounted, reactive, ref } from '@vue/composition-api'
+import { onMounted, ref, reactive, watch } from '@vue/composition-api'
 import { getUserLocation } from './../utils/getUserInfo'
 export default {
   name: 'Mapbox',
   props: {
     droneStatus: {
       type: Object,
-      required: true,
-      default: () => ({})
+      required: true
     }
   },
   setup (props, { emit }) {
     const isLoading = ref(true)
     const longitude = ref(0)
     const latitude = ref(0)
-    const drone = reactive({})
+    const coordsStorage = reactive([])
+    const droneInfo = reactive({
+      timestamp: '-',
+      pitch: '0',
+      roll: '0',
+      yaw: '0',
+      lng: '-',
+      lat: '-',
+      relativeAlt: '-',
+      heading: '0',
+      voltage: '0',
+      percentage: '0',
+      airSpeed: '0',
+      customMode: '-',
+      isArmed: '0'
+    })
 
-    // watch(() => props.droneStatus.drone_message, (newValue) => {
-    //   console.log(newValue)
-    // })
+    const token = 'pk.eyJ1Ijoid2FpdGluZzMzMTE4IiwiYSI6ImNrZDVlZWp6MjFxcXQyeHF2bW0xenU4YXoifQ.iGfojLdouAjsovJuRxjYVA'
+
+    /**
+       * add map token
+       */
+    mapboxgl.accessToken = token
+
     onMounted(async () => {
       /**
        * set costum location
@@ -52,13 +100,6 @@ export default {
         latitude.value = coords.latitude
       }
       await setUserLocation()
-
-      const token = 'pk.eyJ1Ijoid2FpdGluZzMzMTE4IiwiYSI6ImNrZDVlZWp6MjFxcXQyeHF2bW0xenU4YXoifQ.iGfojLdouAjsovJuRxjYVA'
-
-      /**
-       * add map token
-       */
-      mapboxgl.accessToken = token
 
       /**
        * Create map instance & binding DOM Element
@@ -140,6 +181,7 @@ export default {
          */
         const destinationPoint = new mapboxgl.Marker({
           color: 'red',
+          scale: 1.5,
           draggable: true
         })
           .setLngLat([longitude.value, latitude.value])
@@ -150,13 +192,93 @@ export default {
           emit('getCurrentPosition', lng, lat)
         })
 
+        /**
+         * add drone position marker
+         */
+        const dronePosition = new mapboxgl.Marker({
+          color: 'blue',
+          draggable: false
+        })
+          .setLngLat([longitude.value, latitude.value])
+          .addTo(map)
+
+        /**
+         * add realtime trace path
+         */
+        map.addSource('trace', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates: coordsStorage
+            }
+          }
+        })
+        map.addLayer({
+          id: 'trace',
+          type: 'line',
+          source: 'trace',
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': 'yellow',
+            'line-opacity': 0.75,
+            'line-width': 10
+          }
+        })
+
         setTimeout(() => { isLoading.value = false }, 1500)
+
+        watch(() => props.droneStatus, (newInfo) => {
+          const {
+            timestamp,
+            attitude: { pitch, roll, yaw },
+            location: { lng, lat, relative_alt: relativeAlt, heading },
+            battery: { voltage, percentage },
+            speed: { air_speed: airSpeed },
+            heartbeat: { custom_mode: customMode, is_armed: isArmed }
+          } = newInfo
+          Object.assign(droneInfo, {
+            timestamp,
+            lng,
+            lat,
+            pitch,
+            roll,
+            yaw,
+            relativeAlt,
+            heading,
+            voltage,
+            percentage,
+            airSpeed,
+            customMode,
+            isArmed
+          })
+
+          coordsStorage.push([lng, lat])
+
+          map.getSource('trace').setData({
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: coordsStorage
+              }
+            }]
+          })
+          map.panTo(coordsStorage[coordsStorage.length - 1])
+
+          dronePosition.setLngLat([lng, lat])
+        })
       })
     })
     return {
       isLoading,
-      drone,
-      props
+      droneInfo,
+      coordsStorage
     }
   }
 }
