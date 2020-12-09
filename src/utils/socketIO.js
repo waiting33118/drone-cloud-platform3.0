@@ -7,7 +7,7 @@ export const socket = io(domain)
      * check socket connection
      */
 export const onConnection = () => {
-  socket.on('connect', () => console.log(new Date().toLocaleString(), socket.id))
+  socket.on('connect', () => console.log(new Date().toLocaleString(), socket.id, process.env.NODE_ENV))
 }
 
 export const offMsg = () => socket.removeAllListeners('drone_status')
