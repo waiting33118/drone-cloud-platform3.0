@@ -63,7 +63,7 @@ export default {
   async goTo (lng, lat, altitude) {
     try {
       const { data } = await axiosInstance.post('/goto', { lng, lat, altitude })
-      if (data.status === 'success')Toast.fire({ icon: 'success', title: `[GOTO] GPS (${lng}, ${lat})` })
+      if (data.status === 'success')Toast.fire({ icon: 'success', title: `[GOTO] GPS (${lng}, ${lat}) Altitude: ${altitude}` })
     } catch (error) {
       Toast.fire({ icon: 'error', title: error.message })
     }
@@ -71,12 +71,26 @@ export default {
 
   /**
    * Changing drone's flight altitude
+   * @deprecated replace by goto
    * @param {number} altitude Set drone's altitude
    */
   async changeFlightHeight (altitude) {
     try {
       const { data } = await axiosInstance.post('/cfa', { altitude })
       if (data.status === 'success')Toast.fire({ icon: 'info', title: `Change drone's flight altitude to ${altitude} meter` })
+    } catch (error) {
+      Toast.fire({ icon: 'error', title: error.message })
+    }
+  },
+
+  /**
+   * Changing drone's air speed
+   * @param {number} speed Set drone's air speed
+   */
+  async changeAirSpeed (speed) {
+    try {
+      const { data } = await axiosInstance.post('/cas', { speed })
+      if (data.status === 'success')Toast.fire({ icon: 'info', title: `Change drone's air speed to ${speed} m/s` })
     } catch (error) {
       Toast.fire({ icon: 'error', title: error.message })
     }
@@ -90,6 +104,19 @@ export default {
     try {
       const { data } = await axiosInstance.post('/cfm', { mode })
       if (data.status === 'success')Toast.fire({ icon: 'success', title: `Change drone's flight mode to ${mode}` })
+    } catch (error) {
+      Toast.fire({ icon: 'error', title: error.message })
+    }
+  },
+
+  /**
+   * Send command to control servo
+   * @param {string} command servo command
+   */
+  async sendServoControl (command) {
+    try {
+      const { data } = await axiosInstance.post('/ssc', { command })
+      if (data.status === 'success')Toast.fire({ icon: 'info', title: command })
     } catch (error) {
       Toast.fire({ icon: 'error', title: error.message })
     }
