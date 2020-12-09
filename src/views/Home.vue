@@ -18,7 +18,7 @@
 
 <script>
 import { reactive, ref } from '@vue/composition-api'
-import { subscribeDroneMsg, unSubscribeDroneMsg } from './../utils/socketIO.js'
+import { onConnection, offMsg, socket } from './../utils/socketIO.js'
 import ControlPanel from './../components/ControlPanel'
 import Mapbox from './../components/Mapbox'
 import Stream from './../components/Stream'
@@ -37,8 +37,7 @@ export default {
     const droneStatus = ref({})
     const isConnected = ref(false)
 
-    // socket.on('drone_status', data => { droneStatus.value = { ...data } })
-    // socket.on('phone_status', data => {})
+    onConnection()
 
     /**
      * @param lng number
@@ -62,10 +61,14 @@ export default {
     const handleConnect = () => {
       isConnected.value = !isConnected.value
       if (isConnected.value) {
-        droneStatus.value = subscribeDroneMsg()
+        socket.on('drone_status', data => {
+          droneStatus.value = {
+            ...data.drone_message
+          }
+        })
         return
       }
-      unSubscribeDroneMsg()
+      offMsg()
     }
 
     return {
