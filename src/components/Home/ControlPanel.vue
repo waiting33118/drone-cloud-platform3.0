@@ -88,15 +88,66 @@
         class="tab-pane fade"
       >
         <div class="tab-container">
-          2
+          <div class="d-grid gap-2 p-4 h-100">
+            <!-- servo up -->
+            <button class="btn btn-primary">
+              SERVO UP<FontAwesomeIcon
+                class="ms-2 fs-2"
+                :icon="box"
+              />
+              <FontAwesomeIcon
+                :icon="arrowUp"
+                class="ms-2 fs-2"
+              />
+            </button>
+            <!-- servo down -->
+            <button class="btn btn-primary">
+              SERVO DOWN<FontAwesomeIcon
+                class="ms-2 fs-2"
+                :icon="box"
+              />
+              <FontAwesomeIcon
+                :icon="arrowDown"
+                class="ms-2 fs-2"
+              />
+            </button>
+            <button class="btn btn-primary bg-danger">
+              <!-- servo stop -->
+              SERVO STOP<FontAwesomeIcon
+                :icon="stopCircle"
+                class="ms-2 fs-2"
+              />
+            </button>
+          </div>
         </div>
       </div>
       <div
         id="camera"
         class="tab-pane fade"
       >
-        <div class="tab-container">
-          3
+        <div class="tab-container d-flex justify-content-center align-items-center">
+          <div class="position-relative h-50 w-50">
+            <div class="position-absolute top-0 start-50 translate-middle-x">
+              <button class="btn btn-success rounded-pill px-3">
+                UP
+              </button>
+            </div>
+            <div class="position-absolute top-50 start-0 translate-middle-y">
+              <button class="btn btn-success rounded-pill px-3">
+                LEFT
+              </button>
+            </div>
+            <div class="position-absolute top-50 end-0 translate-middle-y">
+              <button class="btn btn-success rounded-pill px-3">
+                RIGHT
+              </button>
+            </div>
+            <div class="position-absolute bottom-0 start-50 translate-middle-x">
+              <button class="btn btn-success rounded-pill px-3">
+                DOWN
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <div
@@ -104,7 +155,15 @@
         class="tab-pane fade"
       >
         <div class="tab-container">
-          4
+          <!-- log -->
+          <ul class="log-container">
+            <li
+              v-for="i in 100"
+              :key="i"
+            >
+              {{ `${i} - test` }}
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -113,7 +172,7 @@
 
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faArrowsAltV, faTachometerAlt } from '@fortawesome/free-solid-svg-icons'
+import { faArrowsAltV, faTachometerAlt, faBox, faStopCircle, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import SwitchButton from '@/components/ControlPanel/SwitchButton.vue'
 import Range from '@/components/ControlPanel/Range.vue'
 import Form from '@/components/ControlPanel/Form.vue'
@@ -142,9 +201,12 @@ export default {
      */
     const arrowV = computed(() => faArrowsAltV)
     const tachometerAlt = computed(() => faTachometerAlt)
-
+    const box = computed(() => faBox)
+    const stopCircle = computed(() => faStopCircle)
+    const arrowUp = computed(() => faArrowUp)
+    const arrowDown = computed(() => faArrowDown)
     /**
-     * Listen change events from components
+     * Listen change events from child components
      */
     const armStatus = (value) => { allButtonStatus.isArm = value }
     const takeoffStatus = (value) => { allButtonStatus.isTakeoff = value }
@@ -158,7 +220,11 @@ export default {
       speedValue,
       allButtonStatus,
       arrowV,
-      tachometerAlt
+      tachometerAlt,
+      box,
+      stopCircle,
+      arrowUp,
+      arrowDown
     }
   }
 }
@@ -178,6 +244,11 @@ export default {
       height: 100%;
       >.tab-container{
         height: 100%;
+        >.log-container{
+        height: 100%;
+        overflow-y: scroll;
+        margin-bottom: 0;
+      }
       }
     }
   }
