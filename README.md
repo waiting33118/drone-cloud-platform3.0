@@ -44,6 +44,8 @@ npm run lint
         1. Control
             - **[component/emits]** Arm/Disarm
             - **[component/emits]** Takeoff/Land
+            - **[component/emits]** Altitude & Speed
+            - **[component]** Goto
         2. Servo
         3. Camera
         4. Log
