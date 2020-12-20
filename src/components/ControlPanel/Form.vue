@@ -1,13 +1,13 @@
 <template>
   <form class="input-group">
     <FontAwesomeIcon
-      v-model="coordinate.longitude"
       class="me-2 my-auto"
       :icon="mapMarkAlt"
       style="color:blue"
     />
     <input
       id="longitude"
+      v-model="coordinate.longitude"
       type="text"
       class="form-control text-center"
       disabled
