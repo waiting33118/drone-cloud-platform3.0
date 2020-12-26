@@ -37,8 +37,8 @@ npm run lint
 1. Home
     - 登入後才開始連線socket
     - 進入到Home才開始監聽drone飛行data
-    - **[props]** drone_data => control panel (各個開關根據狀態復位)
-    - **[props]** drone_data => mapbox (左上角即時飛行dashboard)
+    - **[props]** droneSource => control panel (各個開關根據狀態復位)
+    - **[props]** droneSource => mapbox (左上角即時飛行dashboard)
 1. ControlPanel
    - Tabs分頁
         1. Control
