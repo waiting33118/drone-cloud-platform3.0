@@ -1,21 +1,61 @@
 <template>
   <div class="container-fluid px-0">
-    <ControlPanel class="control-panel" />
+    <ControlPanel
+      :drone-info="droneSource.info"
+      :drone-apm="droneSource.apmInfo"
+      class="control-panel"
+    />
     <Stream class="stream" />
     <Mapbox class="mapbox" />
   </div>
 </template>
 
 <script>
+import { startConnections } from '../utils/socket.js'
+import { alert } from '../utils/sweetAlert'
 import Mapbox from '@/components/Home/Mapbox.vue'
 import ControlPanel from '@/components/Home/ControlPanel.vue'
 import Stream from '@/components/Home/Stream.vue'
+import { reactive } from 'vue'
 export default {
   name: 'Home',
   components: {
     Mapbox,
     ControlPanel,
     Stream
+  },
+  setup () {
+    const droneSource = reactive({ info: {}, apmInfo: [] })
+    const socket = startConnections()
+    socket.on('connect', () => {
+      droneSource.apmInfo.unshift(`${new Date().toLocaleString()}-Socket ID:${socket.id} Env:${process.env.NODE_ENV}`)
+      console.log(new Date().toLocaleString(), socket.id, process.env.NODE_ENV)
+    })
+    /**
+     * Recieve mqtt subscribe data
+     */
+    socket.on('message', (data) => {
+      const { Drone: drone, Phone: phone } = data
+      droneSource.info = { ...drone, ...phone }
+    })
+    socket.on('ack', data => {
+      const { cmd, cmd_result: result } = data
+      const cmdRegexIndex = cmd.indexOf('=') + 1
+      const cmdRegex = cmd.slice(cmdRegexIndex)
+      result.includes('FAILED')
+        ? alert({ title: `${cmdRegex} Failed!` })
+        : alert({ title: `${cmdRegex} Success!`, icon: 'success' })
+    })
+    socket.on('apm', data => {
+      const { text } = data
+      const textRegexIndex = text.indexOf('=') + 1
+      const textRegex = `${new Date().toLocaleString()}-${text.slice(textRegexIndex)}`
+      droneSource.apmInfo.unshift(textRegex)
+    })
+
+    return {
+      droneSource
+    }
   }
 }
 </script>
@@ -30,6 +70,8 @@ export default {
       grid-column: 1 / 2;
       grid-row: 1;
       border: 2px solid gainsboro;
+      overflow-y: scroll;
+      overflow-x: hidden;
     }
     >.stream{
       width: 500px;
@@ -63,7 +105,7 @@ export default {
       position: relative;
     }
   }
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 580px) {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(3,minmax(350px,1fr));
     >.control-panel{
