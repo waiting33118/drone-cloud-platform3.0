@@ -17,13 +17,21 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 export default {
   name: 'SwitchButton',
+  props: {
+    buttonStatus: {
+      type: Boolean,
+      required: true
+    }
+  },
   emits: ['handleButtonEmit'],
   setup (props, { emit }) {
-    const buttonValue = ref(false)
+    const buttonValue = ref(props.buttonStatus)
     const changeEmit = () => emit('handleButtonEmit', buttonValue.value)
+
+    watch(props, (newValue) => { buttonValue.value = newValue.buttonStatus })
     return {
       buttonValue,
       changeEmit
