@@ -176,12 +176,34 @@
       >
         <div class="row p-3 gy-2 h-100">
           <!-- GIMBAL_FRONT_BACK -->
-          <div class="col-12 border">
-            1
+          <div class="col-12 d-flex flex-column justify-content-evenly border">
+            <Range
+              :min="1200"
+              :max="1800"
+              :step="1"
+              :range-status="Number(allButtonStatus.gimbalYValue)"
+              @handleRangeEmit="gimbalYValue"
+            >
+              <FontAwesomeIcon
+                class="me-1"
+                :icon="video"
+              />Gimbal Front & Back
+            </Range>
           </div>
           <!-- GIMBAL_LEFT_RIGHT -->
-          <div class="col-12 border">
-            2
+          <div class="col-12 d-flex flex-column justify-content-evenly border">
+            <Range
+              :min="1200"
+              :max="1800"
+              :step="1"
+              :range-status="Number(allButtonStatus.gimbalXValue)"
+              @handleRangeEmit="gimbalXValue"
+            >
+              <FontAwesomeIcon
+                class="me-1"
+                :icon="video"
+              />Gimbal Left & Right
+            </Range>
           </div>
         </div>
       </div>
@@ -207,7 +229,7 @@
 
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faArrowsAltV, faTachometerAlt, faBox, faStopCircle, faArrowUp, faArrowDown, faLocationArrow } from '@fortawesome/free-solid-svg-icons'
+import { faArrowsAltV, faTachometerAlt, faBox, faStopCircle, faArrowUp, faArrowDown, faLocationArrow, faVideo } from '@fortawesome/free-solid-svg-icons'
 import SwitchButton from '@/components/ControlPanel/SwitchButton.vue'
 import Range from '@/components/ControlPanel/Range.vue'
 import Form from '@/components/ControlPanel/Form.vue'
@@ -242,12 +264,18 @@ export default {
       isTakeoff: false,
       altitudeValue: 3,
       speedValue: 3,
-      yawValue: 0
+      yawValue: 0,
+      gimbalYValue: 1500,
+      gimbalXValue: 1500
     })
     const SERVO_MODE = {
       UP: 'SERVO_UP',
       DOWN: 'SERVO_DOWN',
       STOP: 'SERVO_STOP'
+    }
+    const GIMBAL_ACTION = {
+      X_AXIS: 'GIMBAL_LEFT_RIGHT',
+      Y_AXIS: 'GIMBAL_FRONT_BACK'
     }
     /**
      * FontAwesome implementation
@@ -259,6 +287,7 @@ export default {
     const arrowUp = computed(() => faArrowUp)
     const arrowDown = computed(() => faArrowDown)
     const locationArrow = computed(() => faLocationArrow)
+    const video = computed(() => faVideo)
     /**
      * APM_Logs
      */
@@ -268,28 +297,36 @@ export default {
       1. Listen change events from child components
       2. Emits API command
      */
-    const armStatus = (value) => {
+    const armStatus = value => {
       allButtonStatus.isArm = value
       if (value) return drone.arm()
       drone.disarm()
     }
-    const takeoffStatus = (value) => {
+    const takeoffStatus = value => {
       allButtonStatus.isTakeoff = value
       if (value) return drone.takeOff(allButtonStatus.altitudeValue)
       drone.land()
     }
-    const altitudeValue = (value) => {
+    const altitudeValue = value => {
       allButtonStatus.altitudeValue = value
       // TODO: Is there no gps coordinates, abort goto cmd
       drone.goto(121.534919, 25.042853, allButtonStatus.altitudeValue)
     }
-    const speedValue = (value) => {
+    const speedValue = value => {
       allButtonStatus.speedValue = value
       drone.changeSpeed(allButtonStatus.speedValue)
     }
-    const yawValue = (value) => {
+    const yawValue = value => {
       allButtonStatus.yawValue = value
       drone.changeYaw(allButtonStatus.yawValue)
+    }
+    const gimbalYValue = value => {
+      allButtonStatus.gimbalYValue = value
+      drone.gimbalControl(GIMBAL_ACTION.Y_AXIS, allButtonStatus.gimbalYValue)
+    }
+    const gimbalXValue = value => {
+      allButtonStatus.gimbalXValue = value
+      drone.gimbalControl(GIMBAL_ACTION.X_AXIS, allButtonStatus.gimbalXValue)
     }
     const handleServoUp = () => drone.servoControl(SERVO_MODE.UP)
     const handleServoDown = () => drone.servoControl(SERVO_MODE.DOWN)
@@ -315,23 +352,26 @@ export default {
     })
 
     return {
-      armStatus,
-      takeoffStatus,
-      altitudeValue,
-      speedValue,
-      yawValue,
       allButtonStatus,
-      arrowV,
-      tachometerAlt,
-      box,
-      stopCircle,
-      arrowUp,
+      altitudeValue,
+      armStatus,
       arrowDown,
+      arrowUp,
+      arrowV,
+      box,
+      gimbalXValue,
+      gimbalYValue,
+      handleServoDown,
+      handleServoStop,
+      handleServoUp,
       locationArrow,
       logs,
-      handleServoUp,
-      handleServoDown,
-      handleServoStop
+      speedValue,
+      stopCircle,
+      tachometerAlt,
+      takeoffStatus,
+      video,
+      yawValue
     }
   }
 }
