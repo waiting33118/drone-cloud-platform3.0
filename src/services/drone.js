@@ -90,12 +90,24 @@ export default {
     }
   },
   /**
-   *
+   *  Drone command - Command servo action
    * @param {string} action Servo action(UP,DOWN,STOP)
    */
   async servoControl (action) {
     try {
       await axiosInstance.post('/servocontrol', { action })
+    } catch (error) {
+      alert({ title: error.message })
+    }
+  },
+  /**
+   *  Drone command - Change gimbal angle
+   * @param {string} cmd Gimbal action(x axis,y axis)
+   * @param {number} pwm Angle(pwm value)
+   */
+  async gimbalControl (cmd, pwm) {
+    try {
+      await axiosInstance.post('/gimbalcontrol', { cmd, pwm })
     } catch (error) {
       alert({ title: error.message })
     }
