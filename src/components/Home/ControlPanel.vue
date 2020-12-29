@@ -115,7 +115,7 @@
               <ButtonGroup />
             </div>
             <div class="col-12 py-1 border">
-              <Form />
+              <Form :target-gps="targetGps" />
             </div>
           </div>
         </div>
@@ -236,6 +236,7 @@ import Form from '@/components/ControlPanel/Form.vue'
 import ButtonGroup from '@/components/ControlPanel/ButtonGroup.vue'
 import drone from '../../services/drone'
 import { computed, reactive, watch } from 'vue'
+import { alert } from '../../utils/sweetAlert'
 export default {
   name: 'ControlPanel',
   components: {
@@ -253,9 +254,14 @@ export default {
     droneApm: {
       type: Array,
       default: () => []
+    },
+    droneTargetgps: {
+      type: Object,
+      default: () => ({})
     }
   },
-  setup (props) {
+  emits: ['altitudeEmit'],
+  setup (props, { emit }) {
     /**
      * All controlpanel button status
      */
@@ -288,10 +294,11 @@ export default {
     const arrowDown = computed(() => faArrowDown)
     const locationArrow = computed(() => faLocationArrow)
     const video = computed(() => faVideo)
-    /**
-     * APM_Logs
-     */
+
+    // APM_Logs
     const logs = computed(() => props.droneApm)
+    // Target GPS
+    const targetGps = computed(() => props.droneTargetgps)
 
     /*
       1. Listen change events from child components
@@ -309,8 +316,10 @@ export default {
     }
     const altitudeValue = value => {
       allButtonStatus.altitudeValue = value
-      // TODO: Is there no gps coordinates, abort goto cmd
-      drone.goto(121.534919, 25.042853, allButtonStatus.altitudeValue)
+      emit('altitudeEmit', allButtonStatus.altitudeValue)
+      props.droneTargetgps.lng === undefined && props.droneTargetgps.lat === undefined
+        ? alert({ title: 'Please set a target first!' })
+        : drone.goto(props.droneTargetgps.lng, props.droneTargetgps.lat, allButtonStatus.altitudeValue)
     }
     const speedValue = value => {
       allButtonStatus.speedValue = value
@@ -345,7 +354,11 @@ export default {
       } = newProps
       // Reload status if web page reload
       isArmed === '0' ? allButtonStatus.isArm = false : allButtonStatus.isArm = true
-      if (flightMode !== 'LAND' && isArmed === '1' && relativeAlt > '1') allButtonStatus.isTakeoff = true
+      if (flightMode !== 'LAND' && isArmed === '1' && relativeAlt > '1') {
+        allButtonStatus.isTakeoff = true
+      } else {
+        allButtonStatus.isTakeoff = false
+      }
       allButtonStatus.yawValue = Number(heading).toFixed(0)
       // When drone is disarm, auto switch land or rtl mode to guided
       if ((flightMode === 'LAND' || flightMode === 'RTL') && isArmed === '0') drone.changeFlightMode('GUIDED')
@@ -371,7 +384,8 @@ export default {
       tachometerAlt,
       takeoffStatus,
       video,
-      yawValue
+      yawValue,
+      targetGps
     }
   }
 }
@@ -393,7 +407,7 @@ export default {
         height: 100%;
         >.log-container{
         height: 100%;
-        overflow-y: scroll;
+        overflow-y: auto;
         margin-bottom: 0;
       }
       }
