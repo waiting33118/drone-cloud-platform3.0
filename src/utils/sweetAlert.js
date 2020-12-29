@@ -15,3 +15,20 @@ export const alert = ({ title, icon = 'error' }) => {
     timerProgressBar: true
   })
 }
+
+/**
+ * Comfirm the goto mission
+ * @param {number} lng Longitude
+ * @param {number} lat Latitude
+ */
+export const gotoMissionCheck = (lng, lat) => {
+  return Swal.fire({
+    title: 'Press "OK" to start Mission!',
+    text: `GOTO: GPS ${lng}, ${lat}`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'OK'
+  })
+}
