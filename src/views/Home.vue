@@ -3,10 +3,17 @@
     <ControlPanel
       :drone-info="droneSource.info"
       :drone-apm="droneSource.apmInfo"
+      :drone-targetgps="droneSource.targetGPS"
       class="control-panel"
+      @altitude-emit="handleAltitudeEmit"
     />
     <Stream class="stream" />
-    <Mapbox class="mapbox" />
+    <Mapbox
+      class="mapbox"
+      :drone-info="droneSource.info"
+      :altitude="droneSource.altitude"
+      @coords-emit="handleCoordsEmit"
+    />
   </div>
 </template>
 
@@ -25,7 +32,7 @@ export default {
     Stream
   },
   setup () {
-    const droneSource = reactive({ info: {}, apmInfo: [] })
+    const droneSource = reactive({ info: {}, apmInfo: [], targetGPS: {}, altitude: 3 })
     const socket = startConnections()
     socket.on('connect', () => {
       droneSource.apmInfo.unshift(`${new Date().toLocaleString()}-Socket ID:${socket.id} Env:${process.env.NODE_ENV}`)
@@ -53,8 +60,22 @@ export default {
       droneSource.apmInfo.unshift(textRegex)
     })
 
+    /**
+     * Receive user click position of coordinates
+     * @param {object} coords Coordinates
+     */
+    const handleCoordsEmit = coords => { droneSource.targetGPS = { ...coords } }
+
+    /**
+     * Receive user change altitude event
+     * @param {string} altitude Altitude
+     */
+    const handleAltitudeEmit = altitude => { droneSource.altitude = Number(altitude) }
+
     return {
-      droneSource
+      droneSource,
+      handleCoordsEmit,
+      handleAltitudeEmit
     }
   }
 }
