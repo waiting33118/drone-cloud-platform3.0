@@ -44,7 +44,7 @@ export default {
         style: 'mapbox://styles/waiting33118/ckdfkx3t10k9w1irkp8anuy39',
         center: [longitude, latitude],
         zoom: 17,
-        pitch: 55,
+        pitch: 40,
         bearing: 0,
         antialias: true,
         container: 'map'
@@ -124,7 +124,7 @@ export default {
           paint: {
             'line-color': 'yellow',
             'line-opacity': 0.75,
-            'line-width': 10
+            'line-width': 5
           }
         })
 
@@ -139,7 +139,7 @@ export default {
       /**
        * Goto feature
        */
-      map.on('click', async e => {
+      map.on('contextmenu', async e => {
         const { lng, lat } = e.lngLat
         const coords = {
           lng: Number(lng).toFixed(6),
@@ -158,7 +158,6 @@ export default {
         draggable: false
       })
         .setLngLat([longitude, latitude]).addTo(map)
-
       /**
        * Realtime update drone position
        */
@@ -166,16 +165,18 @@ export default {
         const { lng, lat } = newValue
         coordsTmp.push([lng, lat])
         dronePosition.setLngLat([lng, lat])
-        map.getSource('trace').setData({
-          type: 'FeatureCollection',
-          features: [{
-            type: 'Feature',
-            geometry: {
-              type: 'LineString',
-              coordinates: coordsTmp
-            }
-          }]
-        })
+        if (map.getSource('trace')) {
+          map.getSource('trace').setData({
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: coordsTmp
+              }
+            }]
+          })
+        }
       })
     })
 
