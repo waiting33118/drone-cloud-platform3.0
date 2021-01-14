@@ -47,11 +47,17 @@ export default {
     })
     socket.on('ack', data => {
       const { cmd, cmd_result: result } = data
-      const cmdRegexIndex = cmd.indexOf('=') + 1
-      const cmdRegex = cmd.slice(cmdRegexIndex)
+      const cmdRegex = cmd.slice(cmd.indexOf('=') + 1)
       result.includes('FAILED')
         ? alert({ title: `${cmdRegex} Failed!` })
         : alert({ title: `${cmdRegex} Success!`, icon: 'success' })
+    })
+    socket.on('mission', data => {
+      const { mission_result: mission } = data
+      const messageFormat = mission.slice(mission.indexOf('=') + 1)
+      messageFormat.includes('FAILED')
+        ? alert({ title: `${messageFormat}` })
+        : alert({ title: `${messageFormat}`, icon: 'success' })
     })
     socket.on('apm', data => {
       const { text } = data
