@@ -55,7 +55,7 @@ export default {
     socket.on('mission', data => {
       const { mission_result: mission } = data
       const messageFormat = mission.slice(mission.indexOf('=') + 1)
-      messageFormat.includes('FAILED')
+      messageFormat.includes('ERROR')
         ? alert({ title: `${messageFormat}` })
         : alert({ title: `${messageFormat}`, icon: 'success' })
     })
