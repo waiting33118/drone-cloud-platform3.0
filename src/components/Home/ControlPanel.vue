@@ -67,7 +67,25 @@
             </div>
             <!-- Altitude -->
             <div class="col-4 py-1 border">
-              <Range
+              <label
+                for="input"
+                class="form-label mb-0"
+              >
+                <FontAwesomeIcon
+                  class="me-1"
+                  :icon="arrowV"
+                />Altitude (m)</label>
+              <input
+                id="input"
+                v-model="allButtonStatus.altitudeValue"
+                type="number"
+                class="form-control text-center mt-3"
+                min="1"
+                max="100"
+                step="0.5"
+                @change="altitudeValue"
+              >
+              <!-- <Range
                 :min="1"
                 :max="100"
                 :step="0.5"
@@ -78,7 +96,7 @@
                   class="me-1"
                   :icon="arrowV"
                 />Altitude (m)
-              </Range>
+              </Range> -->
             </div>
             <!-- Speed -->
             <div class="col-4 py-1 border">
@@ -314,8 +332,7 @@ export default {
       if (value) return drone.takeOff(allButtonStatus.altitudeValue)
       drone.land()
     }
-    const altitudeValue = value => {
-      allButtonStatus.altitudeValue = value
+    const altitudeValue = () => {
       emit('altitudeEmit', allButtonStatus.altitudeValue)
       props.droneTargetgps.lng === undefined && props.droneTargetgps.lat === undefined
         ? alert({ title: 'Please set a target first!' })
