@@ -21,10 +21,10 @@ export const alert = ({ title, icon = 'error' }) => {
  * @param {number} lng Longitude
  * @param {number} lat Latitude
  */
-export const gotoMissionCheck = (lng, lat) => {
+export const gotoMissionConfirm = (lng, lat) => {
   return Swal.fire({
     title: 'Press "OK" to start Mission!',
-    text: `GOTO: GPS ${lng}, ${lat}`,
+    text: `Go to GPS: ${lng}, ${lat}`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
