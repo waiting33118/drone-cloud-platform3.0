@@ -1,11 +1,18 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import DroneControlPanel from '../views/DroneControlPanel.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    redirect: {
+      name: 'DroneControlPanel'
+    }
+  },
+  {
+    path: '/dronecontrolpanel',
+    name: 'DroneControlPanel',
+    component: DroneControlPanel
   }
 ]
 
