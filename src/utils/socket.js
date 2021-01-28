@@ -1,5 +1,6 @@
 import { io } from 'socket.io-client'
 import { useStore } from 'vuex'
+import { useMessageParse } from '.'
 
 export const socketInit = () => {
   const DOMAIN = process.env.NODE_ENV === 'development'
@@ -14,11 +15,13 @@ export const socketInit = () => {
   socket.on('message', ({ Drone: drone, Phone: phone }) => {
     store.dispatch('Drone/setDroneInfo', { ...drone, ...phone })
   })
-  socket.on('ack', data => {
-    store.dispatch('Drone/setACK', data)
+  socket.on('ack', ({ cmd, cmd_result: result }) => {
+    store.dispatch('Drone/setACK', { cmd, result })
+    useMessageParse(cmd, result)
   })
-  socket.on('mission', data => {
-    store.dispatch('Drone/setMission', data)
+  socket.on('mission', ({ mission_result: result }) => {
+    store.dispatch('Drone/setMission', { result })
+    useMessageParse(null, result)
   })
   socket.on('apm', data => {
     store.dispatch('Drone/setApm', data)
