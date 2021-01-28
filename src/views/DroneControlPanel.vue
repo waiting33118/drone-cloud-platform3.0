@@ -7,12 +7,10 @@
 </template>
 
 <script>
-// import { startConnections } from '../utils/socket.js'
-// import { alert } from '../utils/sweetAlert'
 import { useSocket } from '../utils'
-import Mapbox from '@/components/Home/Mapbox.vue'
-import ControlPanel from '@/components/Home/ControlPanel.vue'
-import Stream from '@/components/Home/Stream.vue'
+import Mapbox from '@/components/DroneControlPanel/Mapbox.vue'
+import ControlPanel from '@/components/DroneControlPanel/ControlPanel.vue'
+import Stream from '@/components/DroneControlPanel/Stream.vue'
 
 export default {
   name: 'DroneControlPanel',
@@ -88,8 +86,7 @@ export default {
       grid-column: 1 / 2;
       grid-row: 1;
       border: 2px solid gainsboro;
-      overflow-y: scroll;
-      overflow-x: hidden;
+      overflow: auto;
     }
     >.stream{
       width: 500px;
