@@ -2,9 +2,10 @@ import Swal from 'sweetalert2'
 
 /**
  * Show error message
- * @param {string} title alert message
+ * @param {string} title Alert title
+ * @param {string} icon `'error','info','success'`
  */
-export const alert = ({ title, icon = 'error' }) => {
+export const alert = (title, icon = 'error') => {
   Swal.fire({
     title,
     icon,
