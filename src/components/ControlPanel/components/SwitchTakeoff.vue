@@ -5,6 +5,7 @@
       v-model="status"
       class="form-check-input fs-4 me-3"
       type="checkbox"
+      :disabled="!propsStatus"
       @click="handleClick"
     >
     <label
@@ -44,6 +45,7 @@ export default {
     }
 
     return {
+      propsStatus,
       labelStatus,
       status,
       handleClick
