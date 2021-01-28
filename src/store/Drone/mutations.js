@@ -1,13 +1,31 @@
 export default {
   saveLog (state, payload) {
-    state.logs.unshift(payload)
+    state.logs.push(payload)
   },
+
   setUserLocation (state, { longitude, latitude }) {
-    state.defaultParams.userLongitude = longitude
-    state.defaultParams.userLatitude = latitude
+    state.parameters.userLongitude = longitude
+    state.parameters.userLatitude = latitude
   },
+
   setTargetLocation (state, { longitude, latitude }) {
-    state.defaultParams.targetLongitude = longitude
-    state.defaultParams.targetLatitude = latitude
+    state.parameters.targetLongitude = longitude
+    state.parameters.targetLatitude = latitude
+  },
+
+  setFlightAltitude (state, altitude) {
+    state.parameters.altitude = altitude
+  },
+
+  setFlightSpeed (state, speed) {
+    state.parameters.speed = speed
+  },
+
+  setDroneInfo (state, payload) {
+    state.info = { ...payload }
+  },
+
+  setTmpCoords (state, { longitude, latitude }) {
+    state.parameters.tmpCoords.push([longitude, latitude])
   }
 }
