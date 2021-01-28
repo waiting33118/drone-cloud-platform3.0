@@ -50,3 +50,11 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.tab-pane{
+  height: 100%;
+  >.tab-container{
+    height: 100%;
+  }
+}
+</style>
