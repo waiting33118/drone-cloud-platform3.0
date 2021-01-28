@@ -4,38 +4,39 @@
     class="tab-pane fade"
   >
     <div class="tab-container">
-      <div class="d-flex flex-column justify-content-center p-2">
-        <InputRange>
-          <FontAwesomeIcon :icon="video" />
-          Gimbal Front & Back
-        </InputRange>
-
-        <InputRange>
-          <FontAwesomeIcon :icon="video" />
-          Gimbal Left & Right
-        </InputRange>
+      <div class="d-flex flex-column justify-content-evenly p-2">
+        <InputGimbalY />
+        <InputGimbalX />
+        <ButtonReset />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faVideo } from '@fortawesome/free-solid-svg-icons'
-import InputRange from '@/components/ControlPanel/components/InputRange.vue'
-import { computed } from 'vue'
+import InputGimbalY from '@/components/ControlPanel/components/InputGimbalY.vue'
+import InputGimbalX from '@/components/ControlPanel/components/InputGimbalX.vue'
+import ButtonReset from '@/components/ControlPanel/components/ButtonReset.vue'
 export default {
   name: 'TabCamera',
   components: {
-    FontAwesomeIcon,
-    InputRange
+    InputGimbalY,
+    InputGimbalX,
+    ButtonReset
   },
   setup () {
-    const video = computed(() => faVideo)
-
-    return {
-      video
-    }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.tab-pane{
+  height: 100%;
+  >.tab-container{
+    height: 100%;
+    >div {
+      height: 100%;
+    }
+  }
+}
+</style>
