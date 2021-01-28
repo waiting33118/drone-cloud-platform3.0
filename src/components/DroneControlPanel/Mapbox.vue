@@ -7,8 +7,9 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 import DroneInformation from '@/components/Mapbox/DroneInformation.vue'
+import { goto } from '../../api'
 import { getUserLocation, useGotoMissionConfirm } from '../../utils'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 export default {
   name: 'Mapbox',
@@ -33,7 +34,7 @@ export default {
         style: 'mapbox://styles/waiting33118/ckdfkx3t10k9w1irkp8anuy39',
         center: [longitude, latitude],
         zoom: 17,
-        pitch: 40,
+        pitch: 0,
         bearing: 0,
         antialias: true,
         container: 'map'
@@ -137,42 +138,43 @@ export default {
         const { isConfirmed } = await useGotoMissionConfirm(coords.longitude, coords.latitude)
         if (isConfirmed) {
           store.dispatch('Drone/setTargetLocation', { ...coords })
-          // drone.goto(coords.lng, coords.lat, prop.altitude)
+          const propsStatus = store.getters['Drone/getDronePropsStatus']
+          if (propsStatus) {
+            const flightAltitude = store.getters['Drone/getCurrentAltitude']
+            goto(lng, lat, flightAltitude)
+          }
+          // TODO: Alert when drone isn't takeoff
         }
       })
 
       /**
        * add drone position marker
        */
-      // const dronePosition = new mapboxgl.Marker({
-      //   color: 'blue',
-      //   draggable: false
-      // })
-      //   .setLngLat([0, 0]).addTo(map)
+      const dronePosition = new mapboxgl.Marker({
+        color: 'blue',
+        draggable: false
+      })
+        .setLngLat([longitude, latitude]).addTo(map)
+
       /**
        * Realtime update drone position
        */
-      // watch(() => prop.droneInfo.location, newValue => {
-      //   const { lng, lat } = newValue
-      //   coordsTmp.push([lng, lat])
-      //   dronePosition.setLngLat([lng, lat])
-      //   if (map.getSource('trace')) {
-      //     map.getSource('trace').setData({
-      //       type: 'FeatureCollection',
-      //       features: [{
-      //         type: 'Feature',
-      //         geometry: {
-      //           type: 'LineString',
-      //           coordinates: coordsTmp
-      //         }
-      //       }]
-      //     })
-      //   }
-      // })
+      watch(store.getters['Drone/getTmpCoords'], data => {
+        dronePosition.setLngLat([data[data.length - 1][0], data[data.length - 1][1]])
+        if (map.getSource('trace')) {
+          map.getSource('trace').setData({
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: data
+              }
+            }]
+          })
+        }
+      })
     })
-
-    return {
-    }
   }
 }
 </script>

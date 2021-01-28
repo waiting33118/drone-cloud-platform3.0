@@ -166,11 +166,5 @@ export default {
   }
   #myTabContent{
     height: calc((100vh - 58px) / 2 - 43px); // 58px => navbar; 43px => tab
-    >.tab-pane{
-      height: 100%;
-      >.tab-container{
-        height: 100%;
-      }
-    }
   }
 </style>
