@@ -10,7 +10,7 @@ export default {
     commit('saveLog', uselogFormatter(reason))
   },
 
-  setACK ({ commit }, { cmd, cmd_result: result }) {
+  setACK ({ commit }, { cmd, result }) {
     const message = `[ACK] ${cmd} ${result}`
     commit('saveLog', uselogFormatter(message))
   },
@@ -20,7 +20,7 @@ export default {
     commit('saveLog', uselogFormatter(message))
   },
 
-  setMission ({ commit }, { mission_result: result }) {
+  setMission ({ commit }, { result }) {
     const message = `[Mission] ${result}`
     commit('saveLog', uselogFormatter(message))
   },
