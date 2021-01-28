@@ -43,6 +43,14 @@ export default {
     return state.parameters.altitude
   },
 
+  getGimbalY (state) {
+    return state.parameters.gimbalY
+  },
+
+  getGimbalX (state) {
+    return state.parameters.gimbalX
+  },
+
   getTargetGps (state) {
     const coords = {
       lng: state.parameters.targetLongitude,
