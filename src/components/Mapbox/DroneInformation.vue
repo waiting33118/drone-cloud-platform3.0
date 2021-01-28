@@ -2,13 +2,12 @@
   <ul class="drone-info">
     <li>{{ `TimeStamp: ${info.timestamp}` }}</li>
     <li>{{ `Device ID: ${info.deviceId}` }}</li>
-    <li>{{ `Longitude: ${info.longitude}` }}</li>
-    <li>{{ `Latitude: ${info.latitude}` }}</li>
+    <li>{{ `GPS: ${info.longitude} ${info.latitude}` }}</li>
     <li>{{ `Heading: ${info.heading}` }}</li>
     <li>{{ `Altitude: ${info.relativeAltitude}` }}</li>
     <li>{{ `AirSpeed: ${info.airSpeed}` }}</li>
     <li>{{ `FlightMode: ${info.flightMode}` }}</li>
-    <li>{{ `ARM status: ${info.isArmed ? 'ARM' : 'DISARM'}` }}</li>
+    <li>{{ `ARM status: ${info.isArm ? 'ARM' : 'DISARM'}` }}</li>
     <li>{{ `Attitude: Pitch: ${info.pitch} Roll: ${info.roll} Yaw: ${info.yaw}` }}</li>
     <li>{{ `Voltage: ${info.voltage} V` }}</li>
     <li>{{ `Battery%: ${info.percentage} %` }}</li>
@@ -44,12 +43,11 @@ export default {
     position: absolute;
     top: 10px;
     left: 50px;
-    width: 250px;
+    width: 260px;
     z-index: 1;
     list-style:none;
     text-align: left;
     @media screen and (max-width: 992px) {
-      width: 200px;
       height: 100px;
     }
   }
