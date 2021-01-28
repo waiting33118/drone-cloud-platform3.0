@@ -68,6 +68,9 @@ export default {
   height: 100%;
   >.tab-container{
     height: 100%;
+    >div {
+      height: 100%;
+    }
   }
 }
 </style>
