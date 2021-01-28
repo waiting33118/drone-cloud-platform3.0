@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column align-items-center px-2 py-2">
+  <div class="d-flex flex-column align-items-center p-2">
     <label for="inputRange">
       <FontAwesomeIcon :icon="locationArrow" />
       Yaw (Angle)
