@@ -33,12 +33,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.log-container{
-  overflow-y: auto;
-  list-style-type:none;
-}
-li {
-  font-size: 0.9rem;
-  word-break: break-all;
+.tab-pane{
+  height: 100%;
+  >.tab-container{
+    height: 100%;
+    overflow-y: auto;
+    list-style-type:none;
+  }
+  ul {
+    font-size: 0.9Srem;
+    word-break: break-all;
+  }
 }
 </style>
