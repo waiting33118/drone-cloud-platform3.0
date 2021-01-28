@@ -6,42 +6,33 @@
     <div class="tab-container">
       <div class="row g-0 p-2">
         <div class="col-6">
-          <Switch>Arm</Switch>
+          <SwitchArm />
         </div>
 
         <div class="col-6">
-          <Switch>Land</Switch>
+          <SwitchTakeoff />
         </div>
 
         <div class="col-4">
-          <InputNumber>
-            <FontAwesomeIcon :icon="arrowsV" />
-            Altitude
-          </InputNumber>
+          <InputAltitude />
         </div>
 
         <div class="col-4">
-          <InputRange>
-            <FontAwesomeIcon :icon="tachometerAlt" />
-            Speed(m/s)
-          </InputRange>
+          <InputSpeed />
         </div>
 
         <div class="col-4">
-          <InputRange>
-            <FontAwesomeIcon :icon="locationArrow" />
-            Yaw (Angle)
-          </InputRange>
+          <InputYaw />
         </div>
 
         <div class="col-12">
           <!-- Flight mode -->
-          <ButtonGroups />
+          <ButtonFlightMode />
         </div>
 
         <div class="col-12">
           <!-- Target GPS coordinates -->
-          <InputGroups />
+          <InputTargetGps />
         </div>
       </div>
     </div>
@@ -49,34 +40,34 @@
 </template>
 
 <script>
-import Switch from '@/components/ControlPanel/components/Switch.vue'
-import InputNumber from '@/components/ControlPanel/components/InputNumber.vue'
-import InputRange from '@/components/ControlPanel/components/InputRange.vue'
-import ButtonGroups from '@/components/ControlPanel/components/ButtonGroups.vue'
-import InputGroups from '@/components/ControlPanel/components/InputGroups.vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faArrowsAltV, faTachometerAlt, faLocationArrow } from '@fortawesome/free-solid-svg-icons'
-import { computed } from 'vue'
+import SwitchArm from '@/components/ControlPanel/components/SwitchArm.vue'
+import SwitchTakeoff from '@/components/ControlPanel/components/SwitchTakeoff.vue'
+import InputAltitude from '@/components/ControlPanel/components/InputAltitude.vue'
+import InputSpeed from '@/components/ControlPanel/components/InputSpeed.vue'
+import InputYaw from '@/components/ControlPanel/components/InputYaw.vue'
+import ButtonFlightMode from '@/components/ControlPanel/components/ButtonFlightMode.vue'
+import InputTargetGps from '@/components/ControlPanel/components/InputTargetGps.vue'
 export default {
   name: 'TabControl',
   components: {
-    FontAwesomeIcon,
-    Switch,
-    InputNumber,
-    InputRange,
-    ButtonGroups,
-    InputGroups
+    SwitchArm,
+    SwitchTakeoff,
+    InputAltitude,
+    InputSpeed,
+    InputYaw,
+    ButtonFlightMode,
+    InputTargetGps
   },
   setup () {
-    const arrowsV = computed(() => faArrowsAltV)
-    const tachometerAlt = computed(() => faTachometerAlt)
-    const locationArrow = computed(() => faLocationArrow)
-
-    return {
-      arrowsV,
-      tachometerAlt,
-      locationArrow
-    }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.tab-pane{
+  height: 100%;
+  >.tab-container{
+    height: 100%;
+  }
+}
+</style>
