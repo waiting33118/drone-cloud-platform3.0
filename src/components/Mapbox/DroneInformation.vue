@@ -2,7 +2,7 @@
   <ul class="drone-info">
     <li>{{ `TimeStamp: ${info.timestamp}` }}</li>
     <li>{{ `Device ID: ${info.deviceId}` }}</li>
-    <li>{{ `GPS: ${info.longitude} ${info.latitude}` }}</li>
+    <li>{{ `GPS: ${info.longitude} , ${info.latitude}` }}</li>
     <li>{{ `Heading: ${info.heading}` }}</li>
     <li>{{ `Altitude: ${info.relativeAltitude}` }}</li>
     <li>{{ `AirSpeed: ${info.airSpeed}` }}</li>
