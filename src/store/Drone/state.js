@@ -17,7 +17,7 @@ export default {
     gpsCount: '',
     hpop: ''
   },
-  defaultParams: {
+  parameters: {
     altitude: 3,
     speed: 3,
     targetLongitude: '',
