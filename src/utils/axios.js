@@ -1,15 +1,15 @@
 import axios from 'axios'
 
-const server = {
-  local: 'http://localhost:3030/api/v1',
-  cloud: 'https://drone-cloud-295410.df.r.appspot.com/api/v1'
+const SERVER = {
+  LOCAL: 'http://localhost:3030/api/v1',
+  CLOUD: 'https://drone-cloud-295410.df.r.appspot.com/api/v1'
 }
 
 /**
- * custom axios instance
+ * custom axios config
  */
-export const axiosInstance = axios.create({
+export const instance = axios.create({
   baseURL: process.env.NODE_ENV === 'development'
-    ? server.local
-    : server.cloud
+    ? SERVER.LOCAL
+    : SERVER.CLOUD
 })

@@ -2,9 +2,10 @@ import Swal from 'sweetalert2'
 
 /**
  * Show error message
- * @param {string} title alert message
+ * @param {string} title Alert title
+ * @param {string} icon `'error','info','success'`
  */
-export const alert = ({ title, icon = 'error' }) => {
+export const alert = (title, icon = 'error') => {
   Swal.fire({
     title,
     icon,
@@ -21,10 +22,10 @@ export const alert = ({ title, icon = 'error' }) => {
  * @param {number} lng Longitude
  * @param {number} lat Latitude
  */
-export const gotoMissionCheck = (lng, lat) => {
+export const gotoMissionConfirm = (lng, lat) => {
   return Swal.fire({
     title: 'Press "OK" to start Mission!',
-    text: `GOTO: GPS ${lng}, ${lat}`,
+    text: `Go to GPS: ${lng}, ${lat}`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',

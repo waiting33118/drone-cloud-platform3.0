@@ -1,41 +1,31 @@
 <template>
   <div id="map">
-    <DroneInformation :drone-info="prop.droneInfo" />
+    <DroneInformation />
   </div>
 </template>
 
 <script>
-import DroneInformation from '@/components/Mapbox/DroneInformation.vue'
 import mapboxgl from 'mapbox-gl'
-import { getUserLocation } from '../../utils/userLocation'
-import { onMounted, watch } from 'vue'
-import drone from '../../services/drone'
-import { gotoMissionCheck } from '../../utils/sweetAlert'
+import DroneInformation from '@/components/Mapbox/DroneInformation.vue'
+import { goto } from '../../api'
+import { getUserLocation, useGotoMissionConfirm } from '../../utils'
+import { computed, onMounted, watch } from 'vue'
+import { useStore } from 'vuex'
 export default {
   name: 'Mapbox',
   components: {
     DroneInformation
   },
-  props: {
-    droneInfo: {
-      type: Object,
-      default: () => ({})
-    },
-    altitude: {
-      type: Number,
-      default: 3
-    }
-  },
-  emits: ['coordsEmit'],
-  setup (prop, { emit }) {
-    const coordsTmp = []
+  setup () {
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2FpdGluZzMzMTE4IiwiYSI6ImNrZDVlZWp6MjFxcXQyeHF2bW0xenU4YXoifQ.iGfojLdouAjsovJuRxjYVA'
+    const store = useStore()
 
     onMounted(async () => {
       /**
-       * fetch user's GPS coordinates
+       * Get user's GPS coordinates
        */
-      const { coords: { latitude, longitude } } = await getUserLocation()
+      const { longitude, latitude } = await getUserLocation()
+      store.dispatch('Drone/setUserLocation', { longitude, latitude })
 
       /**
        * Create map instance & binding DOM Element
@@ -44,7 +34,7 @@ export default {
         style: 'mapbox://styles/waiting33118/ckdfkx3t10k9w1irkp8anuy39',
         center: [longitude, latitude],
         zoom: 17,
-        pitch: 40,
+        pitch: 0,
         bearing: 0,
         antialias: true,
         container: 'map'
@@ -109,7 +99,7 @@ export default {
             type: 'Feature',
             geometry: {
               type: 'LineString',
-              coordinates: coordsTmp
+              coordinates: computed(() => store.getters['Drone/getTmpCoords'])
             }
           }
         })
@@ -142,12 +132,19 @@ export default {
       map.on('contextmenu', async e => {
         const { lng, lat } = e.lngLat
         const coords = {
-          lng: Number(lng).toFixed(6),
-          lat: Number(lat).toFixed(6)
+          longitude: Number(lng).toFixed(6),
+          latitude: Number(lat).toFixed(6)
         }
-        const { isConfirmed } = await gotoMissionCheck(coords.lng, coords.lat)
-        if (isConfirmed) drone.goto(coords.lng, coords.lat, prop.altitude)
-        emit('coordsEmit', coords)
+        const { isConfirmed } = await useGotoMissionConfirm(coords.longitude, coords.latitude)
+        if (isConfirmed) {
+          store.dispatch('Drone/setTargetLocation', { ...coords })
+          const propsStatus = store.getters['Drone/getDronePropsStatus']
+          if (propsStatus) {
+            const flightAltitude = store.getters['Drone/getCurrentAltitude']
+            goto(lng, lat, flightAltitude)
+          }
+          // TODO: Alert when drone isn't takeoff
+        }
       })
 
       /**
@@ -158,13 +155,12 @@ export default {
         draggable: false
       })
         .setLngLat([longitude, latitude]).addTo(map)
+
       /**
        * Realtime update drone position
        */
-      watch(() => prop.droneInfo.location, newValue => {
-        const { lng, lat } = newValue
-        coordsTmp.push([lng, lat])
-        dronePosition.setLngLat([lng, lat])
+      watch(store.getters['Drone/getTmpCoords'], data => {
+        dronePosition.setLngLat([data[data.length - 1][0], data[data.length - 1][1]])
         if (map.getSource('trace')) {
           map.getSource('trace').setData({
             type: 'FeatureCollection',
@@ -172,17 +168,13 @@ export default {
               type: 'Feature',
               geometry: {
                 type: 'LineString',
-                coordinates: coordsTmp
+                coordinates: data
               }
             }]
           })
         }
       })
     })
-
-    return {
-      prop
-    }
   }
 }
 </script>
