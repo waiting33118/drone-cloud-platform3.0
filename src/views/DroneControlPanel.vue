@@ -21,57 +21,6 @@ export default {
   },
   setup () {
     useSocket()
-    // const droneSource = reactive({ info: {}, apmInfo: [], targetGPS: {}, altitude: 3 })
-    // const socket = startConnections()
-    // socket.on('connect', () => {
-    //   droneSource.apmInfo.unshift(`${new Date().toLocaleString()}-Socket ID:${socket.id} Env:${process.env.NODE_ENV}`)
-    //   console.log(new Date().toLocaleString(), socket.id, process.env.NODE_ENV)
-    // })
-    // /**
-    //  * Recieve mqtt subscribe data
-    //  */
-    // socket.on('message', (data) => {
-    //   const { Drone: drone, Phone: phone } = data
-    //   droneSource.info = { ...drone, ...phone }
-    // })
-    // socket.on('ack', data => {
-    //   const { cmd, cmd_result: result } = data
-    //   const cmdRegex = cmd.slice(cmd.indexOf('=') + 1)
-    //   result.includes('FAILED')
-    //     ? alert({ title: `${cmdRegex} Failed!` })
-    //     : alert({ title: `${cmdRegex} Success!`, icon: 'success' })
-    // })
-    // socket.on('mission', data => {
-    //   const { mission_result: mission } = data
-    //   const messageFormat = mission.slice(mission.indexOf('=') + 1)
-    //   messageFormat.includes('ERROR')
-    //     ? alert({ title: `${messageFormat}` })
-    //     : alert({ title: `${messageFormat}`, icon: 'success' })
-    // })
-    // socket.on('apm', data => {
-    //   const { text } = data
-    //   const textRegexIndex = text.indexOf('=') + 1
-    //   const textRegex = `${new Date().toLocaleString()}-${text.slice(textRegexIndex)}`
-    //   droneSource.apmInfo.unshift(textRegex)
-    // })
-
-    // /**
-    //  * Receive user click position of coordinates
-    //  * @param {object} coords Coordinates
-    //  */
-    // const handleCoordsEmit = coords => { droneSource.targetGPS = { ...coords } }
-
-    // /**
-    //  * Receive user change altitude event
-    //  * @param {string} altitude Altitude
-    //  */
-    // const handleAltitudeEmit = altitude => { droneSource.altitude = Number(altitude) }
-
-    // return {
-    //   droneSource,
-    //   handleCoordsEmit,
-    //   handleAltitudeEmit
-    // }
   }
 }
 </script>
