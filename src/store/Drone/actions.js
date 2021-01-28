@@ -41,6 +41,14 @@ export default {
     commit('setFlightSpeed', speed)
   },
 
+  setGimbalY ({ commit }, pwm) {
+    commit('setGimbalY', pwm)
+  },
+
+  setGimbalX ({ commit }, pwm) {
+    commit('setGimbalX', pwm)
+  },
+
   setDroneInfo ({ commit }, payload) {
     let {
       timestamp,
