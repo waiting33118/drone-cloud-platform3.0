@@ -11,4 +11,16 @@ export const socketInit = () => {
 
   socket.on('connect', () => store.dispatch('Drone/connect', socket.id))
   socket.on('disconnect', reason => store.dispatch('Drone/disconnect', reason))
+  socket.on('message', ({ Drone: drone, Phone: phone }) => {
+    store.dispatch('Drone/setDroneInfo', { ...drone, ...phone })
+  })
+  socket.on('ack', data => {
+    store.dispatch('Drone/setACK', data)
+  })
+  socket.on('mission', data => {
+    store.dispatch('Drone/setMission', data)
+  })
+  socket.on('apm', data => {
+    store.dispatch('Drone/setApm', data)
+  })
 }
