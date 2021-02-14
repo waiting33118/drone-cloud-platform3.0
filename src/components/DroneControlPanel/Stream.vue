@@ -1,20 +1,38 @@
 <template>
-  <!-- autoplay -->
-  <!-- controls -->
   <video
-    loop
+    id="videoEl"
+    autoplay
     muted
-  >
-    <source
-      src="https://i.imgur.com/zQJGZvg.mp4"
-      type="video/mp4"
-    >
-  </video>
+    poster="./../../../public/live-streaming.png"
+  />
 </template>
 
 <script>
+import flvjs from 'flv.js'
+import { onMounted } from 'vue'
 export default {
-  name: 'Stream'
+  name: 'Stream',
+  setup () {
+    onMounted(() => {
+      if (flvjs.isSupported()) {
+        const videoEl = document.querySelector('#videoEl')
+        const flvPlayer = flvjs.createPlayer({
+          type: 'flv',
+          isLive: true,
+          hasAudio: false,
+          hasVideo: true,
+          url: 'http://35.201.182.150:8000/live/test.flv'
+        }, {
+          enableStashBuffer: false,
+          autoCleanupSourceBuffer: true,
+          fixAudioTimestampGap: true
+        })
+        flvPlayer.attachMediaElement(videoEl)
+        flvPlayer.load()
+        flvPlayer.play()
+      }
+    })
+  }
 }
 </script>
 
