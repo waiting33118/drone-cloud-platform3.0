@@ -23,9 +23,9 @@ export default {
           hasVideo: true,
           url: 'http://35.201.182.150:8000/live/test.flv'
         }, {
+          enableWorker: true,
           enableStashBuffer: false,
-          autoCleanupSourceBuffer: true,
-          fixAudioTimestampGap: true
+          stashInitialSize: 128
         })
         flvPlayer.attachMediaElement(videoEl)
         flvPlayer.load()
