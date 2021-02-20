@@ -21,10 +21,11 @@ export default {
           isLive: true,
           hasAudio: false,
           hasVideo: true,
-          url: 'http://35.201.182.150:8000/live/test.flv'
+          url: 'https://35.201.182.150:8443/live/test.flv'
         }, {
-          enableWorker: true,
           enableStashBuffer: false,
+          isLive: true,
+          autoCleanupSourceBuffer: true,
           stashInitialSize: 128
         })
         flvPlayer.attachMediaElement(videoEl)
