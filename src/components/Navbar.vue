@@ -1,63 +1,46 @@
 <template>
-  <nav class="navbar navbar-expand-sm navbar-light bg-light">
-    <div class="container-fluid">
-      <router-link
-        to="/"
-        class="navbar-brand"
+  <div class="container">
+    <router-link
+      class="title-link"
+      to="/dronecontrolpanel"
+    >
+      <h1 class="hidden-xs-only">
+        Drone Cloud Platform
+      </h1>
+    </router-link>
+    <el-menu
+      :default-active="activeIndex"
+      class="el-menu"
+      mode="horizontal"
+      active-text-color="#409EF0"
+    >
+      <el-menu-item
+        index="1"
       >
-        Drone Cloud Platform3.0
-      </router-link>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
+        Control Panel
+      </el-menu-item>
+      <el-menu-item
+        index="2"
       >
-        <span class="navbar-toggler-icon" />
-      </button>
-      <div
-        id="navbarSupportedContent"
-        class="collapse navbar-collapse"
+        Flight Record
+      </el-menu-item>
+      <el-submenu
+        index="3"
       >
-        <ul class="navbar-nav ms-auto mb-2 mb-sm-0">
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              href="#"
-            >Signup</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              aria-current="page"
-              href="#"
-            >SignIn</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              href="#"
-            >Flight Record</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              href="#"
-            >Setting</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              href="#"
-            >SignOut</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+        <template #title>
+          Settings
+        </template>
+        <el-menu-item index="2-1">
+          Account
+        </el-menu-item>
+      </el-submenu>
+      <el-menu-item
+        index="4"
+      >
+        SignIn
+      </el-menu-item>
+    </el-menu>
+  </div>
 </template>
 
 <script>
@@ -65,16 +48,45 @@ export default {
   name: 'Navbar',
   setup () {
     return {
+      activeIndex: '1'
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .nav-item{
-    transition: border-bottom 1s linear;
-    &:hover{
-      border-bottom: 0.5px solid rgb(187, 187, 187);
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-bottom: solid 1px #dcdfe6;
+  > .title-link {
+    text-decoration: none;
+    color: black;
+  }
+  .el-menu-item,
+  .el-submenu {
+    font-size: 0.5rem;
+    padding: 0 10px;
+  }
+  @media screen and (min-width:768px) {
+    justify-content: space-around;
+    >.title-link {
+      font-size: 0.6rem;
+    }
+    .el-menu-item,
+    .el-submenu {
+      font-size: 1rem;
+      padding: 0 20px;
     }
   }
+  @media screen and (min-width:992px) {
+    >.title-link {
+      font-size: 1rem;
+    }
+  }
+}
 </style>
