@@ -1,5 +1,9 @@
 <template>
-  <div class="container-fluid px-0">
+  <div
+    v-loading="fullscreenLoading"
+    element-loading-background="rgba(255, 255, 255)"
+    class="container"
+  >
     <ControlPanel class="control-panel" />
     <Stream class="stream" />
     <Mapbox class="mapbox" />
@@ -11,6 +15,7 @@ import { useSocket } from '../utils'
 import Mapbox from '@/components/DroneControlPanel/Mapbox.vue'
 import ControlPanel from '@/components/DroneControlPanel/ControlPanel.vue'
 import Stream from '@/components/DroneControlPanel/Stream.vue'
+import { onMounted, ref } from 'vue'
 
 export default {
   name: 'DroneControlPanel',
@@ -20,75 +25,62 @@ export default {
     Stream
   },
   setup () {
+    const fullscreenLoading = ref(true)
     useSocket()
+    onMounted(() => {
+      fullscreenLoading.value = false
+    })
+    return {
+      fullscreenLoading
+    }
   }
 }
 </script>
-
 <style lang="scss" scoped>
-.container-fluid{
-  height: calc(100% - 58px);  // 58px = navbar height
-  display: grid;
-  grid-template-columns: repeat(7,minmax(auto,500px));
-  grid-template-rows: repeat(2,minmax(250px,1fr));
-    >.control-panel{
-      grid-column: 1 / 2;
-      grid-row: 1;
-      border: 2px solid gainsboro;
-      overflow: auto;
-    }
-    >.stream{
-      width: 500px;
-      grid-column: 1 / 2;
-      grid-row: 2;
-      border: 2px solid gainsboro;
-    }
-    >.mapbox{
-      grid-column: 2 / 8;
-      grid-row: 1 / span 2;
-      border: 2px solid gainsboro;
-      position: relative;
-    }
-  @media screen and (max-width: 992px) {
-    grid-template-columns: repeat(6,minmax(auto,350px));
-    >.control-panel{
-      grid-column: 1 / 2;
-      grid-row: 1;
-      border: 2px solid gainsboro;
-    }
-    >.stream{
-      width: 450px;
-      grid-column: 1 / 2;
-      grid-row: 2;
-      border: 2px solid gainsboro;
-    }
-    >.mapbox{
-      grid-column: 2 / 7;
-      grid-row: 1 / span 2;
-      border: 2px solid gainsboro;
-      position: relative;
-    }
-  }
-  @media screen and (max-width: 580px) {
+  .container {
+    display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(3,minmax(350px,1fr));
+    grid-template-rows: repeat(3,1fr);
     >.control-panel{
-      grid-column: 1 ;
-      grid-row: 1;
-      border: 2px solid gainsboro;
+      border: 1px solid #dcdfe6;
     }
     >.stream{
-      width: 100%;
-      grid-column: 1 ;
-      grid-row: 2;
-      border: 2px solid gainsboro;
+      border: 1px solid #dcdfe6;
     }
     >.mapbox{
-      grid-column: 1;
-      grid-row: 3;
-      border: 2px solid gainsboro;
+      border: 1px solid #dcdfe6;
       position: relative;
     }
+    @media screen and (min-width:768px) {
+      height: calc(100% - 61px);
+      overflow: hidden;
+      grid-template-columns: repeat(2,50%);
+      grid-template-rows: repeat(2,minmax(calc((100vh - 61px) / 2),1fr));
+      >.control-panel{
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+      }
+      >.stream{
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
+      }
+      >.mapbox{
+        grid-column: 2 / 3;
+        grid-row: 1 / span 3;
+      }
+    }
+    @media screen and (min-width:992px) {
+      grid-template-columns: repeat(5,minmax(auto,calc(100% / 5)));
+      >.control-panel{
+        grid-column: 1 / 3;
+      }
+      >.stream{
+        grid-column: 1 / 3;
+      }
+      >.mapbox{
+        grid-column: 3 / span 6;
+      }
+    }
   }
-}
+
 </style>
