@@ -1,19 +1,15 @@
 <template>
-  <div class="d-flex flex-column align-items-center p-2">
-    <label for="inputAltitude">
-      <FontAwesomeIcon :icon="arrowsV" />
-      Altitude
-    </label>
-    <input
-      id="inputAltitude"
+  <div class="wrapper">
+    <label for="altitude"><FontAwesomeIcon :icon="arrowsV" />Altitude</label>
+    <el-input-number
+      id="altitude"
       v-model="flightStatus"
-      type="number"
-      class="form-control text-center mt-4"
-      min="1"
-      max="100"
-      step="0.5"
-      @change="handleChange"
-    >
+      size="mini"
+      :precision="1"
+      :step="0.5"
+      :min="1"
+      :max="100"
+    />
   </div>
 </template>
 
@@ -50,3 +46,17 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+}
+.el-input-number--mini {
+  @media screen and (max-width:1160px) {
+    width: 95px;
+  }
+}
+
+</style>
