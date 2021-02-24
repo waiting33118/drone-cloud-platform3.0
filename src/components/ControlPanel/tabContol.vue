@@ -1,42 +1,50 @@
 <template>
-  <div
-    id="control"
-    class="tab-pane fade show active"
-  >
-    <div class="tab-container">
-      <div class="row g-0 p-2">
-        <div class="col-6">
-          <SwitchArm />
-        </div>
-
-        <div class="col-6">
-          <SwitchTakeoff />
-        </div>
-
-        <div class="col-4">
-          <InputAltitude />
-        </div>
-
-        <div class="col-4">
-          <InputSpeed />
-        </div>
-
-        <div class="col-4">
-          <InputYaw />
-        </div>
-
-        <div class="col-12">
-          <!-- Flight mode -->
-          <ButtonFlightMode />
-        </div>
-
-        <div class="col-12">
-          <!-- Target GPS coordinates -->
-          <InputTargetGps />
-        </div>
+  <el-row :gutter="15">
+    <el-col :span="12">
+      <div class="grid-content">
+        <SwitchArm />
       </div>
-    </div>
-  </div>
+    </el-col>
+    <el-col :span="12">
+      <div class="grid-content">
+        <SwitchTakeoff />
+      </div>
+    </el-col>
+  </el-row>
+
+  <el-row :gutter="15">
+    <el-col :span="8">
+      <div class="grid-content">
+        <InputAltitude />
+      </div>
+    </el-col>
+    <el-col :span="8">
+      <div class="grid-content">
+        <InputSpeed />
+      </div>
+    </el-col>
+    <el-col :span="8">
+      <div class="grid-content">
+        <InputYaw />
+      </div>
+    </el-col>
+  </el-row>
+
+  <el-row :gutter="15">
+    <el-col :span="24">
+      <div class="grid-content">
+        <ButtonFlightMode />
+      </div>
+    </el-col>
+  </el-row>
+
+  <el-row :gutter="15">
+    <el-col :span="24">
+      <div class="grid-content">
+        <InputTargetGps />
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -62,15 +70,20 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
-.tab-pane{
-  height: 100%;
-  >.tab-container{
-    height: 100%;
-    >div {
-      height: 100%;
-    }
+.el-row {
+  padding: 10px;
+  background-color: #f9fafc;
+  text-align: center;
+  margin-bottom: 5px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+  .grid-content {
+    border-radius: 4px;
+    padding: 10px;
+    background: #d3dce6;
   }
 }
+
 </style>
