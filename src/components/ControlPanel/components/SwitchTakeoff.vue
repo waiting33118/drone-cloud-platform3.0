@@ -1,20 +1,12 @@
 <template>
-  <div class="form-check form-switch d-flex justify-content-center align-items-center m-0 py-2">
-    <input
-      id="switchCheck"
-      v-model="status"
-      class="form-check-input fs-4 me-3"
-      type="checkbox"
-      :disabled="!propsStatus"
-      @click="handleClick"
-    >
-    <label
-      class="form-check-label"
-      for="switchCheck"
-    >
-      {{ labelStatus }}
-    </label>
-  </div>
+  <el-switch
+    v-model="status"
+    :disabled="!propsStatus"
+    active-color="#13ce66"
+    inactive-text="LAND"
+    active-text="TAKEOFF"
+    @change="handleClick"
+  />
 </template>
 
 <script>
@@ -31,14 +23,14 @@ export default {
       get: () => propsStatus.value && flightAltitude.value > 0.1,
       set: value => value
     })
-    const labelStatus = computed(() => status.value ? 'LAND' : 'TAKEOFF')
     const altitude = store.getters['Drone/getCurrentAltitude']
     const handleClick = () => {
       if (status.value) {
         land()
-        store.commit('Drone/setFlightAltitude', 3)
-        store.commit('Drone/setFlightSpeed', 3)
-        store.commit('Drone/setTargetLocation', { longitude: '', latitude: '' })
+        store.dispatch('Drone/setFlightAltitude', 3)
+        store.dispatch('Drone/setFlightSpeed', 3)
+        store.dispatch('Drone/setTargetLocation', { longitude: '', latitude: '' })
+        store.dispatch('Drone/setYaw', 0)
         return
       }
       takeoff(altitude)
@@ -46,7 +38,6 @@ export default {
 
     return {
       propsStatus,
-      labelStatus,
       status,
       handleClick
     }
