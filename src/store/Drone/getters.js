@@ -15,10 +15,6 @@ export default {
     return state.info.relativeAltitude
   },
 
-  getCurrentYaw (state) {
-    return state.info.heading
-  },
-
   getCurrentFlightMode (state) {
     return state.info.flightMode
   },
@@ -33,6 +29,10 @@ export default {
 
   getFlightSpeed (state) {
     return state.parameters.speed
+  },
+
+  getYaw (state) {
+    return state.parameters.yaw
   },
 
   getTmpCoords (state) {
