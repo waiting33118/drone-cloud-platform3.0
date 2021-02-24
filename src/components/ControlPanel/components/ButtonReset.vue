@@ -1,37 +1,34 @@
 <template>
-  <button
-    class="btn btn-primary rounded-pill"
-    @click="handleClick"
-  >
-    Reset
-  </button>
+  <div class="btn-wrapper">
+    <el-tooltip
+      class="item"
+      effect="dark"
+      content="Reset to default position"
+      placement="top"
+    >
+      <el-button
+        type="warning"
+        round
+        @click="handleClick"
+      >
+        Reset
+      </el-button>
+    </el-tooltip>
+  </div>
 </template>
 
 <script>
 import { gimbalControl } from '../../../api'
-import { computed } from 'vue'
 import { useStore } from 'vuex'
 export default {
   name: 'ButtonReset',
   setup () {
     const store = useStore()
-    const gimbalY = computed({
-      get: () => store.getters['Drone/getGimbalY'],
-      set: pwm => {
-        store.dispatch('Drone/setGimbalY', pwm)
-        gimbalControl('GIMBAL_FRONT_BACK', pwm)
-      }
-    })
-    const gimbalX = computed({
-      get: () => store.getters['Drone/getGimbalX'],
-      set: pwm => {
-        store.dispatch('Drone/setGimbalX', pwm)
-        gimbalControl('GIMBAL_LEFT_RIGHT', pwm)
-      }
-    })
     const handleClick = () => {
-      gimbalY.value = 1500
-      gimbalX.value = 1500
+      store.dispatch('Drone/setGimbalY', 1500)
+      store.dispatch('Drone/setGimbalX', 1500)
+      gimbalControl('GIMBAL_LEFT_RIGHT', 1500)
+      gimbalControl('GIMBAL_FRONT_BACK', 1500)
     }
 
     return {
@@ -40,7 +37,16 @@ export default {
   }
 }
 </script>
-
-<style>
+<style lang="scss" scoped>
+.btn-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  >.el-button {
+    width: 150px;
+  }
+}
 
 </style>
