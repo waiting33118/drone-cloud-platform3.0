@@ -1,37 +1,55 @@
 <template>
-  <div
-    id="servo"
-    class="tab-pane fade"
-  >
-    <div class="tab-container">
-      <div class="d-flex flex-column justify-content-evenly p-2">
-        <button
-          class="btn btn-primary p-4 mb-2 fs-5"
-          @click="handleServo('UP')"
-        >
-          SERVO UP
-          <FontAwesomeIcon :icon="box" />
-          <FontAwesomeIcon :icon="arrowUp" />
-        </button>
+  <div class="btn-wrapper">
+    <el-tooltip
+      class="item"
+      effect="dark"
+      content="Servo Up"
+      placement="top"
+    >
+      <el-button
+        type="primary"
+        circle
+        class="btn-servo"
+        @click="handleServo('UP')"
+      >
+        <FontAwesomeIcon :icon="box" />
+        <FontAwesomeIcon :icon="arrowUp" />
+      </el-button>
+    </el-tooltip>
 
-        <button
-          class="btn btn-primary p-4 mb-2 fs-5"
-          @click="handleServo('DOWN')"
-        >
-          SERVO DOWN
-          <FontAwesomeIcon :icon="box" />
-          <FontAwesomeIcon :icon="arrowDown" />
-        </button>
+    <el-tooltip
+      class="item"
+      effect="dark"
+      content="Servo Down"
+      placement="top"
+    >
+      <el-button
+        type="primary"
+        circle
+        class="btn-servo"
+        @click="handleServo('DOWN')"
+      >
+        <FontAwesomeIcon :icon="box" />
+        <FontAwesomeIcon :icon="arrowDown" />
+      </el-button>
+    </el-tooltip>
 
-        <button
-          class="btn btn-primary bg-danger p-4 mb-2 fs-5"
-          @click="handleServo('STOP')"
-        >
-          SERVO STOP
-          <FontAwesomeIcon :icon="stop" />
-        </button>
-      </div>
-    </div>
+    <el-tooltip
+      class="item"
+      effect="dark"
+      content="Servo Stop"
+      placement="top"
+    >
+      <el-button
+        type="danger"
+        circle
+        class="btn-servo"
+        @click="handleServo('STOP')"
+      >
+        <FontAwesomeIcon :icon="box" />
+        <FontAwesomeIcon :icon="stop" />
+      </el-button>
+    </el-tooltip>
   </div>
 </template>
 
@@ -73,13 +91,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.tab-pane{
+.btn-wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+  align-items: center;
   height: 100%;
-  >.tab-container{
-    height: 100%;
-    >div {
-      height: 100%;
-    }
+  background-color: #f9fafc;
+  >.btn-servo {
+    width: 100px;
+    height: 100px;
   }
 }
+
 </style>

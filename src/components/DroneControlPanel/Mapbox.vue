@@ -1,5 +1,9 @@
 <template>
-  <div id="map">
+  <div
+    id="map"
+    v-loading="fullscreenLoading"
+    element-loading-background="rgba(255, 255, 255)"
+  >
     <DroneInformation />
   </div>
 </template>
@@ -9,7 +13,7 @@ import mapboxgl from 'mapbox-gl'
 import DroneInformation from '@/components/Mapbox/DroneInformation.vue'
 import { goto } from '../../api'
 import { getUserLocation, useGotoMissionConfirm } from '../../utils'
-import { computed, onMounted, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 export default {
   name: 'Mapbox',
@@ -17,19 +21,16 @@ export default {
     DroneInformation
   },
   setup () {
+    const fullscreenLoading = ref(true)
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2FpdGluZzMzMTE4IiwiYSI6ImNrZDVlZWp6MjFxcXQyeHF2bW0xenU4YXoifQ.iGfojLdouAjsovJuRxjYVA'
     const store = useStore()
 
     onMounted(async () => {
-      /**
-       * Get user's GPS coordinates
-       */
+      // Get user's GPS coordinates
       const { longitude, latitude } = await getUserLocation()
       store.dispatch('Drone/setUserLocation', { longitude, latitude })
 
-      /**
-       * Create map instance & binding DOM Element
-       */
+      // Create map instance & binding DOM Element
       const map = new mapboxgl.Map({
         style: 'mapbox://styles/waiting33118/ckdfkx3t10k9w1irkp8anuy39',
         center: [longitude, latitude],
@@ -41,9 +42,7 @@ export default {
       })
 
       map.on('load', () => {
-        /**
-        * Get label layer ID
-        */
+        // Get label layer ID
         const layers = map.getStyle().layers
         let labelLayerId
         for (let i = 0; i < layers.length; i++) {
@@ -53,9 +52,7 @@ export default {
           }
         }
 
-        /**
-        * Add 3D building layer
-        */
+        // Add 3D building layer
         map.addLayer(
           {
             id: '3d-buildings',
@@ -90,9 +87,7 @@ export default {
           labelLayerId
         )
 
-        /**
-         * add realtime trace path
-         */
+        // add realtime trace path
         map.addSource('trace', {
           type: 'geojson',
           data: {
@@ -118,17 +113,13 @@ export default {
           }
         })
 
-        /**
-        * Add Control
-        */
+        // Add Control
         map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right')
         map.addControl(new mapboxgl.FullscreenControl(), 'top-left')
         map.addControl(new mapboxgl.ScaleControl({ maxWidth: 200, unit: 'metric' }), 'bottom-right')
       })
 
-      /**
-       * Goto feature
-       */
+      // Goto feature
       map.on('contextmenu', async e => {
         const { lng, lat } = e.lngLat
         const coords = {
@@ -147,21 +138,17 @@ export default {
         }
       })
 
-      /**
-       * add drone position marker
-       */
+      // add drone position marker
       const dronePosition = new mapboxgl.Marker({
         color: 'blue',
         draggable: false
       })
         .setLngLat([longitude, latitude]).addTo(map)
 
-      /**
-       * Realtime update drone position
-       */
+      // Realtime update drone position
       watch(store.getters['Drone/getTmpCoords'], data => {
-        dronePosition.setLngLat([data[data.length - 1][0], data[data.length - 1][1]])
         if (map.getSource('trace')) {
+          dronePosition.setLngLat([data[data.length - 1][0], data[data.length - 1][1]])
           map.getSource('trace').setData({
             type: 'FeatureCollection',
             features: [{
@@ -174,7 +161,14 @@ export default {
           })
         }
       })
+
+      setTimeout(() => {
+        fullscreenLoading.value = false
+      }, 1000)
     })
+    return {
+      fullscreenLoading
+    }
   }
 }
 </script>

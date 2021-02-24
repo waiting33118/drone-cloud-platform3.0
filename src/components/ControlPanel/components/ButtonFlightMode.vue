@@ -1,36 +1,24 @@
 <template>
-  <div class=" d-flex justify-content-center px-2 py-2">
-    <div
-      class="btn-group"
+  <el-button-group
+    class="button-group"
+  >
+    <el-button
+      type="primary"
+      plain
+      class="btn-change-mode"
+      @click="handleClick('GUIDED')"
     >
-      <input
-        id="Guided"
-        type="radio"
-        name="btnradio"
-        class="btn-check"
-        autocomplete="off"
-        :checked="flightMode === 'GUIDED'"
-        @click="handleClick('GUIDED')"
-      >
-      <label
-        for="Guided"
-        class="btn btn-outline-primary"
-      >GUIDED</label>
-      <input
-        id="RTL"
-        type="radio"
-        name="btnradio"
-        class="btn-check"
-        autocomplete="off"
-        :checked="flightMode === 'RTL'"
-        @click="handleClick('RTL')"
-      >
-      <label
-        for="RTL"
-        class="btn btn-outline-primary"
-      >RTL</label>
-    </div>
-  </div>
+      GUIDED
+    </el-button>
+    <el-button
+      type="primary"
+      plain
+      class="btn-change-mode"
+      @click="handleClick('RTL')"
+    >
+      RTL
+    </el-button>
+  </el-button-group>
 </template>
 
 <script>
@@ -53,9 +41,10 @@ export default {
       if (mode === 'GUIDED') changeFlightMode(FLIGHT_MODE.GUIDED)
       if (mode === 'RTL') {
         changeFlightMode(FLIGHT_MODE.RTL)
-        store.commit('Drone/setFlightAltitude', 3)
-        store.commit('Drone/setFlightSpeed', 3)
-        store.commit('Drone/setTargetLocation', { longitude: '', latitude: '' })
+        store.dispatch('Drone/setFlightAltitude', 3)
+        store.dispatch('Drone/setFlightSpeed', 3)
+        store.dispatch('Drone/setTargetLocation', { longitude: '', latitude: '' })
+        store.dispatch('Drone/setYaw', 0)
       }
     }
 
@@ -74,6 +63,15 @@ export default {
 
 <style lang="scss" scoped>
 .btn-outline-primary{
+  width: 200px;
+}
+.button-group {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+.btn-change-mode {
   width: 200px;
 }
 </style>

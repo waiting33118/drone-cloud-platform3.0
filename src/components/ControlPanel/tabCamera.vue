@@ -1,16 +1,15 @@
 <template>
-  <div
-    id="camera"
-    class="tab-pane fade"
-  >
-    <div class="tab-container">
-      <div class="d-flex flex-column justify-content-evenly p-2">
-        <InputGimbalY />
-        <InputGimbalX />
-        <ButtonReset />
-      </div>
-    </div>
-  </div>
+  <el-row>
+    <el-col :span="24">
+      <InputGimbalY />
+    </el-col>
+    <el-col :span="24">
+      <InputGimbalX />
+    </el-col>
+    <el-col :span="24">
+      <ButtonReset />
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -28,15 +27,14 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
-.tab-pane{
+.el-row {
   height: 100%;
-  >.tab-container{
-    height: 100%;
-    >div {
-      height: 100%;
+  background-color: #f9fafc;
+  padding: 10px 45px;
+  margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
     }
-  }
 }
 </style>

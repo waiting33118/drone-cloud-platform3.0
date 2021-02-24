@@ -1,27 +1,14 @@
 <template>
-  <div class="d-flex flex-column align-items-center p-2">
-    <label for="inputRange">
-      <FontAwesomeIcon :icon="locationArrow" />
-      Yaw (Angle)
-    </label>
-
-    <input
-      id="inputRange"
+  <div class="wrapper">
+    <label for="yaw"><FontAwesomeIcon :icon="locationArrow" />Yaw(Angle)</label>
+    <el-slider
+      id="yaw"
       v-model="yawStatus"
-      type="range"
-      class="form-range"
-      min="0"
-      max="359"
-      step="1"
+      input-size="mini"
+      :min="0"
+      :max="359"
       @change="handleChange"
-    >
-    <input
-      v-model="yawStatus"
-      type="text"
-      class="form-control text-center"
-      disabled
-      readonly
-    >
+    />
   </div>
 </template>
 
@@ -37,21 +24,24 @@ export default {
     FontAwesomeIcon
   },
   setup () {
-    const store = useStore()
     const locationArrow = computed(() => faLocationArrow)
-    let tmpYaw = 0
+    const store = useStore()
     const yawStatus = computed({
-      get: () => store.getters['Drone/getCurrentYaw'],
-      set: yaw => { tmpYaw = Number(yaw) }
+      get: () => store.getters['Drone/getYaw'],
+      set: angle => store.dispatch('Drone/setYaw', angle)
     })
-
-    const handleChange = () => changeYaw(tmpYaw)
+    const handleChange = () => changeYaw(yawStatus.value)
 
     return {
       locationArrow,
-      yawStatus,
-      handleChange
+      handleChange,
+      yawStatus
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.wrapper {
+  padding: 0 10px;
+}
+</style>

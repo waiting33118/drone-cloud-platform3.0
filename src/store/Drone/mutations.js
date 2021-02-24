@@ -21,6 +21,10 @@ export default {
     state.parameters.speed = speed
   },
 
+  setYaw (state, yaw) {
+    state.parameters.yaw = yaw
+  },
+
   setDroneInfo (state, payload) {
     state.info = { ...payload }
   },

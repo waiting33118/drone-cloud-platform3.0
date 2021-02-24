@@ -41,6 +41,10 @@ export default {
     commit('setFlightSpeed', speed)
   },
 
+  setYaw ({ commit }, yaw) {
+    commit('setYaw', yaw)
+  },
+
   setGimbalY ({ commit }, pwm) {
     commit('setGimbalY', pwm)
   },
@@ -50,40 +54,38 @@ export default {
   },
 
   setDroneInfo ({ commit }, payload) {
-    let {
-      timestamp,
+    const {
+      timestamp = '',
       attitude: {
-        pitch,
-        roll,
-        yaw
+        pitch = '',
+        roll = '',
+        yaw = ''
       },
       battery: {
-        percentage,
-        voltage
+        percentage = '',
+        voltage = ''
       },
-      device_id: deviceId,
+      device_id: deviceId = '',
       gps_status: {
-        gps_count: gpsCount,
-        hpop
+        gps_count: gpsCount = '',
+        hpop = ''
       },
       heartbeat: {
-        flight_mode: flightMode,
+        flight_mode: flightMode = '',
         is_armed: isArm
       },
       location: {
-        heading,
-        lng: longitude,
-        lat: latitude,
-        relative_alt: relativeAltitude
+        heading = '',
+        lng: longitude = '',
+        lat: latitude = '',
+        relative_alt: relativeAltitude = ''
       },
       speed: {
-        air_speed: airSpeed
+        air_speed: airSpeed = ''
       }
     } = payload
 
-    isArm = isArm !== '0'
-
-    commit('setDroneInfo', {
+    const checkedPayload = {
       timestamp,
       deviceId,
       longitude,
@@ -92,7 +94,7 @@ export default {
       relativeAltitude,
       airSpeed,
       flightMode,
-      isArm,
+      isArm: !(isArm === 'null' || isArm === '0'),
       pitch,
       roll,
       yaw,
@@ -100,7 +102,9 @@ export default {
       percentage,
       gpsCount,
       hpop
-    })
+    }
+
+    commit('setDroneInfo', checkedPayload)
 
     commit('setTmpCoords', { longitude, latitude })
   }

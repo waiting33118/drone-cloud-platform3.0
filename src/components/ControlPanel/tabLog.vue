@@ -1,19 +1,12 @@
 <template>
-  <div
-    id="log"
-    class="tab-pane fade"
-  >
-    <div class="tab-container">
-      <ul class="log-container p-2">
-        <li
-          v-for="log in logs"
-          :key="log"
-        >
-          {{ log }}
-        </li>
-      </ul>
-    </div>
-  </div>
+  <ul class="log-wrapper">
+    <li
+      v-for="log in logs"
+      :key="log"
+    >
+      {{ log }}
+    </li>
+  </ul>
 </template>
 
 <script>
@@ -33,16 +26,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tab-pane{
+.log-wrapper{
   height: 100%;
-  >.tab-container{
-    height: 100%;
-    overflow-y: auto;
-    list-style-type:none;
-  }
-  ul {
-    font-size: 0.9Srem;
-    word-break: break-all;
-  }
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0;
+  list-style-type: '\276F';
+  padding-inline-start: 20px;
+  line-height: 1.6rem;
+  background-color: #f9fafc;
 }
 </style>

@@ -1,26 +1,14 @@
 <template>
-  <div class="d-flex flex-column align-items-center p-2">
-    <label for="inputRange">
-      <FontAwesomeIcon :icon="tachometerAlt" />
-      Speed(m/s)
-    </label>
-
-    <input
-      id="inputRange"
+  <div class="wrapper">
+    <label for="speed"><FontAwesomeIcon :icon="tachometerAlt" /> Speed(m/s)</label>
+    <el-slider
+      id="speed"
       v-model="speedStatus"
-      type="range"
-      class="form-range"
-      min="1"
-      max="14"
+      input-size="mini"
+      :min="1"
+      :max="14"
       @change="handleChange"
-    >
-    <input
-      v-model="speedStatus"
-      type="text"
-      class="form-control text-center"
-      disabled
-      readonly
-    >
+    />
   </div>
 </template>
 
@@ -51,3 +39,8 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.wrapper {
+  padding: 0 10px;
+}
+</style>
