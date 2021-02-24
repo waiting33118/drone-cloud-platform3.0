@@ -20,6 +20,7 @@ export default {
   parameters: {
     altitude: 3,
     speed: 3,
+    yaw: 0,
     gimbalY: 1500,
     gimbalX: 1500,
     targetLongitude: '',
