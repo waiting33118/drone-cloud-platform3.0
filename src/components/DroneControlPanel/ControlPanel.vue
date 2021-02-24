@@ -1,53 +1,37 @@
 <template>
-  <div>
-    <ul
-      id="myTab"
-      class="nav nav-tabs"
+  <el-tabs
+    v-model="activeName"
+    :stretch="true"
+  >
+    <el-tab-pane
+      label="Control"
+      name="control"
+      class="tab-container"
     >
-      <li class="nav-item">
-        <a
-          id="home-tab"
-          class="nav-link active"
-          href="#control"
-          data-bs-toggle="tab"
-        >Control</a>
-      </li>
-      <li class="nav-item">
-        <a
-          id="profile-tab"
-          class="nav-link"
-          href="#servo"
-          data-bs-toggle="tab"
-        >Servo</a>
-      </li>
-      <li class="nav-item">
-        <a
-          id="contact-tab"
-          class="nav-link"
-          href="#camera"
-          data-bs-toggle="tab"
-        >Camera</a>
-      </li>
-      <li class="nav-item">
-        <a
-          id="contact-tab"
-          class="nav-link"
-          href="#log"
-          data-bs-toggle="tab"
-        >Log</a>
-      </li>
-    </ul>
-    <div
-      id="myTabContent"
-      class="tab-content"
-    >
-      <!-- Tab Containers -->
       <TabControl />
+    </el-tab-pane>
+    <el-tab-pane
+      label="Servo"
+      name="servo"
+      class="tab-container"
+    >
       <TabServo />
+    </el-tab-pane>
+    <el-tab-pane
+      label="Camera"
+      name="camera"
+      class="tab-container"
+    >
       <TabCamera />
+    </el-tab-pane>
+    <el-tab-pane
+      label="Log"
+      name="log"
+      class="tab-container"
+    >
       <TabLog />
-    </div>
-  </div>
+    </el-tab-pane>
+  </el-tabs>
 </template>
 
 <script>
@@ -64,19 +48,20 @@ export default {
     TabLog
   },
   setup () {
+    return {
+      activeName: 'control'
+    }
   }
 }
 </script>
-
 <style lang="scss" scoped>
-  #myTab{
-    height: 43px;
-    >li >.active{
-      background-color: #048eff;
-      color: white;
-    }
+.tab-container {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  @media screen and (min-width:768px) {
+    height: calc(((100vh - 61px) / 2) - 55px);
   }
-  #myTabContent{
-    height: calc((100vh - 58px) / 2 - 43px); // 58px => navbar; 43px => tab
-  }
+}
 </style>
