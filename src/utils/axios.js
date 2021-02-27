@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const SERVER = {
   LOCAL: 'http://localhost:3030/api/v1',
-  CLOUD: 'https://drone-cloud-295410.df.r.appspot.com/api/v1'
+  CLOUD: 'https://drone-cloud-platform-backend-6zwa3npg7q-de.a.run.app/api/v1'
 }
 
 /**

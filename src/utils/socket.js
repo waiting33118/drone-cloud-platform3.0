@@ -5,7 +5,7 @@ import { useMessageParse } from '.'
 export const socketInit = () => {
   const DOMAIN = process.env.NODE_ENV === 'development'
     ? 'http://127.0.0.1:3030'
-    : 'https://drone-cloud-295410.df.r.appspot.com'
+    : 'https://drone-cloud-platform-backend-6zwa3npg7q-de.a.run.app'
 
   const socket = io(DOMAIN)
   const store = useStore()
