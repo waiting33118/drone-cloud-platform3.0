@@ -22,9 +22,9 @@
 </template>
 
 <script>
-import { changeFlightMode } from '../../../api'
-import { computed, watch } from 'vue'
+import { drone } from '../../../api'
 import { useStore } from 'vuex'
+import { computed, watchEffect } from '@vue/runtime-core'
 export default {
   name: 'ButtonFlightMode',
   setup () {
@@ -38,9 +38,9 @@ export default {
     const altitude = computed(() => store.getters['Drone/getFlightAltitude'])
 
     const handleClick = (mode) => {
-      if (mode === 'GUIDED') changeFlightMode(FLIGHT_MODE.GUIDED)
+      if (mode === 'GUIDED') drone.changeFlightMode(FLIGHT_MODE.GUIDED)
       if (mode === 'RTL') {
-        changeFlightMode(FLIGHT_MODE.RTL)
+        drone.changeFlightMode(FLIGHT_MODE.RTL)
         store.dispatch('Drone/setFlightAltitude', 3)
         store.dispatch('Drone/setFlightSpeed', 3)
         store.dispatch('Drone/setTargetLocation', { longitude: '', latitude: '' })
@@ -48,9 +48,9 @@ export default {
       }
     }
 
-    watch(() => store.getters['Drone/getCurrentFlightMode'], () => {
+    watchEffect(() => store.getters['Drone/getCurrentFlightMode'], () => {
       if (flightMode.value !== 'GUIDED' && propsStatus.value === false && altitude.value < 0.1) {
-        changeFlightMode(FLIGHT_MODE.GUIDED)
+        drone.changeFlightMode(FLIGHT_MODE.GUIDED)
       }
     }, { deep: true })
     return {

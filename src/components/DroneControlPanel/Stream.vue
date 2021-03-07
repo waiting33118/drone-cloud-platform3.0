@@ -9,7 +9,7 @@
 
 <script>
 import flvjs from 'flv.js'
-import { onMounted } from 'vue'
+import { onMounted } from '@vue/runtime-core'
 export default {
   name: 'Stream',
   setup () {

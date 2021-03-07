@@ -54,10 +54,10 @@
 </template>
 
 <script>
-import { servoControl } from '../../api'
+import { drone } from '../../api'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faBox, faArrowUp, faArrowDown, faStopCircle } from '@fortawesome/free-solid-svg-icons'
-import { computed } from 'vue'
+import { computed } from '@vue/runtime-core'
 export default {
   name: 'TabServo',
   components: {
@@ -75,9 +75,9 @@ export default {
     const stop = computed(() => faStopCircle)
 
     const handleServo = (action) => {
-      if (action === 'UP') servoControl(SERVO_ACTION.UP)
-      if (action === 'DOWN') servoControl(SERVO_ACTION.DOWN)
-      if (action === 'STOP') servoControl(SERVO_ACTION.STOP)
+      if (action === 'UP') drone.servoControl(SERVO_ACTION.UP)
+      if (action === 'DOWN') drone.servoControl(SERVO_ACTION.DOWN)
+      if (action === 'STOP') drone.servoControl(SERVO_ACTION.STOP)
     }
 
     return {

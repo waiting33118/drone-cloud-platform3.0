@@ -15,7 +15,7 @@ import { useSocket } from '../utils'
 import Mapbox from '@/components/DroneControlPanel/Mapbox.vue'
 import ControlPanel from '@/components/DroneControlPanel/ControlPanel.vue'
 import Stream from '@/components/DroneControlPanel/Stream.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref } from '@vue/runtime-core'
 
 export default {
   name: 'DroneControlPanel',
