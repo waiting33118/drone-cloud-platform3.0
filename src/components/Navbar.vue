@@ -13,9 +13,10 @@
       class="el-menu"
       mode="horizontal"
       active-text-color="#409EF0"
+      :router="true"
     >
       <el-menu-item
-        index="1"
+        index="dronecontrolpanel"
       >
         Control Panel
       </el-menu-item>
@@ -35,7 +36,7 @@
         </el-menu-item>
       </el-submenu>
       <el-menu-item
-        index="4"
+        index="signin"
       >
         SignIn
       </el-menu-item>
@@ -48,7 +49,7 @@ export default {
   name: 'Navbar',
   setup () {
     return {
-      activeIndex: '1'
+      activeIndex: 'dronecontrolpanel'
     }
   }
 }
