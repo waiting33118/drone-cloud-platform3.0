@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import Drone from './Drone'
+import User from './User'
 
 export default createStore({
   state: {
@@ -11,6 +12,7 @@ export default createStore({
   getters: {
   },
   modules: {
-    Drone
+    Drone,
+    User
   }
 })
