@@ -2,7 +2,7 @@
   <div class="container">
     <router-link
       class="title-link"
-      to="/dronecontrolpanel"
+      to="/"
     >
       <h1 class="hidden-xs-only">
         Drone Cloud Platform
@@ -16,40 +16,81 @@
       :router="true"
     >
       <el-menu-item
+        v-if="isSignIn"
         index="dronecontrolpanel"
       >
         Control Panel
       </el-menu-item>
       <el-menu-item
-        index="2"
+        v-if="isSignIn"
+        index="flightrecord"
       >
         Flight Record
       </el-menu-item>
       <el-submenu
-        index="3"
+        v-if="isSignIn"
+        index="/"
       >
         <template #title>
           Settings
         </template>
-        <el-menu-item index="2-1">
+        <el-menu-item index="account">
           Account
+        </el-menu-item>
+        <el-menu-item
+          index="/"
+          @click="handleSignOut"
+        >
+          Sign Out
         </el-menu-item>
       </el-submenu>
       <el-menu-item
+        v-if="!isSignIn"
         index="signin"
       >
-        SignIn
+        Sign In
+      </el-menu-item>
+      <el-menu-item
+        v-if="!isSignIn"
+        index="signup"
+      >
+        Sign Up
       </el-menu-item>
     </el-menu>
   </div>
 </template>
 
 <script>
+import { computed, watch } from '@vue/runtime-core'
+import { ref } from '@vue/reactivity'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import { auth } from '../api'
 export default {
   name: 'Navbar',
   setup () {
+    const store = useStore()
+    const route = useRoute()
+    const activeIndex = ref('')
+    const routerList = ['dronecontrolpanel', 'flightrecord', 'account', 'signin', 'signup']
+    const isSignIn = computed(() => store.getters['User/checkAuth'])
+
+    // handle navbar active link
+    watch(() => route.name, newRouterName => {
+      const currentLink = newRouterName.toLowerCase()
+      if (routerList.includes(currentLink)) {
+        activeIndex.value = currentLink
+        return
+      }
+      activeIndex.value = ''
+    })
+
+    const handleSignOut = () => auth.signOut()
+
     return {
-      activeIndex: 'dronecontrolpanel'
+      activeIndex,
+      isSignIn,
+      handleSignOut
     }
   }
 }
