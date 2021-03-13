@@ -24,7 +24,7 @@
 <script>
 import { drone } from '../../../api'
 import { useStore } from 'vuex'
-import { computed, watchEffect } from '@vue/runtime-core'
+import { computed, watch } from '@vue/runtime-core'
 export default {
   name: 'ButtonFlightMode',
   setup () {
@@ -48,7 +48,7 @@ export default {
       }
     }
 
-    watchEffect(() => store.getters['Drone/getCurrentFlightMode'], () => {
+    watch(() => store.getters['Drone/getCurrentFlightMode'], () => {
       if (flightMode.value !== 'GUIDED' && propsStatus.value === false && altitude.value < 0.1) {
         drone.changeFlightMode(FLIGHT_MODE.GUIDED)
       }
