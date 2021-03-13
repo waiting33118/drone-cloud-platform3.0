@@ -6,9 +6,9 @@ export default {
  */
   async arm () {
     try {
-      await customAxios.post('/arm')
+      await customAxios.post('/drone/arm')
     } catch (error) {
-      console.error(error.response)
+      console.error(error)
     }
   },
 
@@ -17,9 +17,9 @@ export default {
  */
   async disarm () {
     try {
-      await customAxios.post('/disarm')
+      await customAxios.post('/drone/disarm')
     } catch (error) {
-      console.error(error.response)
+      console.error(error)
     }
   },
 
@@ -29,9 +29,9 @@ export default {
  */
   async takeoff (altitude) {
     try {
-      await customAxios.post('/takeoff', { altitude })
+      await customAxios.post('/drone/takeoff', { altitude })
     } catch (error) {
-      console.error(error.response)
+      console.error(error)
     }
   },
 
@@ -40,9 +40,9 @@ export default {
  */
   async land () {
     try {
-      await customAxios.post('land')
+      await customAxios.post('/drone/land')
     } catch (error) {
-      console.error(error.response)
+      console.error(error)
     }
   },
 
@@ -55,9 +55,9 @@ export default {
  */
   async goto (lng, lat, altitude) {
     try {
-      await customAxios.post('/goto', { lng, lat, altitude })
+      await customAxios.post('/drone/goto', { lng, lat, altitude })
     } catch (error) {
-      console.log(error.response)
+      console.log(error)
     }
   },
 
@@ -67,9 +67,9 @@ export default {
  */
   async changeSpeed (speed) {
     try {
-      await customAxios.post('/changespeed', { speed })
+      await customAxios.post('/drone/changespeed', { speed })
     } catch (error) {
-      console.log(error.response)
+      console.log(error)
     }
   },
 
@@ -79,9 +79,9 @@ export default {
  */
   async changeYaw (angle) {
     try {
-      await customAxios.post('/changeyaw', { angle })
+      await customAxios.post('/drone/changeyaw', { angle })
     } catch (error) {
-      console.log(error.response)
+      console.log(error)
     }
   },
 
@@ -91,9 +91,9 @@ export default {
  */
   async changeFlightMode (mode) {
     try {
-      await customAxios.post('/changeflightmode', { mode })
+      await customAxios.post('/drone/changeflightmode', { mode })
     } catch (error) {
-      console.log(error.response)
+      console.log(error)
     }
   },
 
@@ -103,9 +103,9 @@ export default {
  */
   async servoControl (action) {
     try {
-      await customAxios.post('/servocontrol', { action })
+      await customAxios.post('/drone/servocontrol', { action })
     } catch (error) {
-      console.log(error.response)
+      console.log(error)
     }
   },
 
@@ -116,9 +116,9 @@ export default {
  */
   async gimbalControl (cmd, pwm) {
     try {
-      await customAxios.post('/gimbalcontrol', { cmd, pwm })
+      await customAxios.post('/drone/gimbalcontrol', { cmd, pwm })
     } catch (error) {
-      console.log(error.response)
+      console.log(error)
     }
   }
 }
