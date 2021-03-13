@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import { arm, disarm } from '../../../api'
-import { computed } from 'vue'
+import { drone } from '../../../api'
 import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core'
 export default {
   name: 'SwitchArm',
   setup () {
@@ -20,7 +20,7 @@ export default {
       get: () => store.getters['Drone/getDronePropsStatus'],
       set: value => value
     })
-    const handleClick = () => propsStatus.value ? disarm() : arm()
+    const handleClick = () => propsStatus.value ? drone.disarm() : drone.arm()
     return {
       propsStatus,
       handleClick

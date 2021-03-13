@@ -11,10 +11,11 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 import DroneInformation from '@/components/Mapbox/DroneInformation.vue'
-import { goto } from '../../api'
+import { drone } from '../../api'
 import { getUserLocation, useGotoMissionConfirm } from '../../utils'
-import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { ref } from '@vue/reactivity'
+import { computed, onMounted, watch } from '@vue/runtime-core'
 export default {
   name: 'Mapbox',
   components: {
@@ -132,7 +133,7 @@ export default {
           const propsStatus = store.getters['Drone/getDronePropsStatus']
           if (propsStatus) {
             const flightAltitude = store.getters['Drone/getCurrentAltitude']
-            goto(lng, lat, flightAltitude)
+            drone.goto(lng, lat, flightAltitude)
           }
           // TODO: Alert when drone isn't takeoff
         }

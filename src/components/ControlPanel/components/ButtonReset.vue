@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { gimbalControl } from '../../../api'
+import { drone } from '../../../api'
 import { useStore } from 'vuex'
 export default {
   name: 'ButtonReset',
@@ -27,8 +27,8 @@ export default {
     const handleClick = () => {
       store.dispatch('Drone/setGimbalY', 1500)
       store.dispatch('Drone/setGimbalX', 1500)
-      gimbalControl('GIMBAL_LEFT_RIGHT', 1500)
-      gimbalControl('GIMBAL_FRONT_BACK', 1500)
+      drone.gimbalControl('GIMBAL_LEFT_RIGHT', 1500)
+      drone.gimbalControl('GIMBAL_FRONT_BACK', 1500)
     }
 
     return {

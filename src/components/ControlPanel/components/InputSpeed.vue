@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import { changeSpeed } from '../../../api'
+import { drone } from '../../../api'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faTachometerAlt } from '@fortawesome/free-solid-svg-icons'
-import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core'
 export default {
   name: 'InputSpeed',
   components: {
@@ -30,7 +30,7 @@ export default {
       get: () => store.getters['Drone/getFlightSpeed'],
       set: speed => store.dispatch('Drone/setFlightSpeed', Number(speed))
     })
-    const handleChange = () => changeSpeed(speedStatus.value)
+    const handleChange = () => drone.changeSpeed(speedStatus.value)
     return {
       tachometerAlt,
       speedStatus,

@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import { takeoff, land } from '../../../api'
-import { computed } from 'vue'
+import { drone } from '../../../api'
 import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core'
 export default {
   name: 'SwitchTakeoff',
   setup () {
@@ -26,14 +26,14 @@ export default {
     const altitude = store.getters['Drone/getCurrentAltitude']
     const handleClick = () => {
       if (status.value) {
-        land()
+        drone.land()
         store.dispatch('Drone/setFlightAltitude', 3)
         store.dispatch('Drone/setFlightSpeed', 3)
         store.dispatch('Drone/setTargetLocation', { longitude: '', latitude: '' })
         store.dispatch('Drone/setYaw', 0)
         return
       }
-      takeoff(altitude)
+      drone.takeoff(altitude)
     }
 
     return {

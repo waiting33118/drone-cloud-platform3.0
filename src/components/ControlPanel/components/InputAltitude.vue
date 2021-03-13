@@ -14,11 +14,11 @@
 </template>
 
 <script>
-import { goto } from '../../../api'
+import { drone } from '../../../api'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faArrowsAltV } from '@fortawesome/free-solid-svg-icons'
-import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core'
 
 export default {
   name: 'InputAltitude',
@@ -33,10 +33,10 @@ export default {
       set: altitude => {
         store.dispatch('Drone/setFlightAltitude', altitude)
         const { lng, lat } = store.getters['Drone/getTargetGps']
-        if (lng && lat) return goto(lng, lat, altitude)
+        if (lng && lat) return drone.goto(lng, lat, altitude)
         // Use current gps coords if default's target gps haven't set yet
         const { lng: currentLng, lat: currentLat } = store.getters['Drone/getCurrentGps']
-        goto(currentLng, currentLat, altitude)
+        drone.goto(currentLng, currentLat, altitude)
       }
     })
     return {
