@@ -9,7 +9,7 @@
 
 <script>
 import flvjs from 'flv.js'
-import { onMounted } from '@vue/runtime-core'
+import { onMounted, onUnmounted } from '@vue/runtime-core'
 export default {
   name: 'Stream',
   setup () {
@@ -30,10 +30,18 @@ export default {
         })
         flvPlayer.attachMediaElement(videoEl)
         flvPlayer.load()
-        flvPlayer.play()
+        const playPromise = flvPlayer.play()
+
+        onUnmounted(() => {
+          playPromise.then(_ => {
+            flvPlayer.pause()
+            flvPlayer.destroy()
+          }).catch(error => console.log(error))
+        })
       }
     })
   }
+
 }
 </script>
 
