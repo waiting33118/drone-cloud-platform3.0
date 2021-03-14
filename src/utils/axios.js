@@ -38,6 +38,8 @@ instance.interceptors.response.use(response => {
     case 706:
     case 707:
     case 708:
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
       router.push({ path: '/signin' })
       return
     case 704: {
