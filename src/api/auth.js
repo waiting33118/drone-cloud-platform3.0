@@ -33,5 +33,6 @@ export default {
   async refreshAccessToken (refreshToken) {
     const { accessToken } = await customAxios.post('/auth/refreshtoken', { refreshToken })
     localStorage.setItem('accessToken', accessToken)
+    store.dispatch('User/fetchUserInfo')
   }
 }
