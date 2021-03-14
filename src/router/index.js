@@ -61,7 +61,7 @@ router.beforeEach(async (to, from) => {
   }
 
   /*
-   * Whitelist
+   * Router whitelist
    */
   const whiteList = ['/', '/signin']
   if (whiteList.includes(to.path)) {
