@@ -45,9 +45,11 @@ instance.interceptors.response.use(response => {
     case 704: {
       const refreshToken = localStorage.getItem('refreshToken')
       auth.refreshAccessToken(refreshToken)
+      return
     }
+    default:
+      return err.response.data
   }
-  return err.response.data
 })
 
 export default instance
