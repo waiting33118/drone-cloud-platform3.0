@@ -1,5 +1,7 @@
 <template>
   <div
+    v-loading="fullscreenLoading"
+    element-loading-background="rgba(255, 255, 255)"
     class="intro"
     alt="intro-image"
   >
@@ -9,18 +11,32 @@
     <router-link to="/dronecontrolpanel">
       <el-button
         type="primary"
-        class="get-start"
+        class="button"
         round
       >
-        Get Start
+        <span class="button__text">
+          Get Start
+        </span>
       </el-button>
     </router-link>
   </div>
 </template>
 
 <script>
+import { onMounted, ref } from '@vue/runtime-core'
 export default {
-  name: 'Intro'
+  name: 'Intro',
+  setup () {
+    const fullscreenLoading = ref(true)
+    onMounted(() => {
+      setTimeout(() => {
+        fullscreenLoading.value = false
+      }, 1000)
+    })
+    return {
+      fullscreenLoading
+    }
+  }
 }
 </script>
 
@@ -65,14 +81,22 @@ export default {
       font-weight:1400;
     }
   }
-  .get-start{
+  .button{
     position: absolute;
     bottom: 15%;
     left: 50%;
     transform: translateX(-50%);
-    @media screen and (min-width: 1024px) {
-      width: 250px;
-      height: 60px;
+    .button__text {
+      font-size: 1rem;
+      font-weight: 500;
+      @media screen and (min-width: 768px) {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      @media screen and (min-width:992px) {
+        font-size: 2rem;
+        font-weight: 900;
+      }
     }
   }
 }
