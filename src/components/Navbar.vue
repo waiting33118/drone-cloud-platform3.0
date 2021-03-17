@@ -1,16 +1,23 @@
 <template>
   <div class="container">
+    <!-- Trademark & Logo -->
     <router-link
-      class="title-link"
+      class="logo-wrapper"
       to="/"
     >
-      <h1 class="hidden-xs-only">
+      <img
+        width="40"
+        height="40"
+        src="../../public/drone.svg"
+        alt="logo"
+        class="logo"
+      >
+      <span class="trademark hidden-xs-only">
         Drone Cloud Platform
-      </h1>
+      </span>
     </router-link>
     <el-menu
       :default-active="activeIndex"
-      class="el-menu"
       mode="horizontal"
       active-text-color="#409EF0"
       :router="true"
@@ -31,7 +38,9 @@
         v-if="isSignIn"
         index="/"
       >
-        <template #title>
+        <template
+          #title
+        >
           Settings
         </template>
         <el-menu-item index="account">
@@ -101,33 +110,40 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-flow: row nowrap;
+  justify-content: space-around;
   align-items: center;
   border-bottom: solid 1px #dcdfe6;
-  > .title-link {
+  > .logo-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
     text-decoration: none;
-    color: black;
+    > .trademark {
+      color: rgba(35, 133, 224, 0.8);
+      filter: drop-shadow(0 0 8px rgba(133, 222, 238, 0.5));
+      &:hover {
+        color: rgba(35, 133, 224, 1);
+      }
+    }
   }
-  .el-menu-item,
-  .el-submenu {
-    font-size: 0.5rem;
+  .el-menu-item {
+    font-size: 14px;
     padding: 0 10px;
   }
+  .el-submenu {
+    padding: 0;
+  }
   @media screen and (min-width:768px) {
-    justify-content: space-around;
-    >.title-link {
-      font-size: 0.6rem;
-    }
-    .el-menu-item,
-    .el-submenu {
-      font-size: 1rem;
-      padding: 0 20px;
+    .trademark {
+      font-weight: 800;
+      font-size: 1.5rem;
     }
   }
   @media screen and (min-width:992px) {
-    >.title-link {
-      font-size: 1rem;
+    .trademark {
+      font-weight: 1000;
+      font-size: 1.8rem;
     }
   }
 }
