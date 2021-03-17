@@ -25,6 +25,7 @@ export default {
     const fullscreenLoading = ref(true)
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2FpdGluZzMzMTE4IiwiYSI6ImNrZDVlZWp6MjFxcXQyeHF2bW0xenU4YXoifQ.iGfojLdouAjsovJuRxjYVA'
     const store = useStore()
+    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
 
     onMounted(async () => {
       // Get user's GPS coordinates
@@ -35,7 +36,7 @@ export default {
       const map = new mapboxgl.Map({
         style: 'mapbox://styles/waiting33118/ckdfkx3t10k9w1irkp8anuy39',
         center: [longitude, latitude],
-        zoom: 17,
+        zoom: 16,
         pitch: 0,
         bearing: 0,
         antialias: true,
@@ -133,9 +134,8 @@ export default {
           const propsStatus = store.getters['Drone/getDronePropsStatus']
           if (propsStatus) {
             const flightAltitude = store.getters['Drone/getCurrentAltitude']
-            drone.goto(lng, lat, flightAltitude)
+            drone.goto(droneIdAndName.value.droneId, lng, lat, flightAltitude)
           }
-          // TODO: Alert when drone isn't takeoff
         }
       })
 

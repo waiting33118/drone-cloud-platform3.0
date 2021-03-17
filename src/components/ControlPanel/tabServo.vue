@@ -58,26 +58,29 @@ import { drone } from '../../api'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faBox, faArrowUp, faArrowDown, faStopCircle } from '@fortawesome/free-solid-svg-icons'
 import { computed } from '@vue/runtime-core'
+import { useStore } from 'vuex'
 export default {
   name: 'TabServo',
   components: {
     FontAwesomeIcon
   },
   setup () {
-    const SERVO_ACTION = {
+    const SERVO_ACTIONS = {
       UP: 'SERVO_UP',
       DOWN: 'SERVO_DOWN',
       STOP: 'SERVO_STOP'
     }
+    const store = useStore()
     const box = computed(() => faBox)
     const arrowUp = computed(() => faArrowUp)
     const arrowDown = computed(() => faArrowDown)
     const stop = computed(() => faStopCircle)
+    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
 
     const handleServo = (action) => {
-      if (action === 'UP') drone.servoControl(SERVO_ACTION.UP)
-      if (action === 'DOWN') drone.servoControl(SERVO_ACTION.DOWN)
-      if (action === 'STOP') drone.servoControl(SERVO_ACTION.STOP)
+      if (action === 'UP') drone.servoControl(droneIdAndName.value.droneId, SERVO_ACTIONS.UP)
+      if (action === 'DOWN') drone.servoControl(droneIdAndName.value.droneId, SERVO_ACTIONS.DOWN)
+      if (action === 'STOP') drone.servoControl(droneIdAndName.value.droneId, SERVO_ACTIONS.STOP)
     }
 
     return {

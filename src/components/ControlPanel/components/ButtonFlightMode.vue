@@ -24,7 +24,7 @@
 <script>
 import { drone } from '../../../api'
 import { useStore } from 'vuex'
-import { computed, watch } from '@vue/runtime-core'
+import { computed, watchEffect } from '@vue/runtime-core'
 export default {
   name: 'ButtonFlightMode',
   setup () {
@@ -33,14 +33,15 @@ export default {
       RTL: 'RTL'
     }
     const store = useStore()
+    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
     const flightMode = computed(() => store.getters['Drone/getCurrentFlightMode'])
     const propsStatus = computed(() => store.getters['Drone/getDronePropsStatus'])
     const altitude = computed(() => store.getters['Drone/getFlightAltitude'])
 
     const handleClick = (mode) => {
-      if (mode === 'GUIDED') drone.changeFlightMode(FLIGHT_MODE.GUIDED)
+      if (mode === 'GUIDED') drone.changeFlightMode(droneIdAndName.value.droneId, FLIGHT_MODE.GUIDED)
       if (mode === 'RTL') {
-        drone.changeFlightMode(FLIGHT_MODE.RTL)
+        drone.changeFlightMode(droneIdAndName.value.droneId, FLIGHT_MODE.RTL)
         store.dispatch('Drone/setFlightAltitude', 3)
         store.dispatch('Drone/setFlightSpeed', 3)
         store.dispatch('Drone/setTargetLocation', { longitude: '', latitude: '' })
@@ -48,11 +49,13 @@ export default {
       }
     }
 
-    watch(() => store.getters['Drone/getCurrentFlightMode'], () => {
+    // auto change mode to guide mode when drone is land
+    watchEffect(() => {
       if (flightMode.value !== 'GUIDED' && propsStatus.value === false && altitude.value < 0.1) {
-        drone.changeFlightMode(FLIGHT_MODE.GUIDED)
+        drone.changeFlightMode(droneIdAndName.value.droneId, FLIGHT_MODE.GUIDED)
       }
-    }, { deep: true })
+    })
+
     return {
       flightMode,
       handleClick
