@@ -9,14 +9,19 @@ export default {
    * @param {string} password User's password
    */
   async signIn (email, password) {
-    const data = await customAxios.post('/auth/signin', { email, password })
-    useNotify.success('Welcome!', data.msg)
-    localStorage.setItem('accessToken', data.accessToken)
-    localStorage.setItem('refreshToken', data.refreshToken)
-    store.dispatch('User/signIn', {
-      user: data.user
-    })
-    router.push({ path: '/dronecontrolpanel' })
+    const result = await customAxios.post('/auth/signin', { email, password })
+
+    if (result.status === 'success') {
+      useNotify.success('Welcome!', result.msg)
+      localStorage.setItem('accessToken', result.accessToken)
+      localStorage.setItem('refreshToken', result.refreshToken)
+      store.dispatch('User/signIn', {
+        user: result.user
+      })
+      router.push({ path: '/dronecontrolpanel' })
+      return
+    }
+    useNotify.error('Sign in error', result.msg)
   },
 
   signOut () {
@@ -31,8 +36,12 @@ export default {
   },
 
   async refreshAccessToken (refreshToken) {
-    const { accessToken } = await customAxios.post('/auth/refreshtoken', { refreshToken })
-    localStorage.setItem('accessToken', accessToken)
-    store.dispatch('User/fetchUserInfo')
+    try {
+      const { accessToken } = await customAxios.post('/auth/refreshtoken', { refreshToken })
+      localStorage.setItem('accessToken', accessToken)
+      store.dispatch('User/fetchUserInfo')
+    } catch (error) {
+      router.push({ path: '/signin' })
+    }
   }
 }
