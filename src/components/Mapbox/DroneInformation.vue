@@ -89,7 +89,7 @@ export default {
     z-index: 50;
 
     /* sizing */
-    height: 120px;
+    height: 90px;
     width: calc(100% - 110px);
     border-radius: 5px;
 
@@ -103,18 +103,21 @@ export default {
     backdrop-filter: blur(8px);
     box-shadow: 0px 0px 3px 2px rgba(0,0,0,0.45);
 
+    @media screen and (min-width:1160px) {
+      height: 120px;
+    }
     >.info-wrapper__child {
       width: 100%;
       height: 100%;
 
       /* layout */
       display: grid;
-      gap: 1px;
+      gap: 0.5px;
       grid-template-columns: repeat(6,1fr);
-      grid-template-rows: repeat(5, 1fr);
+      grid-template-rows: repeat(6, minmax(30px,1fr));
       overflow-y: auto;
-      @media screen and (min-width:1000px) {
-        grid-template-rows: repeat(3, 1fr);
+      @media screen and (min-width:1160px) {
+        grid-template-rows: repeat(3, minmax(30px,1fr));
         overflow-y: hidden;
       }
 
@@ -132,96 +135,96 @@ export default {
           font-size: 14px;
         }
         &.time {
-          grid-area: 1 / 1 / 2 / 3;
-          @media screen and (min-width:1000px) {
+          grid-area: 1 / 1 / 2 / 4;
+          @media screen and (min-width:1160px) {
             grid-area: 1 / 1 / 2 / 3;
           }
         }
-        &.coords {
-          grid-area: 1 / 3 / 2 / 5;
-          @media screen and (min-width:1000px) {
-            grid-area: 1 / 3 / 2 / 5;
+        &.device {
+          grid-area: 1 / 4 / 2 / 7;
+          @media screen and (min-width:1160px) {
+            grid-area: 1 / 5 / 2 / 7;
           }
         }
-        &.device {
-          grid-area: 1 / 5 / 2 / 7;
-          @media screen and (min-width:1000px) {
-            grid-area: 1 / 5 / 2 / 7;
+        &.coords {
+          grid-area: 2 / 1 / 3 / 7;
+          @media screen and (min-width:1160px) {
+            grid-area: 1 / 3 / 2 / 5;
           }
         }
 
         &.heading {
-          grid-area: 2 / 1 / 3 / 3;
-          @media screen and (min-width:1000px) {
+          grid-area: 3 / 1 / 4 / 3;
+          @media screen and (min-width:1160px) {
             grid-area: 2 / 1 / 3 / 2;
           }
         }
         &.altitude {
-          grid-area: 2 / 3 / 3 / 5;
-          @media screen and (min-width:1000px) {
+          grid-area: 3 / 3 / 4 / 5;
+          @media screen and (min-width:1160px) {
             grid-area: 2 / 2 / 3 / 3;
           }
         }
         &.speed {
-          grid-area: 2 / 5 / 3 / 7;
-          @media screen and (min-width:1000px) {
+          grid-area: 3 / 5 / 4 / 7;
+          @media screen and (min-width:1160px) {
             grid-area: 2 / 3 / 3 / 4;
           }
         }
 
         &.props{
-          grid-area: 3 / 1 / 4 / 3;
-          @media screen and (min-width:1000px) {
+          grid-area: 4 / 1 / 5 / 3;
+          @media screen and (min-width:1160px) {
             grid-area: 2 / 4 / 3 / 5;
           }
         }
         &.mode{
-          grid-area: 3 / 3 / 4 / 5;
-          @media screen and (min-width:1000px) {
+          grid-area: 4 / 3 / 5 / 5;
+          @media screen and (min-width:1160px) {
             grid-area: 2 / 5 / 3 / 6;
           }
         }
         &.voltage{
-          grid-area: 3 / 5 / 4 / 7;
-          @media screen and (min-width:1000px) {
+          grid-area: 4 / 5 / 5 / 7;
+          @media screen and (min-width:1160px) {
             grid-area: 2 / 6 / 3 / 7;
           }
         }
 
         &.roll{
-          grid-area: 4 / 1 / 5 / 3;
-          @media screen and (min-width:1000px) {
+          grid-area: 5 / 1 / 6 / 3;
+          @media screen and (min-width:1160px) {
             grid-area: 3 / 1 / 4 / 2;
           }
         }
         &.yaw{
-          grid-area: 4 / 3 / 5 / 5;
-          @media screen and (min-width:1000px) {
+          grid-area: 5 / 3 / 6 / 5;
+          @media screen and (min-width:1160px) {
             grid-area: 3 / 2 / 4 / 3
           }
         }
         &.pitch{
-          grid-area: 4 / 5 / 5 / 7;
-          @media screen and (min-width:1000px) {
+          grid-area: 5 / 5 / 6 / 7;
+          @media screen and (min-width:1160px) {
             grid-area: 3 / 3 / 4 / 4;
           }
         }
 
         &.battery{
-          grid-area: 5 / 1 / 6 / 3;
-          @media screen and (min-width:1000px) {
+          grid-area: 6 / 1 / 7 / 3;
+          @media screen and (min-width:1160px) {
             grid-area: 3 / 4 / 4 / 5;
           }
         }
         &.count{
-          grid-area: 5 / 3 / 6 / 5;
-          @media screen and (min-width:1000px) {
+          grid-area: 6 / 3 / 7 / 5;
+          @media screen and (min-width:1160px) {
             grid-area: 3 / 5 / 4 / 6;
           }
         }
         &.hpop{
-          grid-area: 5 / 5 / 6 / 7;
-          @media screen and (min-width:1000px) {
+          grid-area: 6 / 5 / 7 / 7;
+          @media screen and (min-width:1160px) {
             grid-area: 3 / 6 / 4 / 7;
           }
         }
