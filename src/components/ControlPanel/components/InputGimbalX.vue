@@ -64,5 +64,6 @@ export default {
 <style lang="scss" scoped>
 .slider-wrapper {
   text-align: center;
+  padding: 10px 0;
 }
 </style>
