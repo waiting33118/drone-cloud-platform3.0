@@ -46,6 +46,7 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  padding: 5px 0;
   >.el-button {
     width: 150px;
   }
