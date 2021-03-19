@@ -12,7 +12,7 @@
 import mapboxgl from 'mapbox-gl'
 import DroneInformation from '@/components/Mapbox/DroneInformation.vue'
 import { drone } from '../../api'
-import { getUserLocation, useGotoMissionConfirm } from '../../utils'
+import { getUserLocation, useGotoMissionConfirm, useMessage } from '../../utils'
 import { useStore } from 'vuex'
 import { ref } from '@vue/reactivity'
 import { computed, onMounted, watch } from '@vue/runtime-core'
@@ -36,7 +36,7 @@ export default {
       const map = new mapboxgl.Map({
         style: 'mapbox://styles/waiting33118/ckdfkx3t10k9w1irkp8anuy39',
         center: [longitude, latitude],
-        zoom: 16,
+        zoom: 17,
         pitch: 0,
         bearing: 0,
         antialias: true,
@@ -121,29 +121,15 @@ export default {
         map.addControl(new mapboxgl.ScaleControl({ maxWidth: 200, unit: 'metric' }), 'bottom-right')
       })
 
-      // Goto feature
-      map.on('contextmenu', async e => {
-        const { lng, lat } = e.lngLat
-        const coords = {
-          longitude: Number(lng).toFixed(6),
-          latitude: Number(lat).toFixed(6)
-        }
-        const { isConfirmed } = await useGotoMissionConfirm(coords.longitude, coords.latitude)
-        if (isConfirmed) {
-          store.dispatch('Drone/setTargetLocation', { ...coords })
-          const propsStatus = store.getters['Drone/getDronePropsStatus']
-          if (propsStatus) {
-            const flightAltitude = store.getters['Drone/getCurrentAltitude']
-            drone.goto(droneIdAndName.value.droneId, lng, lat, flightAltitude)
-          }
-        }
-      })
+      // add destination marker
+      const destination = new mapboxgl
+        .Marker({ color: 'red', scale: 0.5 })
+        .setLngLat([longitude, latitude])
+        .addTo(map)
 
       // add drone position marker
-      const dronePosition = new mapboxgl.Marker({
-        color: 'blue',
-        draggable: false
-      })
+      const dronePosition = new mapboxgl
+        .Marker({ color: 'blue' })
         .setLngLat([longitude, latitude]).addTo(map)
 
       // Realtime update drone position
@@ -162,6 +148,54 @@ export default {
           })
         }
       })
+
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        // Goto feature for mobile
+        map.on('mousedown', async e => {
+          const { lng, lat } = e.lngLat
+          const coords = {
+            longitude: Number(lng).toFixed(6),
+            latitude: Number(lat).toFixed(6)
+          }
+          try {
+            await useGotoMissionConfirm('MISSION CHECK', 'PRESS "OK" TO START MISSION')
+            destination.setLngLat([lng, lat])
+            store.dispatch('Drone/setTargetLocation', { ...coords })
+            const propsStatus = store.getters['Drone/getDronePropsStatus']
+            if (propsStatus) {
+              const flightAltitude = store.getters['Drone/getCurrentAltitude']
+              drone.goto(droneIdAndName.value.droneId, lng, lat, flightAltitude)
+              return
+            }
+            useMessage.error('Drone hasn\'t takeoff yet!')
+          } catch (error) {
+            useMessage.error('Mission Cancel!')
+          }
+        })
+      } else {
+        // Goto feature for desktop
+        map.on('contextmenu', async e => {
+          const { lng, lat } = e.lngLat
+          const coords = {
+            longitude: Number(lng).toFixed(6),
+            latitude: Number(lat).toFixed(6)
+          }
+          try {
+            await useGotoMissionConfirm('MISSION CHECK', 'PRESS "OK" TO START MISSION')
+            destination.setLngLat([lng, lat])
+            store.dispatch('Drone/setTargetLocation', { ...coords })
+            const propsStatus = store.getters['Drone/getDronePropsStatus']
+            if (propsStatus) {
+              const flightAltitude = store.getters['Drone/getCurrentAltitude']
+              drone.goto(droneIdAndName.value.droneId, lng, lat, flightAltitude)
+              return
+            }
+            useMessage.error('Drone hasn\'t takeoff yet!')
+          } catch (error) {
+            useMessage.error('Mission Cancel!')
+          }
+        })
+      }
 
       setTimeout(() => {
         fullscreenLoading.value = false
