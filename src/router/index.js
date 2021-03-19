@@ -3,6 +3,7 @@ import store from '../store'
 import DroneControlPanel from '@/views/DroneControlPanel.vue'
 import SignIn from '@/views/SignIn.vue'
 import Intro from '@/views/Intro.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
   {
     path: '/flightrecord',
     name: 'FlightRecord'
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound
   }
 ]
 
