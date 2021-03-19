@@ -8,7 +8,7 @@
       <img
         width="40"
         height="40"
-        src="../../public/drone.svg"
+        src="@/assets/drone.svg"
         alt="logo"
         class="logo"
       >
