@@ -37,7 +37,7 @@
 <script>
 import { reactive } from '@vue/reactivity'
 import { auth } from '../api'
-import { useNotify } from '../utils'
+import { useNotification } from '../utils'
 export default {
   name: 'SignIn',
   setup () {
@@ -48,7 +48,7 @@ export default {
 
     const handleSignIn = () => {
       if (form.email === '' || form.password === '') {
-        useNotify.error('Sign in error', 'Email and Password are required!')
+        useNotification.error('Sign in error', 'Email and Password are required!')
         return
       }
       auth.signIn(form.email, form.password)
