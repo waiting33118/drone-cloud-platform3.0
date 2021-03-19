@@ -1,4 +1,4 @@
-import { useAlert } from '.'
+import { useMessage } from '.'
 
 /**
  *  Combine timestamp & message
@@ -12,15 +12,13 @@ export const logFormat = (message) => {
 
 /**
  * Parse message is Success or Failed
- * @param {string | null} cmd For ACK only
+ * @param {string | null} cmd For COMMAND ACK only, MISSION ACK will set to `null`
  * @param {string} message
  */
 export const messageParse = (cmd, message) => {
   if (message.includes('FAILED') || message.includes('ERROR')) {
-    if (cmd) { message = cmd }
-    useAlert(`${message}`)
+    cmd ? useMessage.error(cmd.slice(cmd.indexOf('=') + 1)) : useMessage.error(message.slice(message.indexOf('=') + 1))
     return
   }
-  if (cmd) { message = cmd }
-  useAlert(`${message}`, 'success')
+  cmd ? useMessage.success(cmd.slice(cmd.indexOf('=') + 1)) : useMessage.success(message.slice(message.indexOf('=') + 1))
 }

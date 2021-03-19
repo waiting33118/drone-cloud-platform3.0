@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useNotification } from '.'
 import { auth } from '../api'
 import router from '../router'
 
@@ -24,33 +25,36 @@ instance.interceptors.request.use(config => {
   return config
 }, err => Promise.reject(err))
 
-instance.interceptors.response.use(response => {
-  // console.log('interceptors response success', response)
-  return response.data
-}
-, err => {
-  const { errCode } = err.response.data
-  console.log('interceptors response error', err.response.data)
+instance.interceptors.response.use(response => response.data
+  , err => {
+    const { errCode } = err.response.data
+    console.log('interceptors response error', err.response)
 
-  switch (errCode) {
-    case 703:
-    case 705:
-    case 706:
-    case 707:
-    case 708:
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      router.push({ path: '/signin' })
-      return
-    case 704: {
-      const refreshToken = localStorage.getItem('refreshToken')
-      auth.refreshAccessToken(refreshToken)
-      return
+    switch (errCode) {
+      case 703:
+      case 705:
+      case 706:
+      case 707:
+      case 708:
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+        router.push({ path: '/signin' })
+        return
+
+      case 704: {
+        const refreshToken = localStorage.getItem('refreshToken')
+        auth.refreshAccessToken(refreshToken)
+        return
+      }
+
+      default:
+        if (err.response.status === 500) {
+          useNotification.error('Error', err.response.statusText)
+          return
+        }
+        return err.response
     }
-    default:
-      return err.response.data
-  }
-})
+  })
 
 export default instance
 
