@@ -1,4 +1,4 @@
-import { customAxios } from '../utils'
+import { customAxios, useMessage } from '../utils'
 
 export default {
   /**
@@ -8,7 +8,7 @@ export default {
     try {
       await customAxios.post('/drone/arm', { droneId })
     } catch (error) {
-      console.error(error)
+      useMessage.error(error)
     }
   },
 
@@ -19,7 +19,7 @@ export default {
     try {
       await customAxios.post('/drone/disarm', { droneId })
     } catch (error) {
-      console.error(error)
+      useMessage.error(error)
     }
   },
 
@@ -32,7 +32,7 @@ export default {
     try {
       await customAxios.post('/drone/takeoff', { droneId, altitude })
     } catch (error) {
-      console.error(error)
+      useMessage.error(error)
     }
   },
 
@@ -43,7 +43,7 @@ export default {
     try {
       await customAxios.post('/drone/land', { droneId })
     } catch (error) {
-      console.error(error)
+      useMessage.error(error)
     }
   },
 
@@ -59,7 +59,7 @@ export default {
     try {
       await customAxios.post('/drone/goto', { droneId, lng, lat, altitude })
     } catch (error) {
-      console.log(error)
+      useMessage.error(error)
     }
   },
 
@@ -72,7 +72,7 @@ export default {
     try {
       await customAxios.post('/drone/changeflightmode', { droneId, mode })
     } catch (error) {
-      console.log(error)
+      useMessage.error(error)
     }
   },
 
@@ -85,7 +85,7 @@ export default {
     try {
       await customAxios.post('/drone/changespeed', { droneId, speed })
     } catch (error) {
-      console.log(error)
+      useMessage.error(error)
     }
   },
 
@@ -98,7 +98,7 @@ export default {
     try {
       await customAxios.post('/drone/changeyaw', { droneId, angle })
     } catch (error) {
-      console.log(error)
+      useMessage.error(error)
     }
   },
 
@@ -111,7 +111,7 @@ export default {
     try {
       await customAxios.post('/drone/servocontrol', { droneId, action })
     } catch (error) {
-      console.log(error)
+      useMessage.error(error)
     }
   },
 
@@ -125,7 +125,7 @@ export default {
     try {
       await customAxios.post('/drone/gimbalcontrol', { droneId, action, pwm })
     } catch (error) {
-      console.log(error)
+      useMessage.error(error)
     }
   }
 }
