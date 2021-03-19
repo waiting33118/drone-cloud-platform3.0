@@ -1,6 +1,6 @@
 export default {
   saveLog (state, payload) {
-    state.logs.push(payload)
+    state.logs.unshift(payload)
   },
 
   setUserLocation (state, { longitude, latitude }) {
