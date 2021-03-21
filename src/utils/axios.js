@@ -5,7 +5,7 @@ import router from '../router'
 
 const SERVER = {
   LOCAL: 'http://localhost:3030/api/v1',
-  CLOUD: 'https://drone-cloud-platform-backend-6zwa3npg7q-de.a.run.app/api/v1'
+  CLOUD: 'https://daas-backend-6zwa3npg7q-de.a.run.app/api/v1'
 }
 
 /**

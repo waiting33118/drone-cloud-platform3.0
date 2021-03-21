@@ -5,7 +5,7 @@ import { useMessageParse } from '.'
 
 const DOMAIN = process.env.NODE_ENV === 'development'
   ? 'http://127.0.0.1:3030'
-  : 'https://drone-cloud-platform-backend-6zwa3npg7q-de.a.run.app'
+  : 'https://daas-backend-6zwa3npg7q-de.a.run.app'
 export const socketInit = () => {
   const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
   const socket = io(DOMAIN)
