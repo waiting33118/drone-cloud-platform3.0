@@ -13,24 +13,26 @@
 </template>
 
 <script>
-import { changeYaw } from '../../../api'
+import { drone } from '../../../api'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faLocationArrow } from '@fortawesome/free-solid-svg-icons'
-import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core'
 export default {
   name: 'InputYaw',
   components: {
     FontAwesomeIcon
   },
   setup () {
-    const locationArrow = computed(() => faLocationArrow)
     const store = useStore()
+    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const locationArrow = computed(() => faLocationArrow)
     const yawStatus = computed({
       get: () => store.getters['Drone/getYaw'],
       set: angle => store.dispatch('Drone/setYaw', angle)
     })
-    const handleChange = () => changeYaw(yawStatus.value)
+
+    const handleChange = () => drone.changeYaw(droneIdAndName.value.droneId, yawStatus.value)
 
     return {
       locationArrow,

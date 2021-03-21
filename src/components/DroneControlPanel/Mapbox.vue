@@ -11,10 +11,11 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 import DroneInformation from '@/components/Mapbox/DroneInformation.vue'
-import { goto } from '../../api'
-import { getUserLocation, useGotoMissionConfirm } from '../../utils'
-import { computed, onMounted, ref, watch } from 'vue'
+import { drone } from '../../api'
+import { getUserLocation, useGotoMissionConfirm, useMessage } from '../../utils'
 import { useStore } from 'vuex'
+import { ref } from '@vue/reactivity'
+import { computed, onMounted, watch } from '@vue/runtime-core'
 export default {
   name: 'Mapbox',
   components: {
@@ -24,6 +25,7 @@ export default {
     const fullscreenLoading = ref(true)
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2FpdGluZzMzMTE4IiwiYSI6ImNrZDVlZWp6MjFxcXQyeHF2bW0xenU4YXoifQ.iGfojLdouAjsovJuRxjYVA'
     const store = useStore()
+    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
 
     onMounted(async () => {
       // Get user's GPS coordinates
@@ -119,30 +121,15 @@ export default {
         map.addControl(new mapboxgl.ScaleControl({ maxWidth: 200, unit: 'metric' }), 'bottom-right')
       })
 
-      // Goto feature
-      map.on('contextmenu', async e => {
-        const { lng, lat } = e.lngLat
-        const coords = {
-          longitude: Number(lng).toFixed(6),
-          latitude: Number(lat).toFixed(6)
-        }
-        const { isConfirmed } = await useGotoMissionConfirm(coords.longitude, coords.latitude)
-        if (isConfirmed) {
-          store.dispatch('Drone/setTargetLocation', { ...coords })
-          const propsStatus = store.getters['Drone/getDronePropsStatus']
-          if (propsStatus) {
-            const flightAltitude = store.getters['Drone/getCurrentAltitude']
-            goto(lng, lat, flightAltitude)
-          }
-          // TODO: Alert when drone isn't takeoff
-        }
-      })
+      // add destination marker
+      const destination = new mapboxgl
+        .Marker({ color: 'red', scale: 0.5 })
+        .setLngLat([longitude, latitude])
+        .addTo(map)
 
       // add drone position marker
-      const dronePosition = new mapboxgl.Marker({
-        color: 'blue',
-        draggable: false
-      })
+      const dronePosition = new mapboxgl
+        .Marker({ color: 'blue' })
         .setLngLat([longitude, latitude]).addTo(map)
 
       // Realtime update drone position
@@ -161,6 +148,54 @@ export default {
           })
         }
       })
+
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        // Goto feature for mobile
+        map.on('mousedown', async e => {
+          const { lng, lat } = e.lngLat
+          const coords = {
+            longitude: Number(lng).toFixed(6),
+            latitude: Number(lat).toFixed(6)
+          }
+          try {
+            await useGotoMissionConfirm('MISSION CHECK', 'PRESS "OK" TO START MISSION')
+            destination.setLngLat([lng, lat])
+            store.dispatch('Drone/setTargetLocation', { ...coords })
+            const propsStatus = store.getters['Drone/getDronePropsStatus']
+            if (propsStatus) {
+              const flightAltitude = store.getters['Drone/getCurrentAltitude']
+              drone.goto(droneIdAndName.value.droneId, lng, lat, flightAltitude)
+              return
+            }
+            useMessage.error('Drone hasn\'t takeoff yet!')
+          } catch (error) {
+            useMessage.error('Mission Cancel!')
+          }
+        })
+      } else {
+        // Goto feature for desktop
+        map.on('contextmenu', async e => {
+          const { lng, lat } = e.lngLat
+          const coords = {
+            longitude: Number(lng).toFixed(6),
+            latitude: Number(lat).toFixed(6)
+          }
+          try {
+            await useGotoMissionConfirm('MISSION CHECK', 'PRESS "OK" TO START MISSION')
+            destination.setLngLat([lng, lat])
+            store.dispatch('Drone/setTargetLocation', { ...coords })
+            const propsStatus = store.getters['Drone/getDronePropsStatus']
+            if (propsStatus) {
+              const flightAltitude = store.getters['Drone/getCurrentAltitude']
+              drone.goto(droneIdAndName.value.droneId, lng, lat, flightAltitude)
+              return
+            }
+            useMessage.error('Drone hasn\'t takeoff yet!')
+          } catch (error) {
+            useMessage.error('Mission Cancel!')
+          }
+        })
+      }
 
       setTimeout(() => {
         fullscreenLoading.value = false

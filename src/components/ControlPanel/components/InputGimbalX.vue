@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import { gimbalControl } from '../../../api'
+import { drone } from '../../../api'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faVideo } from '@fortawesome/free-solid-svg-icons'
-import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core'
 export default {
   name: 'InputGimbalX',
   components: {
@@ -45,12 +45,13 @@ export default {
       }
     }
     const store = useStore()
+    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
     const video = computed(() => faVideo)
     const pwmStatus = computed({
       get: () => store.getters['Drone/getGimbalX'],
       set: pwm => store.dispatch('Drone/setGimbalX', pwm)
     })
-    const handleChange = () => gimbalControl('GIMBAL_LEFT_RIGHT', pwmStatus.value)
+    const handleChange = () => drone.gimbalControl(droneIdAndName.value.droneId, 'GIMBAL_LEFT_RIGHT', pwmStatus.value)
     return {
       video,
       pwmStatus,
@@ -63,5 +64,6 @@ export default {
 <style lang="scss" scoped>
 .slider-wrapper {
   text-align: center;
+  padding: 10px 0;
 }
 </style>

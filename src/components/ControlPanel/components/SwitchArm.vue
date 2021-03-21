@@ -9,18 +9,19 @@
 </template>
 
 <script>
-import { arm, disarm } from '../../../api'
-import { computed } from 'vue'
+import { drone } from '../../../api'
 import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core'
 export default {
   name: 'SwitchArm',
   setup () {
     const store = useStore()
+    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
     const propsStatus = computed({
       get: () => store.getters['Drone/getDronePropsStatus'],
       set: value => value
     })
-    const handleClick = () => propsStatus.value ? disarm() : arm()
+    const handleClick = () => propsStatus.value ? drone.disarm(droneIdAndName.value.droneId) : drone.arm(droneIdAndName.value.droneId)
     return {
       propsStatus,
       handleClick

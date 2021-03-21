@@ -1,54 +1,105 @@
 <template>
   <div class="container">
+    <!-- Trademark & Logo -->
     <router-link
-      class="title-link"
-      to="/dronecontrolpanel"
+      class="logo-wrapper"
+      to="/"
     >
-      <h1 class="hidden-xs-only">
+      <img
+        width="40"
+        height="40"
+        src="@/assets/drone.svg"
+        alt="logo"
+        class="logo"
+      >
+      <span class="trademark hidden-xs-only">
         Drone Cloud Platform
-      </h1>
+      </span>
     </router-link>
     <el-menu
       :default-active="activeIndex"
-      class="el-menu"
       mode="horizontal"
       active-text-color="#409EF0"
+      :router="true"
     >
       <el-menu-item
-        index="1"
+        v-if="isSignIn"
+        index="dronecontrolpanel"
       >
         Control Panel
       </el-menu-item>
       <el-menu-item
-        index="2"
+        v-if="isSignIn"
+        index="flightrecord"
       >
         Flight Record
       </el-menu-item>
       <el-submenu
-        index="3"
+        v-if="isSignIn"
+        index="/"
       >
-        <template #title>
+        <template
+          #title
+        >
           Settings
         </template>
-        <el-menu-item index="2-1">
+        <el-menu-item index="account">
           Account
+        </el-menu-item>
+        <el-menu-item
+          index="/"
+          @click="handleSignOut"
+        >
+          Sign Out
         </el-menu-item>
       </el-submenu>
       <el-menu-item
-        index="4"
+        v-if="!isSignIn"
+        index="signin"
       >
-        SignIn
+        Sign In
+      </el-menu-item>
+      <el-menu-item
+        v-if="!isSignIn"
+        index="signup"
+      >
+        Sign Up
       </el-menu-item>
     </el-menu>
   </div>
 </template>
 
 <script>
+import { computed, watch } from '@vue/runtime-core'
+import { ref } from '@vue/reactivity'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import { auth } from '../api'
 export default {
   name: 'Navbar',
   setup () {
+    const store = useStore()
+    const route = useRoute()
+    const activeIndex = ref('')
+    const routerList = ['dronecontrolpanel', 'flightrecord', 'account', 'signin', 'signup']
+    const isSignIn = computed(() => store.getters['User/checkAuth'])
+
+    // handle navbar active link
+    watch(() => route.name, newRouterName => {
+      const currentLink = newRouterName.toLowerCase()
+      if (routerList.includes(currentLink)) {
+        activeIndex.value = currentLink
+        return
+      }
+      activeIndex.value = ''
+    })
+
+    const handleSignOut = () => auth.signOut()
+
     return {
-      activeIndex: '1'
+      activeIndex,
+      isSignIn,
+      handleSignOut
     }
   }
 }
@@ -59,33 +110,40 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-flow: row nowrap;
+  justify-content: space-around;
   align-items: center;
   border-bottom: solid 1px #dcdfe6;
-  > .title-link {
+  > .logo-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
     text-decoration: none;
-    color: black;
+    > .trademark {
+      color: rgba(35, 133, 224, 0.8);
+      filter: drop-shadow(0 0 8px rgba(133, 222, 238, 0.5));
+      &:hover {
+        color: rgba(35, 133, 224, 1);
+      }
+    }
   }
-  .el-menu-item,
-  .el-submenu {
-    font-size: 0.5rem;
+  .el-menu-item {
+    font-size: 14px;
     padding: 0 10px;
   }
+  .el-submenu {
+    padding: 0;
+  }
   @media screen and (min-width:768px) {
-    justify-content: space-around;
-    >.title-link {
-      font-size: 0.6rem;
-    }
-    .el-menu-item,
-    .el-submenu {
-      font-size: 1rem;
-      padding: 0 20px;
+    .trademark {
+      font-weight: 800;
+      font-size: 1.5rem;
     }
   }
   @media screen and (min-width:992px) {
-    >.title-link {
-      font-size: 1rem;
+    .trademark {
+      font-weight: 1000;
+      font-size: 1.8rem;
     }
   }
 }

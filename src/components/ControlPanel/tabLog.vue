@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 export default {
   name: 'TabLog',
@@ -33,7 +33,13 @@ export default {
   margin: 0;
   list-style-type: '\276F';
   padding-inline-start: 20px;
-  line-height: 1.6rem;
+  line-height: 1.2rem;
   background-color: #f9fafc;
+  font-size: 14px;
+  word-break:break-word;
+  @media screen and (min-width: 1024px){
+    font-size: 1rem;
+    line-height: 1.6rem;
+  }
 }
 </style>

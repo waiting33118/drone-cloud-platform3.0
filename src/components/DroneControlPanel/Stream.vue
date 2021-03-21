@@ -1,39 +1,55 @@
 <template>
   <video
     id="videoEl"
+    ref="videoEl"
     autoplay
     muted
-    poster="./../../../public/live-streaming.png"
+    poster="@/assets/live-streaming.png"
   />
 </template>
 
 <script>
 import flvjs from 'flv.js'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted, ref } from '@vue/runtime-core'
 export default {
   name: 'Stream',
   setup () {
+    const videoEl = ref(null)
     onMounted(() => {
       if (flvjs.isSupported()) {
-        const videoEl = document.querySelector('#videoEl')
         const flvPlayer = flvjs.createPlayer({
           type: 'flv',
           isLive: true,
           hasAudio: false,
           hasVideo: true,
-          url: 'https://35.201.182.150:8443/live/test.flv'
+          url: 'https://35.201.182.150:8443/live/test.flv',
+          cors: true,
+          withCredentials: false
+
         }, {
           enableStashBuffer: false,
           isLive: true,
           autoCleanupSourceBuffer: true,
           stashInitialSize: 128
         })
-        flvPlayer.attachMediaElement(videoEl)
+        flvPlayer.attachMediaElement(videoEl.value)
         flvPlayer.load()
-        flvPlayer.play()
+        const playPromise = flvPlayer.play()
+
+        onUnmounted(() => {
+          playPromise.then(_ => {
+            flvPlayer.pause()
+            flvPlayer.destroy()
+          }).catch(error => console.log(error))
+        })
       }
     })
+
+    return {
+      videoEl
+    }
   }
+
 }
 </script>
 

@@ -18,17 +18,19 @@
 </template>
 
 <script>
-import { gimbalControl } from '../../../api'
+import { drone } from '../../../api'
 import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core'
 export default {
   name: 'ButtonReset',
   setup () {
     const store = useStore()
+    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
     const handleClick = () => {
       store.dispatch('Drone/setGimbalY', 1500)
       store.dispatch('Drone/setGimbalX', 1500)
-      gimbalControl('GIMBAL_LEFT_RIGHT', 1500)
-      gimbalControl('GIMBAL_FRONT_BACK', 1500)
+      drone.gimbalControl(droneIdAndName.value.droneId, 'GIMBAL_LEFT_RIGHT', 1500)
+      drone.gimbalControl(droneIdAndName.value.droneId, 'GIMBAL_FRONT_BACK', 1500)
     }
 
     return {
@@ -44,6 +46,7 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  padding: 5px 0;
   >.el-button {
     width: 150px;
   }
