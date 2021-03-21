@@ -10,7 +10,6 @@ export default {
    */
   async signIn (email, password) {
     const result = await customAxios.post('/auth/signin', { email, password })
-
     if (result.status === 'success') {
       useNotification.success('Welcome!', result.msg)
       localStorage.setItem('accessToken', result.accessToken)
@@ -19,7 +18,7 @@ export default {
       router.push({ path: '/dronecontrolpanel' })
       return
     }
-    useNotification.error('Sign in error', result.msg)
+    useNotification.error('Sign in error', result.data.msg)
   },
 
   signOut () {
