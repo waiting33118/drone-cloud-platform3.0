@@ -1,0 +1,22 @@
+# vue build
+FROM node:lts-alpine3.13 as build
+
+WORKDIR /frontend
+
+COPY package.json .
+
+RUN npm i
+
+COPY . .
+
+RUN npm run build
+
+
+# nginx
+FROM nginx as production
+
+RUN mkdir /frontend
+
+COPY --from=build /frontend/dist /frontend
+
+COPY nginx.conf /etc/nginx/nginx.conf
