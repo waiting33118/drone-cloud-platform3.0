@@ -22,7 +22,7 @@ export default {
           isLive: true,
           hasAudio: false,
           hasVideo: true,
-          url: 'https://35.201.182.150:8443/live/test.flv',
+          url: 'https://aiotlab-drone-cloud.ga:8443/live/test.flv',
           cors: true,
           withCredentials: false
 
