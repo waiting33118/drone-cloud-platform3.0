@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useNotification } from '.'
 import { auth } from '../api'
+import store from '../store'
 import router from '../router'
 
 const SERVER = {
@@ -37,6 +38,7 @@ instance.interceptors.response.use(response => response.data
       case 708:
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
+        store.dispatch('User/signOut')
         router.push({ path: '/signin' })
         return
 

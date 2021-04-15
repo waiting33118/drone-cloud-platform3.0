@@ -11,11 +11,12 @@
 </template>
 
 <script>
-import { useSocket } from '../utils'
+import { socket, useMessageParse } from '../utils'
 import Mapbox from '@/components/DroneControlPanel/Mapbox.vue'
 import ControlPanel from '@/components/DroneControlPanel/ControlPanel.vue'
 import Stream from '@/components/DroneControlPanel/Stream.vue'
-import { onMounted, onUnmounted, ref } from '@vue/runtime-core'
+import { computed, onBeforeUnmount, onMounted, ref } from '@vue/runtime-core'
+import { useStore } from 'vuex'
 
 export default {
   name: 'DroneControlPanel',
@@ -25,14 +26,41 @@ export default {
     Stream
   },
   setup () {
+    const store = useStore()
+    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
     const fullscreenLoading = ref(true)
-    const { socket, droneId } = useSocket()
+
+    if (socket.connected) {
+      store.dispatch('Drone/connect', socket.id)
+      socket.emit('mqttSubscribe', droneIdAndName.value)
+    }
+
+    socket.on('disconnect', reason => store.dispatch('Drone/disconnect', reason))
+
+    // drone information
+    socket.on(`${droneIdAndName.value.droneId}/message`, ({ Drone: drone, Phone: phone }) => {
+      store.dispatch('Drone/setDroneInfo', { ...drone, ...phone })
+    })
+    // drone command ack
+    socket.on(`${droneIdAndName.value.droneId}/cmd_ack`, ({ cmd, cmd_result: result }) => {
+      store.dispatch('Drone/setACK', { cmd, result })
+      useMessageParse(cmd, result)
+    })
+    // drone mission ack
+    socket.on(`${droneIdAndName.value.droneId}/mission_ack`, ({ mission_result: result }) => {
+      store.dispatch('Drone/setMission', { result })
+      useMessageParse(null, result)
+    })
+    // drone debug text
+    socket.on(`${droneIdAndName.value.droneId}/apm_text`, data => {
+      store.dispatch('Drone/setApm', data)
+    })
+
     onMounted(() => {
       fullscreenLoading.value = false
     })
-    onUnmounted(() => {
-      socket.emit('mqttUnsubscribe', droneId)
-      socket.disconnect()
+    onBeforeUnmount(() => {
+      socket.emit('mqttUnsubscribe', droneIdAndName.value.droneId)
     })
     return {
       fullscreenLoading

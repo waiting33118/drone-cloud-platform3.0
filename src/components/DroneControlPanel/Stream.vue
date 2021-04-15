@@ -1,62 +1,74 @@
 <template>
-  <video
-    id="videoEl"
-    ref="videoEl"
-    autoplay
-    muted
-    poster="@/assets/live-streaming.png"
-  />
+  <div class="video-wrapper">
+    <video
+      class="local"
+      autoplay
+      muted
+      poster="@/assets/local-user.png"
+    />
+    <video
+      class="remote"
+      autoplay
+      poster="@/assets/live-streaming.png"
+    />
+  </div>
 </template>
 
 <script>
-import flvjs from 'flv.js'
-import { onMounted, onUnmounted, ref } from '@vue/runtime-core'
+import { useWebrtc, socket } from '../../utils'
+import { computed, onMounted } from '@vue/runtime-core'
+import { useStore } from 'vuex'
 export default {
   name: 'Stream',
   setup () {
-    const videoEl = ref(null)
-    onMounted(() => {
-      if (flvjs.isSupported()) {
-        const flvPlayer = flvjs.createPlayer({
-          type: 'flv',
-          isLive: true,
-          hasAudio: false,
-          hasVideo: true,
-          url: 'https://35.201.182.150:8443/live/test.flv',
-          cors: true,
-          withCredentials: false
+    const store = useStore()
+    const droneId = computed(() => store.getters['User/getDroneId'])
+    socket.emit('joinRoom', droneId.value)
 
-        }, {
-          enableStashBuffer: false,
-          isLive: true,
-          autoCleanupSourceBuffer: true,
-          stashInitialSize: 128
-        })
-        flvPlayer.attachMediaElement(videoEl.value)
-        flvPlayer.load()
-        const playPromise = flvPlayer.play()
-
-        onUnmounted(() => {
-          playPromise.then(_ => {
-            flvPlayer.pause()
-            flvPlayer.destroy()
-          }).catch(error => console.log(error))
-        })
-      }
+    const pc = useWebrtc.createPeerConnection()
+    pc.addEventListener('icecandidate', ({ candidate }) => {
+      if (candidate) socket.emit('sendCandidate', candidate)
+    })
+    pc.addEventListener('track', event => {
+      document.querySelector('.remote').srcObject = event.streams[0]
     })
 
-    return {
-      videoEl
-    }
+    socket.on('offer', async offer => {
+      await pc.setRemoteDescription(offer)
+      const answer = await pc.createAnswer()
+      await pc.setLocalDescription(answer)
+      socket.emit('sendAnswer', answer)
+    })
+
+    socket.on('candidate', candidate => pc.addIceCandidate(candidate))
+
+    onMounted(async () => {
+      const stream = await useWebrtc.getLocalMedia()
+      document.querySelector('.local').srcObject = stream
+      stream.getTracks().forEach(track => pc.addTrack(track, stream))
+    })
   }
 
 }
 </script>
 
 <style lang="scss" scoped>
-  video {
+.video-wrapper{
+  position: relative;
+  .remote {
     object-fit: cover;
     width: 100%;
     height: 100%;
+    z-index: 0;
   }
+  .local {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    width: 150px;
+    height: 190px;
+    right: 0;
+    z-index: 1;
+  }
+}
 </style>
