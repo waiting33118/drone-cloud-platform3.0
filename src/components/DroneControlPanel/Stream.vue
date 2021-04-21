@@ -16,13 +16,14 @@
 
 <script>
 import { useWebrtc, socket } from '../../utils'
-import { computed, onMounted } from '@vue/runtime-core'
+import { computed, onBeforeUnmount, onMounted } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 export default {
   name: 'Stream',
   setup () {
     const store = useStore()
     const droneId = computed(() => store.getters['User/getDroneId'])
+    let stream
     socket.emit('joinRoom', droneId.value)
 
     const pc = useWebrtc.createPeerConnection()
@@ -43,9 +44,13 @@ export default {
     socket.on('candidate', candidate => pc.addIceCandidate(candidate))
 
     onMounted(async () => {
-      const stream = await useWebrtc.getLocalMedia()
+      stream = await useWebrtc.getLocalMedia()
       document.querySelector('.local').srcObject = stream
       stream.getTracks().forEach(track => pc.addTrack(track, stream))
+    })
+
+    onBeforeUnmount(() => {
+      stream.getTracks().forEach(track => track.stop())
     })
   }
 
@@ -65,10 +70,11 @@ export default {
     position: absolute;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 6px;
-    width: 150px;
-    height: 190px;
+    width: 100px;
+    height: 100px;
     right: 0;
     z-index: 1;
+    object-fit: cover;
   }
 }
 </style>

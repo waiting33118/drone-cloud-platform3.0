@@ -59,6 +59,7 @@ export default {
     onMounted(() => {
       fullscreenLoading.value = false
     })
+
     onBeforeUnmount(() => {
       socket.emit('mqttUnsubscribe', droneIdAndName.value.droneId)
     })
@@ -71,7 +72,7 @@ export default {
 <style lang="scss" scoped>
 .container {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 100vw;
   grid-template-rows: repeat(3,1fr);
   >.control-panel{
     border: 1px solid #dcdfe6;
