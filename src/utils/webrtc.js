@@ -11,7 +11,7 @@ export const webrtc = {
     return await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: ['environment', 'user'],
-        width: 640,
+        width: 1280,
         height: 720
       },
       audio: true
