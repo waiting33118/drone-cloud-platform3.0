@@ -67,12 +67,12 @@ export default {
   padding: 0 1rem;
   display: flex;
   justify-content: center;
+  align-items: center;
   background: #fcfcfc;
   height: calc(100vh - 61px);
   overflow-y: hidden;
   >.card {
     width: 400px;
-    margin-top: 4rem;
     .card__header {
       display: flex;
       justify-content: center;
