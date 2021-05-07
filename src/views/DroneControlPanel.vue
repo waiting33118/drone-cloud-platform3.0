@@ -30,10 +30,14 @@ export default {
     const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
     const fullscreenLoading = ref(true)
 
-    if (socket.connected) {
+    if (socket.connected) emitMqttSubscription()
+
+    function emitMqttSubscription () {
       store.dispatch('Drone/connect', socket.id)
       socket.emit('mqttSubscribe', droneIdAndName.value)
     }
+
+    socket.io.on('reconnect', () => socket.emit('mqttSubscribe', droneIdAndName.value))
 
     socket.on('disconnect', reason => store.dispatch('Drone/disconnect', reason))
 
