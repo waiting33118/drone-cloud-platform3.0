@@ -14,20 +14,24 @@
           placeholder="Email"
           class="email"
           clearable
+          type="email"
         />
         <el-input
           v-model.trim="form.password"
           placeholder="Password"
           show-password
           class="password"
+          type="password"
+          @keyup.enter="handleSignIn"
         />
         <el-button
           type="primary"
           round
           class="submit"
+          :loading="isLoading"
           @click="handleSignIn"
         >
-          Sign in
+          Sign In
         </el-button>
       </div>
     </el-card>
@@ -35,26 +39,38 @@
 </template>
 
 <script>
-import { reactive } from '@vue/reactivity'
+import { reactive, ref } from '@vue/reactivity'
 import { auth } from '../api'
 import { useNotification } from '../utils'
+import { useRouter } from 'vue-router'
 export default {
   name: 'SignIn',
   setup () {
+    const router = useRouter()
+    const isLoading = ref(false)
     const form = reactive({
       email: '',
       password: ''
     })
 
-    const handleSignIn = () => {
+    const handleSignIn = async () => {
+      isLoading.value = true
       if (form.email === '' || form.password === '') {
-        useNotification.error('Sign in error', 'Email and Password are required!')
+        useNotification.error('Sign In Error', 'Email and Password are required!')
+        isLoading.value = false
         return
       }
-      auth.signIn(form.email, form.password)
+      const isSuccess = await auth.signIn(form.email, form.password)
+      if (isSuccess) {
+        router.push({ path: '/dronecontrolpanel' })
+        return
+      }
+      isLoading.value = false
+      form.password = ''
     }
 
     return {
+      isLoading,
       form,
       handleSignIn
     }
