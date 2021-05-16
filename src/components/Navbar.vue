@@ -23,7 +23,6 @@
       :router="true"
     >
       <el-menu-item
-        v-if="isSignIn"
         index="dronecontrolpanel"
       >
         Control Panel
@@ -72,17 +71,20 @@
 <script>
 import { computed, watch } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { auth } from '../api'
+import { useNotification } from '../utils'
 export default {
   name: 'Navbar',
   setup () {
     const store = useStore()
     const route = useRoute()
+    const router = useRouter()
     const activeIndex = ref('')
     const routerList = ['dronecontrolpanel', 'flightrecord', 'account', 'signin', 'signup']
-    const isSignIn = computed(() => store.getters['User/checkAuth'])
+    const isSignIn = computed(() => store.getters['User/getIsAuth'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
 
     // handle navbar active link
     watch(() => route.name, newRouterName => {
@@ -94,7 +96,14 @@ export default {
       activeIndex.value = ''
     })
 
-    const handleSignOut = () => auth.signOut()
+    const handleSignOut = async () => {
+      const isSuccess = await auth.signOut(userInfo.value.id)
+      if (isSuccess) {
+        await store.dispatch('User/signOut')
+        router.push({ path: '/signin' })
+        useNotification.success('Goodbye~', 'See you next time!')
+      }
+    }
 
     return {
       activeIndex,

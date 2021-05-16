@@ -75,12 +75,12 @@ export default {
     const arrowUp = computed(() => faArrowUp)
     const arrowDown = computed(() => faArrowDown)
     const stop = computed(() => faStopCircle)
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
 
     const handleServo = (action) => {
-      if (action === 'UP') drone.servoControl(droneIdAndName.value.droneId, SERVO_ACTIONS.UP)
-      if (action === 'DOWN') drone.servoControl(droneIdAndName.value.droneId, SERVO_ACTIONS.DOWN)
-      if (action === 'STOP') drone.servoControl(droneIdAndName.value.droneId, SERVO_ACTIONS.STOP)
+      if (action === 'UP') drone.servoControl(userInfo.value.droneId, SERVO_ACTIONS.UP)
+      if (action === 'DOWN') drone.servoControl(userInfo.value.droneId, SERVO_ACTIONS.DOWN)
+      if (action === 'STOP') drone.servoControl(userInfo.value.droneId, SERVO_ACTIONS.STOP)
     }
 
     return {

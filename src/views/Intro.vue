@@ -8,7 +8,7 @@
     <div class="title">
       Drone as a Service
     </div>
-    <router-link to="/dronecontrolpanel">
+    <router-link to="/signin">
       <el-button
         type="primary"
         class="button"

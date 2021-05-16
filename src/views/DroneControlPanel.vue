@@ -27,45 +27,43 @@ export default {
   },
   setup () {
     const store = useStore()
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
     const fullscreenLoading = ref(true)
 
-    if (socket.connected) emitMqttSubscription()
-
-    function emitMqttSubscription () {
-      store.dispatch('Drone/connect', socket.id)
-      socket.emit('mqttSubscribe', droneIdAndName.value)
-    }
+    store.dispatch('Drone/connect', socket.id)
+    socket.emit('mqttSubscribe', userInfo.value)
 
     socket.io.on('reconnect', () => socket.emit('mqttSubscribe', droneIdAndName.value))
 
     socket.on('disconnect', reason => store.dispatch('Drone/disconnect', reason))
 
     // drone information
-    socket.on(`${droneIdAndName.value.droneId}/message`, ({ Drone: drone, Phone: phone }) => {
+    socket.on(`${userInfo.value.droneId}/message`, ({ Drone: drone, Phone: phone }) => {
       store.dispatch('Drone/setDroneInfo', { ...drone, ...phone })
     })
     // drone command ack
-    socket.on(`${droneIdAndName.value.droneId}/cmd_ack`, ({ cmd, cmd_result: result }) => {
+    socket.on(`${userInfo.value.droneId}/cmd_ack`, ({ cmd, cmd_result: result }) => {
       store.dispatch('Drone/setACK', { cmd, result })
       useMessageParse(cmd, result)
     })
     // drone mission ack
-    socket.on(`${droneIdAndName.value.droneId}/mission_ack`, ({ mission_result: result }) => {
+    socket.on(`${userInfo.value.droneId}/mission_ack`, ({ mission_result: result }) => {
       store.dispatch('Drone/setMission', { result })
       useMessageParse(null, result)
     })
     // drone debug text
-    socket.on(`${droneIdAndName.value.droneId}/apm_text`, data => {
+    socket.on(`${userInfo.value.droneId}/apm_text`, data => {
       store.dispatch('Drone/setApm', data)
     })
 
     onMounted(() => {
-      fullscreenLoading.value = false
+      setTimeout(() => {
+        fullscreenLoading.value = false
+      }, 1000)
     })
 
     onBeforeUnmount(() => {
-      socket.emit('mqttUnsubscribe', droneIdAndName.value.droneId)
+      socket.emit('mqttUnsubscribe', userInfo.value.droneId)
     })
     return {
       fullscreenLoading

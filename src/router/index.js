@@ -1,30 +1,28 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import auth from '../api/auth'
 import store from '../store'
-import DroneControlPanel from '@/views/DroneControlPanel.vue'
-import SignIn from '@/views/SignIn.vue'
-import Intro from '@/views/Intro.vue'
-import NotFound from '@/views/NotFound.vue'
+import { useNotification } from '../utils'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Intro
+    component: () => import('../views/Intro.vue')
   },
   {
     path: '/dronecontrolpanel',
     name: 'DroneControlPanel',
-    component: DroneControlPanel
+    component: () => import('../views/DroneControlPanel.vue')
   },
   {
     path: '/signin',
     name: 'SignIn',
-    component: SignIn
+    component: () => import('../views/SignIn.vue')
   },
   {
     path: '/signup',
     name: 'SignUp',
-    redirect: { path: '/signin' }
+    component: () => import('../views/SignUp.vue')
   },
   {
     path: '/flightrecord',
@@ -33,52 +31,63 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: NotFound
+    component: () => import('../views/NotFound.vue')
   }
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 
-router.beforeEach(async (to, from) => {
-  // get authenticate status
-  const isAuth = store.getters['User/checkAuth']
-  const accessToken = localStorage.getItem('accessToken')
+router.beforeEach(async to => {
+  const isAuth = store.getters['User/getIsAuth']
 
-  /*
-   * situation
-   * User login and go to signin page => redirect to drone control panel
-   */
-  if (isAuth && (to.path === '/signin' || to.path === '/signup')) {
-    return '/dronecontrolpanel'
-  }
-
-  /*
-   * situation
-   * user logged in , but refresh the webpage
-   * (token in localstorage, user info is empty in vuex)
-   * refetch user data and resave into vuex
-   */
-  if (!isAuth && accessToken) {
-    await store.dispatch('User/fetchUserInfo')
-    return to.path
-  }
-
-  /*
-   * Router whitelist
-   */
-  const whiteList = ['/', '/signin']
+  // white list
+  const whiteList = ['/', '/signin', '/signup']
   if (whiteList.includes(to.path)) {
-    return
+    if (isAuth && to.path === '/signin') return '/dronecontrolpanel'
+    return true
   }
-  /*
-   * situation
-   * user not login yet (no token in localstorage(null), user info is empty in vuex )
-   */
+
+  // get user info
   if (!isAuth) {
-    return '/signin'
+    try {
+      const { data } = await auth.fetchUserInfo()
+      await store.dispatch('User/setUserInfo', data)
+    } catch ({ response }) {
+      switch (response.data.errCode) {
+        case 2002: {
+          try {
+            await auth.renewToken()
+            const { data } = await auth.fetchUserInfo()
+            await store.dispatch('User/setUserInfo', data)
+          } catch ({ response }) {
+            switch (response.data.errCode) {
+              case 2002: {
+                useNotification.error('Session timeout', 'Please sign in again!')
+                return '/signin'
+              }
+              default: {
+                useNotification.error('Error', response.data.msg)
+                return false
+              }
+            }
+          }
+          break
+        }
+        case 3001: {
+          useNotification.error('Duplicates users detected', 'Someone sign in at another place')
+          router.push({ path: '/signin' })
+          break
+        }
+        default: {
+          useNotification.error('Error', response.data.msg)
+          return false
+        }
+      }
+    }
+    return true
   }
 })
 

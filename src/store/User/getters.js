@@ -1,14 +1,10 @@
 export default {
-  checkAuth (state) {
+  getIsAuth (state) {
     return state.isAuthenticated
   },
-  getDroneIdAndName (state) {
+  getUserInfo (state) {
     return {
-      name: state.user.name,
-      droneId: state.user.droneId
+      ...state.user
     }
-  },
-  getDroneId (state) {
-    return state.user.droneId
   }
 }

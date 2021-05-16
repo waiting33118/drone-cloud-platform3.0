@@ -25,12 +25,12 @@ export default {
   name: 'ButtonReset',
   setup () {
     const store = useStore()
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
     const handleClick = () => {
       store.dispatch('Drone/setGimbalY', 1500)
       store.dispatch('Drone/setGimbalX', 1500)
-      drone.gimbalControl(droneIdAndName.value.droneId, 'GIMBAL_LEFT_RIGHT', 1500)
-      drone.gimbalControl(droneIdAndName.value.droneId, 'GIMBAL_FRONT_BACK', 1500)
+      drone.gimbalControl(userInfo.value.droneId, 'GIMBAL_LEFT_RIGHT', 1500)
+      drone.gimbalControl(userInfo.value.droneId, 'GIMBAL_FRONT_BACK', 1500)
     }
 
     return {

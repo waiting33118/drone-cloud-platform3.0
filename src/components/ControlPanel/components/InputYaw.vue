@@ -25,14 +25,14 @@ export default {
   },
   setup () {
     const store = useStore()
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
     const locationArrow = computed(() => faLocationArrow)
     const yawStatus = computed({
       get: () => store.getters['Drone/getYaw'],
       set: angle => store.dispatch('Drone/setYaw', angle)
     })
 
-    const handleChange = () => drone.changeYaw(droneIdAndName.value.droneId, yawStatus.value)
+    const handleChange = () => drone.changeYaw(userInfo.value.droneId, yawStatus.value)
 
     return {
       locationArrow,
