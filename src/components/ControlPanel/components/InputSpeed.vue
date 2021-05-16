@@ -25,13 +25,13 @@ export default {
   },
   setup () {
     const store = useStore()
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
     const tachometerAlt = computed(() => faTachometerAlt)
     const speedStatus = computed({
       get: () => store.getters['Drone/getFlightSpeed'],
       set: speed => store.dispatch('Drone/setFlightSpeed', Number(speed))
     })
-    const handleChange = () => drone.changeSpeed(droneIdAndName.value.droneId, speedStatus.value)
+    const handleChange = () => drone.changeSpeed(userInfo.value.droneId, speedStatus.value)
     return {
       tachometerAlt,
       speedStatus,

@@ -17,7 +17,7 @@ export default {
   name: 'SwitchTakeoff',
   setup () {
     const store = useStore()
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
     const propsStatus = computed(() => store.getters['Drone/getDronePropsStatus'])
     const flightAltitude = computed(() => store.getters['Drone/getFlightAltitude'])
     const status = computed({
@@ -27,14 +27,14 @@ export default {
     const altitude = store.getters['Drone/getCurrentAltitude']
     const handleClick = () => {
       if (status.value) {
-        drone.land(droneIdAndName.value.droneId)
+        drone.land(userInfo.value.droneId)
         store.dispatch('Drone/setFlightAltitude', 3)
         store.dispatch('Drone/setFlightSpeed', 3)
         store.dispatch('Drone/setTargetLocation', { longitude: '', latitude: '' })
         store.dispatch('Drone/setYaw', 0)
         return
       }
-      drone.takeoff(droneIdAndName.value.droneId, altitude)
+      drone.takeoff(userInfo.value.droneId, altitude)
     }
 
     return {

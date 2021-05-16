@@ -45,13 +45,13 @@ export default {
       }
     }
     const store = useStore()
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
     const video = computed(() => faVideo)
     const pwmStatus = computed({
       get: () => store.getters['Drone/getGimbalY'],
       set: pwm => store.dispatch('Drone/setGimbalY', pwm)
     })
-    const handleChange = () => drone.gimbalControl(droneIdAndName.value.droneId, 'GIMBAL_FRONT_BACK', pwmStatus.value)
+    const handleChange = () => drone.gimbalControl(userInfo.value.droneId, 'GIMBAL_FRONT_BACK', pwmStatus.value)
 
     return {
       video,

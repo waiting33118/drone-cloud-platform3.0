@@ -25,7 +25,7 @@ export default {
     const fullscreenLoading = ref(true)
     mapboxgl.accessToken = 'pk.eyJ1Ijoid2FpdGluZzMzMTE4IiwiYSI6ImNrZDVlZWp6MjFxcXQyeHF2bW0xenU4YXoifQ.iGfojLdouAjsovJuRxjYVA'
     const store = useStore()
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
 
     onMounted(async () => {
       // Get user's GPS coordinates
@@ -164,7 +164,7 @@ export default {
             const propsStatus = store.getters['Drone/getDronePropsStatus']
             if (propsStatus) {
               const flightAltitude = store.getters['Drone/getCurrentAltitude']
-              drone.goto(droneIdAndName.value.droneId, lng, lat, flightAltitude)
+              drone.goto(userInfo.value.droneId, lng, lat, flightAltitude)
               return
             }
             useMessage.error('Drone hasn\'t takeoff yet!')
@@ -187,7 +187,7 @@ export default {
             const propsStatus = store.getters['Drone/getDronePropsStatus']
             if (propsStatus) {
               const flightAltitude = store.getters['Drone/getCurrentAltitude']
-              drone.goto(droneIdAndName.value.droneId, lng, lat, flightAltitude)
+              drone.goto(userInfo.value.droneId, lng, lat, flightAltitude)
               return
             }
             useMessage.error('Drone hasn\'t takeoff yet!')
@@ -197,9 +197,7 @@ export default {
         })
       }
 
-      setTimeout(() => {
-        fullscreenLoading.value = false
-      }, 1000)
+      fullscreenLoading.value = false
     })
     return {
       fullscreenLoading

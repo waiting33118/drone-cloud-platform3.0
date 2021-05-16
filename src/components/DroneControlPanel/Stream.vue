@@ -22,9 +22,9 @@ export default {
   name: 'Stream',
   setup () {
     const store = useStore()
-    const droneId = computed(() => store.getters['User/getDroneId'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
     let stream
-    socket.emit('joinRoom', droneId.value)
+    socket.emit('joinRoom', userInfo.value.droneId)
 
     const pc = useWebrtc.createPeerConnection()
     pc.addEventListener('icecandidate', ({ candidate }) => {

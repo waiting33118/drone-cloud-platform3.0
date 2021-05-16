@@ -16,12 +16,12 @@ export default {
   name: 'SwitchArm',
   setup () {
     const store = useStore()
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
     const propsStatus = computed({
       get: () => store.getters['Drone/getDronePropsStatus'],
       set: value => value
     })
-    const handleClick = () => propsStatus.value ? drone.disarm(droneIdAndName.value.droneId) : drone.arm(droneIdAndName.value.droneId)
+    const handleClick = () => propsStatus.value ? drone.disarm(userInfo.value.droneId) : drone.arm(userInfo.value.droneId)
     return {
       propsStatus,
       handleClick

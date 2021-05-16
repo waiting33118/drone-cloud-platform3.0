@@ -27,17 +27,17 @@ export default {
   },
   setup () {
     const store = useStore()
-    const droneIdAndName = computed(() => store.getters['User/getDroneIdAndName'])
+    const userInfo = computed(() => store.getters['User/getUserInfo'])
     const arrowsV = computed(() => faArrowsAltV)
     const flightStatus = computed({
       get: () => store.getters['Drone/getCurrentAltitude'],
       set: altitude => {
         store.dispatch('Drone/setFlightAltitude', altitude)
         const { lng, lat } = store.getters['Drone/getTargetGps']
-        if (lng && lat) return drone.goto(droneIdAndName.value.droneId, lng, lat, altitude)
+        if (lng && lat) return drone.goto(userInfo.value.droneId, lng, lat, altitude)
         // Use current gps coords if default's target gps haven't set yet
         const { lng: currentLng, lat: currentLat } = store.getters['Drone/getCurrentGps']
-        drone.goto(droneIdAndName.value.droneId, currentLng, currentLat, altitude)
+        drone.goto(userInfo.value.droneId, currentLng, currentLat, altitude)
       }
     })
     return {
