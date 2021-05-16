@@ -1,44 +1,75 @@
 import { customAxios, useNotification } from '../utils'
-import store from '../store'
-import router from '../router'
 
 export default {
   /**
-   * Sign in
-   * @param {string} email User's email
-   * @param {string} password User's password
+   * Sign up
+   * @param {string} email
+   * @param {string} password
+   * @param {string} checkPassword
+   * @param {string} name
+   * @param {string} droneId
    */
-  async signIn (email, password) {
-    const result = await customAxios.post('/auth/signin', { email, password })
-    if (result.status === 'success') {
-      useNotification.success('Welcome!', result.msg)
-      localStorage.setItem('accessToken', result.accessToken)
-      localStorage.setItem('refreshToken', result.refreshToken)
-      store.dispatch('User/signIn', { user: result.user })
-      router.push({ path: '/dronecontrolpanel' })
-      return
+  async signUp (email, password, checkPassword, name, droneId) {
+    try {
+      await customAxios.post('/auth/signup', { email, password, checkPassword, name, droneId })
+      useNotification.success('Register successfully! Sign in to get start!')
+      return true
+    } catch ({ response }) {
+      switch (response.data.errCode) {
+        case 1000:
+        case 1001:
+        case 1002:
+        case 1003:
+          useNotification.error('Sign Up Error', response.data.reason)
+          break
+        default:
+          useNotification.error('Error', response.data.msg || '')
+          break
+      }
+      return false
     }
-    useNotification.error('Sign in error', result.data.msg)
   },
 
-  signOut () {
-    useNotification.success('Goodbye~', 'See you next time!')
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    store.dispatch('User/signOut')
+  /**
+   * Sign in
+   * @param {string} email
+   * @param {string} password
+   */
+  async signIn (email, password) {
+    try {
+      await customAxios.post('/auth/signin', { email, password })
+      useNotification.success('Welcome back!')
+      return true
+    } catch ({ response }) {
+      switch (response.data.errCode) {
+        case 1100:
+        case 1101:
+        case 1102:
+          useNotification.error('Sign In Error', response.data.reason)
+          break
+        default:
+          useNotification.error('Error', response.data.msg || '')
+          break
+      }
+      return false
+    }
+  },
+
+  async signOut (userId) {
+    try {
+      await customAxios.post('/auth/signout', { userId })
+      return true
+    } catch ({ response }) {
+      useNotification.error('Error', response.data.msg || '')
+      return false
+    }
   },
 
   async fetchUserInfo () {
-    return await customAxios.get('/auth/currentuser')
+    return await customAxios.get('/user')
   },
 
-  async refreshAccessToken (refreshToken) {
-    try {
-      const { accessToken } = await customAxios.post('/auth/refreshtoken', { refreshToken })
-      localStorage.setItem('accessToken', accessToken)
-      store.dispatch('User/fetchUserInfo')
-    } catch (error) {
-      router.push({ path: '/signin' })
-    }
+  async renewToken () {
+    return await customAxios.post('/auth/renewToken')
   }
 }
