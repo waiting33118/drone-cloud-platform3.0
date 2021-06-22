@@ -1,85 +1,101 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { notification } from 'ant-design-vue'
+import { computed } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import auth from '../services/auth'
+import user from '../services/user'
 import store from '../store'
-import DroneControlPanel from '@/views/DroneControlPanel.vue'
-import SignIn from '@/views/SignIn.vue'
-import Intro from '@/views/Intro.vue'
-import NotFound from '@/views/NotFound.vue'
+
+const refreshToken = () => {
+  return setInterval(async () => await auth.refreshToken(), 4 * 60000)
+}
+let intervalTimer
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Intro
+    name: 'Introduction',
+    component: () => import('../views/Introduction.vue')
   },
   {
-    path: '/dronecontrolpanel',
-    name: 'DroneControlPanel',
-    component: DroneControlPanel
+    path: '/drone',
+    name: 'Drone',
+    component: () => import('../views/Drone.vue')
   },
   {
-    path: '/signin',
-    name: 'SignIn',
-    component: SignIn
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue')
   },
   {
     path: '/signup',
-    name: 'SignUp',
-    redirect: { path: '/signin' }
+    name: 'Signup',
+    component: () => import('../views/Signup.vue')
   },
   {
-    path: '/flightrecord',
-    name: 'FlightRecord'
+    path: '/logout',
+    name: 'Logout',
+    beforeEnter: async () => {
+      await auth.logout()
+      clearInterval(intervalTimer)
+      store.dispatch('setIsLogout')
+      return '/'
+    }
   },
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: NotFound
+    component: () => import('../views/NotFound.vue')
   }
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(process.env.BASE_URL),
   routes
 })
 
-router.beforeEach(async (to, from) => {
-  // get authenticate status
-  const isAuth = store.getters['User/checkAuth']
-  const accessToken = localStorage.getItem('accessToken')
+const whiteListRoute = ['/signup']
+const isAuth = computed(() => store.getters.getIsAuth)
 
-  /*
-   * situation
-   * User login and go to signin page => redirect to drone control panel
-   */
-  if (isAuth && (to.path === '/signin' || to.path === '/signup')) {
-    return '/dronecontrolpanel'
+router.beforeEach(async (to) => {
+  if (whiteListRoute.includes(to.path)) {
+    return true
   }
 
-  /*
-   * situation
-   * user logged in , but refresh the webpage
-   * (token in localstorage, user info is empty in vuex)
-   * refetch user data and resave into vuex
-   */
-  if (!isAuth && accessToken) {
-    await store.dispatch('User/fetchUserInfo')
-    return to.path
+  if (to.path === '/login') {
+    if (isAuth.value) return '/drone'
+    if (!isAuth.value) {
+      try {
+        await user.getUserInfo()
+        return '/drone'
+      } catch (error) {
+        return true
+      }
+    }
   }
 
-  /*
-   * Router whitelist
-   */
-  const whiteList = ['/', '/signin']
-  if (whiteList.includes(to.path)) {
-    return
+  if (!isAuth.value) {
+    if (to.path === '/') return true
+    try {
+      const { data } = await user.getUserInfo()
+      store.dispatch('setIsAuth')
+      store.dispatch('setUserInfo', data)
+      intervalTimer = refreshToken()
+      return true
+    } catch (error) {
+      notification.error({
+        message: error.response.data.msg
+      })
+      return '/login'
+    }
   }
-  /*
-   * situation
-   * user not login yet (no token in localstorage(null), user info is empty in vuex )
-   */
-  if (!isAuth) {
-    return '/signin'
+
+  if (to.name === 'NotFound') {
+    setTimeout(() => {
+      router.push({ name: 'Introduction', replace: true })
+    }, 5000)
   }
+
+  return true
 })
 
 export default router
