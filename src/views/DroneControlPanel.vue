@@ -33,8 +33,7 @@ export default {
     store.dispatch('Drone/connect', socket.id)
     socket.emit('mqttSubscribe', userInfo.value)
 
-    socket.io.on('reconnect', () => socket.emit('mqttSubscribe', droneIdAndName.value))
-
+    socket.io.on('reconnect', () => socket.emit('mqttSubscribe', userInfo.value))
     socket.on('disconnect', reason => store.dispatch('Drone/disconnect', reason))
 
     // drone information
