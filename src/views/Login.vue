@@ -1,25 +1,23 @@
 <template>
   <div class="container">
-    <img src="../assets/404.jpg" alt="not-found" />
+    <LoginForm />
   </div>
 </template>
 
 <script>
+import LoginForm from '../components/Login/LoginForm.vue'
 export default {
-  name: 'NotFound'
+  name: 'Login',
+  components: { LoginForm }
 }
 </script>
+
 <style lang="scss" scoped>
 .container {
-  display: flex;
   width: 100%;
   height: calc(100vh - 60px);
+  display: flex;
   justify-content: center;
   align-items: center;
-
-  img {
-    width: 500px;
-    height: 500px;
-  }
 }
 </style>

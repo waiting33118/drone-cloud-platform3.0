@@ -1,9 +1,39 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import './registerServiceWorker'
 import router from './router'
 import store from './store'
-import ElementPlus from 'element-plus'
-import 'element-plus/lib/theme-chalk/index.css'
-import 'element-plus/lib/theme-chalk/display.css'
+import 'ant-design-vue/dist/antd.css'
+import {
+  Button,
+  Menu,
+  Spin,
+  Tabs,
+  Switch,
+  Row,
+  Col,
+  InputNumber,
+  Radio,
+  Slider,
+  Popconfirm,
+  Form,
+  Input
+} from 'ant-design-vue'
 
-createApp(App).use(store).use(router).use(ElementPlus).mount('#app')
+createApp(App)
+  .use(Button)
+  .use(Menu)
+  .use(Spin)
+  .use(Tabs)
+  .use(Switch)
+  .use(Row)
+  .use(Col)
+  .use(InputNumber)
+  .use(Radio)
+  .use(Slider)
+  .use(Popconfirm)
+  .use(Form)
+  .use(Input)
+  .use(store)
+  .use(router)
+  .mount('#app')

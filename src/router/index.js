@@ -1,32 +1,45 @@
+import { notification } from 'ant-design-vue'
+import { computed } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import auth from '../api/auth'
+import auth from '../services/auth'
+import user from '../services/user'
 import store from '../store'
-import { useNotification } from '../utils'
+
+const refreshToken = () => {
+  return setInterval(async () => await auth.refreshToken(), 4 * 60000)
+}
+let intervalTimer
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('../views/Intro.vue')
+    name: 'Introduction',
+    component: () => import('../views/Introduction.vue')
   },
   {
-    path: '/dronecontrolpanel',
-    name: 'DroneControlPanel',
-    component: () => import('../views/DroneControlPanel.vue')
+    path: '/drone',
+    name: 'Drone',
+    component: () => import('../views/Drone.vue')
   },
   {
-    path: '/signin',
-    name: 'SignIn',
-    component: () => import('../views/SignIn.vue')
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue')
   },
   {
     path: '/signup',
-    name: 'SignUp',
-    component: () => import('../views/SignUp.vue')
+    name: 'Signup',
+    component: () => import('../views/Signup.vue')
   },
   {
-    path: '/flightrecord',
-    name: 'FlightRecord'
+    path: '/logout',
+    name: 'Logout',
+    beforeEnter: async () => {
+      await auth.logout()
+      clearInterval(intervalTimer)
+      store.dispatch('setIsLogout')
+      return '/'
+    }
   },
   {
     path: '/:pathMatch(.*)*',
@@ -36,59 +49,53 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(process.env.BASE_URL),
   routes
 })
 
-router.beforeEach(async to => {
-  const isAuth = store.getters['User/getIsAuth']
+const whiteListRoute = ['/signup']
+const isAuth = computed(() => store.getters.getIsAuth)
 
-  // white list
-  const whiteList = ['/', '/signin', '/signup']
-  if (whiteList.includes(to.path)) {
-    if (isAuth && to.path === '/signin') return '/dronecontrolpanel'
+router.beforeEach(async (to) => {
+  if (whiteListRoute.includes(to.path)) {
     return true
   }
 
-  // get user info
-  if (!isAuth) {
-    try {
-      const { data } = await auth.fetchUserInfo()
-      await store.dispatch('User/setUserInfo', data)
-    } catch ({ response }) {
-      switch (response.data.errCode) {
-        case 2002: {
-          try {
-            await auth.renewToken()
-            const { data } = await auth.fetchUserInfo()
-            await store.dispatch('User/setUserInfo', data)
-          } catch ({ response }) {
-            switch (response.data.errCode) {
-              case 2002: {
-                useNotification.error('Session timeout', 'Please sign in again!')
-                return '/signin'
-              }
-              default: {
-                useNotification.error('Error', response.data.msg)
-                return false
-              }
-            }
-          }
-          break
-        }
-        case 3001: {
-          useNotification.error('Duplicates users detected', 'Someone sign in at another place')
-          router.push({ path: '/signin' })
-          break
-        }
-        default: {
-          useNotification.error('Error', response.data.msg)
-          return false
-        }
+  if (to.path === '/login') {
+    if (isAuth.value) return '/drone'
+    if (!isAuth.value) {
+      try {
+        await user.getUserInfo()
+        return '/drone'
+      } catch (error) {
+        return true
       }
     }
-    return true
   }
+
+  if (!isAuth.value) {
+    if (to.path === '/') return true
+    try {
+      const { data } = await user.getUserInfo()
+      store.dispatch('setIsAuth')
+      store.dispatch('setUserInfo', data)
+      intervalTimer = refreshToken()
+      return true
+    } catch (error) {
+      notification.error({
+        message: error.response.data.msg
+      })
+      return '/login'
+    }
+  }
+
+  if (to.name === 'NotFound') {
+    setTimeout(() => {
+      router.push({ name: 'Introduction', replace: true })
+    }, 5000)
+  }
+
+  return true
 })
 
 export default router
