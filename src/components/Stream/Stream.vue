@@ -1,33 +1,33 @@
 <template>
-  <video
-    ref="videoEl"
-    poster="../../assets/live-stream.png"
-    autoplay
-    muted
-  ></video>
+  <video poster="../../assets/live-stream.png" muted autoplay></video>
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
 import socket from '../../lib/websocket'
 import WebRTC from '../../lib/webRTC'
 import { onBeforeUnmount, onMounted } from '@vue/runtime-core'
+import { useStore } from 'vuex'
 export default {
   name: 'Stream',
   setup() {
-    const videoEl = ref(null)
+    const store = useStore()
     const webRTC = new WebRTC()
+
+    const setLogs = (log) => store.dispatch('setLogs', log)
 
     webRTC.createConnection()
 
     socket.on('webrtc-topic', async (data) => {
       if (data.type === 'offer') {
         await webRTC.setRemoteSDP(data.payload)
+        setLogs('Recieved offer')
         const answer = await webRTC.createAnswerAndSetLocalSDP()
+        setLogs('Send answer')
         socket.emit('send-webrtc', { type: 'answer', payload: answer })
       }
 
       if (data.type === 'candidate') {
+        setLogs('Recieved candidate')
         await webRTC.addCandidate(data.payload)
       }
     })
@@ -35,12 +35,14 @@ export default {
     onMounted(async () => {
       const handleOnIceCnadidate = ({ candidate }) => {
         if (candidate) {
+          setLogs('Send candidate')
           socket.emit('send-webrtc', { type: 'candidate', payload: candidate })
         }
       }
       const handleOnTrack = (event) => {
         if (event.track.kind === 'video') {
-          videoEl.value.srcObject = event.streams[0]
+          setLogs('Recieved track')
+          document.querySelector('video').srcObject = event.streams[0]
         }
       }
 
@@ -53,10 +55,6 @@ export default {
     onBeforeUnmount(() => {
       webRTC.stopStream()
     })
-
-    return {
-      videoEl
-    }
   }
 }
 </script>
