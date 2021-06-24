@@ -144,7 +144,7 @@ export default {
     height: 100px;
     bottom: 0.5rem;
     right: 0.5rem;
-    z-index: 200;
+    z-index: 100;
     transition: all 0.5s ease-in-out 0.3ms;
 
     @media (min-width: 576px) {
