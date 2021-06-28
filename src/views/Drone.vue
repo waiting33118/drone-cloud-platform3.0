@@ -25,23 +25,29 @@ export default {
   components: { Stream, Mapbox, Control },
   setup() {
     const store = useStore()
+    const rabbitmqIsInit = computed(() => store.getters.getRabbitmqIsInit)
     const user = computed(() => store.getters.getUserInfo)
     const formatCommand = (payload) => payload.split('=')[1]
+    const saveLogs = (log) => store.dispatch('setLogs', log)
 
-    socket.on('connect', () => {
-      store.dispatch('setLogs', `Websocket connected: ${socket.id}`)
-      store.dispatch('setLogs', `Drone ID: ${user.value.droneId}`)
+    const rabbitmqInit = () => {
+      saveLogs(`Websocket connected: ${socket.id}`)
+      saveLogs(`Drone ID: ${user.value.droneId}`)
       socket.emit('create-rabbitmq-connection', user.value.droneId)
-    })
+    }
 
+    if (!rabbitmqIsInit.value) {
+      rabbitmqInit()
+      store.dispatch('setRabbitmqIsInit', true)
+    }
+
+    socket.on('connect', () => rabbitmqInit())
     socket.on('disconnect', (reason) => {
-      store.dispatch('setLogs', `Websocket disconnected: ${reason}`)
+      saveLogs(`Websocket disconnected: ${reason}`)
     })
-
     socket.on('rabbitmq-queue-isReady', () => {
-      store.dispatch('setLogs', `Subscribe topic queue successfully`)
+      saveLogs('Subscribe topic queue successfully')
     })
-
     socket.on('drone-topic', (data) => {
       if (data.type === 'message') {
         const {
@@ -87,7 +93,7 @@ export default {
         } else {
           message.error(data.cmd_result)
         }
-        store.dispatch('setLogs', formattedCmd)
+        saveLogs(formattedCmd)
       }
 
       if (data.type === 'mission_ack') {
@@ -97,11 +103,11 @@ export default {
         } else {
           message.error(data.mission_result)
         }
-        store.dispatch('setLogs', formattedCmd)
+        saveLogs(formattedCmd)
       }
 
       if (data.type === 'apm_text') {
-        store.dispatch('setLogs', formatCommand(data.text))
+        saveLogs(formatCommand(data.text))
       }
     })
   }
