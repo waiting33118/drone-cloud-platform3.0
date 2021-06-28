@@ -48,12 +48,12 @@ export default {
 
       webRTC.setIceCandidateListener(handleOnIceCnadidate)
       webRTC.setTrackListener(handleOnTrack)
-      await webRTC.getLocalStream()
-      webRTC.addTrackToConnection()
+      // await webRTC.getLocalStream()
+      // webRTC.addTrackToConnection()
     })
 
     onBeforeUnmount(() => {
-      webRTC.stopStream()
+      // webRTC.stopStream()
     })
   }
 }
