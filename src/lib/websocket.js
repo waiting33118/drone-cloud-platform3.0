@@ -5,4 +5,6 @@ const SOCKET_DOMAIN =
     ? 'https://aiotlab-drone-cloud.ga:3031'
     : 'http://localhost:3030'
 
-export default io(SOCKET_DOMAIN)
+const socket = io(SOCKET_DOMAIN)
+
+export default socket
