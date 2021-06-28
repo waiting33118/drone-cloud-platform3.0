@@ -34,6 +34,9 @@ export default {
   setup() {
     const popEl = ref(null)
     const isLoading = ref(true)
+    let cacheTarget
+    let droneMarker
+    let targetMarker
     const store = useStore()
     const isTakeoff = computed(() => store.getters['drone/getTakeoffStatus'])
     const altitude = computed(() => store.getters['drone/getAltitude'])
@@ -41,19 +44,28 @@ export default {
     const mapbox = new CustomMap()
 
     const missionConfirmHandler = () => {
+      const { lng, lat } = cacheTarget
+      store.dispatch('drone/updateDestination', {
+        lng,
+        lat
+      })
       socket.emit('send-drone', {
         cmd: 'GOTO',
         altitude: altitude.value,
-        lng: destination.value.lng,
-        lat: destination.value.lat
+        lng,
+        lat
       })
       message.success('Start GOTO Mission')
     }
-    const missionCancelHandler = () => message.error('Mission canceled')
+    const missionCancelHandler = () => {
+      const { lng, lat } = destination.value
+      if (lng !== 0 && lat !== 0) {
+        mapbox.flyTo([lng, lat])
+        targetMarker.setLngLat([lng, lat])
+      }
+    }
 
     onMounted(async () => {
-      let droneMarker
-      let targetMarker
       try {
         await mapbox.initMapbox()
 
@@ -73,10 +85,7 @@ export default {
 
         mapbox.map.on('contextmenu', ({ lngLat }) => {
           if (isTakeoff.value) {
-            store.dispatch('drone/updateDestination', {
-              lng: lngLat.lng,
-              lat: lngLat.lat
-            })
+            cacheTarget = { ...lngLat }
             mapbox.flyTo([lngLat.lng, lngLat.lat])
             targetMarker.setLngLat([lngLat.lng, lngLat.lat])
             popEl.value.click()

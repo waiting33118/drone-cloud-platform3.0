@@ -1,14 +1,43 @@
 import { notification } from 'ant-design-vue'
 import { computed } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import socket from '../lib/websocket'
 import auth from '../services/auth'
 import user from '../services/user'
 import store from '../store'
 
+let intervalTimer
 const refreshToken = () => {
   return setInterval(async () => await auth.refreshToken(), 4 * 60000)
 }
-let intervalTimer
+const cleanState = async () => {
+  await auth.logout()
+  clearInterval(intervalTimer)
+  socket.emit('close-rabbitmq-channel')
+  store.dispatch('setRabbitmqIsInit', false)
+  store.dispatch('setIsAuth', false)
+  store.dispatch('setUserInfo', { email: '', droneId: '' })
+  store.dispatch('drone/updateFlightStatus', { altitude: 3, isTakeoff: false })
+  store.dispatch('drone/updateDestination', { lng: 0, lat: 0 })
+  store.dispatch('drone/setDroneInfo', {
+    timeStamp: '',
+    roll: '',
+    yaw: '',
+    pitch: '',
+    voltage: '',
+    percentage: '',
+    hpop: '',
+    gpsCount: '',
+    mode: '',
+    isArmed: '',
+    heading: '',
+    latitude: '',
+    longitude: '',
+    altitude: '',
+    speed: ''
+  })
+  store.dispatch('clearLogs')
+}
 
 const routes = [
   {
@@ -35,9 +64,7 @@ const routes = [
     path: '/logout',
     name: 'Logout',
     beforeEnter: async () => {
-      await auth.logout()
-      clearInterval(intervalTimer)
-      store.dispatch('setIsLogout')
+      await cleanState()
       return '/'
     }
   },
@@ -77,7 +104,7 @@ router.beforeEach(async (to) => {
     if (to.path === '/') return true
     try {
       const { data } = await user.getUserInfo()
-      store.dispatch('setIsAuth')
+      store.dispatch('setIsAuth', true)
       store.dispatch('setUserInfo', data)
       intervalTimer = refreshToken()
       return true

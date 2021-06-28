@@ -5,6 +5,7 @@ export default createStore({
   state: {
     logs: [],
     isAuthenticated: false,
+    rabbitmqIsInit: false,
     user: {
       email: '',
       droneId: ''
@@ -18,28 +19,34 @@ export default createStore({
         payload
       })
     },
+    clearLogs({ commit }) {
+      commit('clearLogs')
+    },
     setUserInfo({ commit }, payload) {
       commit('setUserInfo', payload)
     },
-    setIsAuth({ commit }) {
-      commit('setIsAuth')
+    setIsAuth({ commit }, payload) {
+      commit('setIsAuth', payload)
     },
-    setIsLogout({ commit }) {
-      commit('setIsLogout')
+    setRabbitmqIsInit({ commit }, payload) {
+      commit('setRabbitmqIsInit', payload)
     }
   },
   mutations: {
     setLogs(state, payload) {
       state.logs.unshift(payload)
     },
+    clearLogs(state) {
+      state.logs = []
+    },
     setUserInfo(state, payload) {
       state.user = payload
     },
-    setIsAuth(state) {
-      state.isAuthenticated = true
+    setIsAuth(state, payload) {
+      state.isAuthenticated = payload
     },
-    setIsLogout(state) {
-      state.isAuthenticated = false
+    setRabbitmqIsInit(state, payload) {
+      state.rabbitmqIsInit = payload
     }
   },
   getters: {
@@ -51,6 +58,9 @@ export default createStore({
     },
     getIsAuth(state) {
       return state.isAuthenticated
+    },
+    getRabbitmqIsInit(state) {
+      return state.rabbitmqIsInit
     }
   },
   modules: {

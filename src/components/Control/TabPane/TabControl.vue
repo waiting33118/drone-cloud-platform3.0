@@ -208,6 +208,11 @@ export default {
         lng: drone.value.longitude,
         lat: drone.value.latitude
       })
+      store.dispatch('drone/updateDestination', {
+        lng: drone.value.longitude,
+        lat: drone.value.latitude
+      })
+      message.warn(`Emergency Stop`)
     }
 
     return {
