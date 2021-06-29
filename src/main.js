@@ -17,7 +17,9 @@ import {
   Slider,
   Popconfirm,
   Form,
-  Input
+  Input,
+  Result,
+  Divider
 } from 'ant-design-vue'
 
 createApp(App)
@@ -34,6 +36,8 @@ createApp(App)
   .use(Popconfirm)
   .use(Form)
   .use(Input)
+  .use(Result)
+  .use(Divider)
   .use(store)
   .use(router)
   .mount('#app')
