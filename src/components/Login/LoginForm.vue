@@ -17,7 +17,7 @@
       />
     </a-form-item>
     <a-form-item label="Password" name="password">
-      <a-input
+      <a-input-password
         v-model:value="formState.password"
         type="password"
         placeholder="password"
