@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <img src="../assets/404.jpg" alt="not-found" />
+    <a-result
+      status="404"
+      title="404"
+      sub-title="Sorry, the page you visited does not exist. Redirect to home page in 5 seconds"
+    >
+    </a-result>
   </div>
 </template>
 
