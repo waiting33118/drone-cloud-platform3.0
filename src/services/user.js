@@ -2,6 +2,9 @@ import axios from '../lib/axios'
 
 export default {
   async getUserInfo() {
-    return axios.get('/user/me')
+    return await axios.get('/user/me')
+  },
+  async editUserDroneId(droneId) {
+    return await axios.post('/user/droneId', droneId)
   }
 }
