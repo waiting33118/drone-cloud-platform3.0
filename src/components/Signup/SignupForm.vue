@@ -24,7 +24,7 @@
       />
     </a-form-item>
     <a-form-item required has-feedback label="Password" name="password">
-      <a-input
+      <a-input-password
         v-model:value="formState.password"
         type="password"
         placeholder="password"
@@ -36,7 +36,7 @@
       label="Check Password"
       name="checkPassword"
     >
-      <a-input
+      <a-input-password
         v-model:value="formState.checkPassword"
         type="password"
         placeholder="Check Password"
