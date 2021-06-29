@@ -69,6 +69,11 @@ const routes = [
     }
   },
   {
+    path: '/account',
+    name: 'Account',
+    component: () => import('../views/Account.vue')
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue')
@@ -86,6 +91,10 @@ const isAuth = computed(() => store.getters.getIsAuth)
 router.beforeEach(async (to) => {
   if (whiteListRoute.includes(to.path)) {
     return true
+  }
+
+  if (to.name === 'NotFound') {
+    setTimeout(() => router.push({ path: '/' }), 5000)
   }
 
   if (to.path === '/login') {
@@ -114,12 +123,6 @@ router.beforeEach(async (to) => {
       })
       return '/login'
     }
-  }
-
-  if (to.name === 'NotFound') {
-    setTimeout(() => {
-      router.push({ name: 'Introduction', replace: true })
-    }, 5000)
   }
 
   return true

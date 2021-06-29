@@ -27,7 +27,9 @@
             </span>
           </template>
           <a-menu-item-group>
-            <a-menu-item key="account">Account</a-menu-item>
+            <a-menu-item key="account">
+              <router-link to="account">Account</router-link>
+            </a-menu-item>
             <a-menu-item key="logout">
               <router-link to="logout">Logout</router-link>
             </a-menu-item>
