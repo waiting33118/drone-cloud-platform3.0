@@ -1,22 +1,60 @@
 <template>
   <section class="banner">
-    <div class="banner__title">Drone Cloud Platform</div>
-    <router-link to="/drone" class="banner__button"
-      >Enter Control Panel
+    <div class="banner__title" data-aos="fade-down" data-aos-duration="1000">
+      Drone Cloud Platform
+    </div>
+    <router-link
+      to="/drone"
+      class="banner__button"
+      data-aos="zoom-out-down"
+      data-aos-delay="500"
+      data-aos-easing="ease-in-back"
+    >
+      Enter Control Panel
     </router-link>
   </section>
   <section class="step">
     <div class="step__items">
-      <div class="step__items--content">install app</div>
-      <div class="step__items--content">signup account</div>
-      <div class="step__items--content">Go discovory</div>
+      <div
+        class="step__items--content"
+        data-aos="fade-up"
+        data-aos-duration="1000"
+        data-aos-offset="300"
+      >
+        install app
+      </div>
+      <div
+        class="step__items--content"
+        data-aos="fade-up"
+        data-aos-duration="2000"
+        data-aos-offset="300"
+      >
+        signup account
+      </div>
+      <div
+        class="step__items--content"
+        data-aos="fade-up"
+        data-aos-duration="3000"
+        data-aos-offset="300"
+      >
+        Go discovory
+      </div>
     </div>
   </section>
+  <footer>FOOTER</footer>
 </template>
 
 <script>
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+import { onMounted } from '@vue/runtime-core'
 export default {
-  name: 'Introduction'
+  name: 'Introduction',
+  setup() {
+    onMounted(() => {
+      AOS.init()
+    })
+  }
 }
 </script>
 
@@ -48,12 +86,11 @@ export default {
   .banner__title::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 110%;
+    // top: 50%;
+    // left: 50%;
+    // transform: translate(-50%, -50%);
+    width: 100%;
     height: 100%;
-    border-radius: 50px;
     background-color: rgba(255, 255, 255, 0.15);
     filter: blur(5px);
   }
@@ -100,5 +137,8 @@ export default {
       backdrop-filter: blur(1.5px);
     }
   }
+}
+
+footer {
 }
 </style>

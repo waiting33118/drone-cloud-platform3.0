@@ -46,7 +46,7 @@ export default {
   padding: 0.5rem;
   list-style: none;
   font-size: 1px;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(100, 100, 100, 0.3);
   border-radius: 10px;
   color: #ff0000;
 
