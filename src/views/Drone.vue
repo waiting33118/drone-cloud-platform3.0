@@ -19,7 +19,7 @@ import Control from '../components/Control/Control.vue'
 import socket from '../lib/websocket'
 import { useStore } from 'vuex'
 import { message } from 'ant-design-vue'
-import { computed } from '@vue/runtime-core'
+import { computed, onBeforeUnmount } from '@vue/runtime-core'
 export default {
   name: 'Drone',
   components: { Stream, Mapbox, Control },
@@ -33,7 +33,7 @@ export default {
     const rabbitmqInit = () => {
       saveLogs(`Websocket connected: ${socket.id}`)
       saveLogs(`Drone ID: ${user.value.droneId}`)
-      socket.emit('create-rabbitmq-connection', user.value.droneId)
+      socket.emit('establish-rabbitmq-connection', user.value.droneId)
     }
 
     if (!rabbitmqIsInit.value) {
@@ -45,8 +45,8 @@ export default {
     socket.on('disconnect', (reason) => {
       saveLogs(`Websocket disconnected: ${reason}`)
     })
-    socket.on('rabbitmq-queue-isReady', () => {
-      saveLogs('Subscribe topic queue successfully')
+    socket.on('queue-created', (queueName) => {
+      saveLogs(`Queue created: ${queueName}`)
     })
     socket.on('drone-topic', (data) => {
       if (data.type === 'message') {
@@ -109,6 +109,13 @@ export default {
       if (data.type === 'apm_text') {
         saveLogs(formatCommand(data.text))
       }
+    })
+
+    onBeforeUnmount(() => {
+      socket.off('connect')
+      socket.off('disconnect')
+      socket.off('queue-created')
+      socket.off('drone-topic')
     })
   }
 }
