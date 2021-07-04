@@ -1,22 +1,21 @@
 import mapboxgl from 'mapbox-gl'
-import { geolocation } from './geolocation'
 
 const { VUE_APP_MAPBOX_TOKEN } = process.env
-
 const MAPBOX = {
   STYLE: 'mapbox://styles/waiting33118/ckdfkx3t10k9w1irkp8anuy39',
   TOKEN: VUE_APP_MAPBOX_TOKEN
 }
-
 export default class CustomMap {
-  constructor() {
+  constructor({ longitude, latitude }) {
+    this.longitude = longitude
+    this.latitude = latitude
     this.map = null
   }
 
-  async initMapbox() {
+  initMapbox() {
     this.map = new mapboxgl.Map({
       style: MAPBOX.STYLE,
-      center: (await geolocation) || [0, 0],
+      center: [this.longitude, this.latitude],
       zoom: 17,
       pitch: 0,
       bearing: 0,
@@ -130,6 +129,6 @@ export default class CustomMap {
   }
 
   flyTo(lngLat) {
-    this.map.flyTo({ center: lngLat, zoom: 17 })
+    this.map.flyTo({ center: lngLat, zoom: 20 })
   }
 }
