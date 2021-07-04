@@ -23,8 +23,8 @@
 <script>
 import CustomMap from '../../lib/mapbox'
 import DroneDashBoard from '../Mapbox/DroneDashBoard.vue'
-import { computed, onMounted, ref, watch } from '@vue/runtime-core'
-import { geolocation } from '../../lib/geolocation'
+import { computed, ref, watch } from '@vue/runtime-core'
+import { getUserCurrentLocation } from '../../lib/geolocation'
 import socket from '../../lib/websocket'
 import { useStore } from 'vuex'
 import { message } from 'ant-design-vue'
@@ -37,11 +37,13 @@ export default {
     let cacheTarget
     let droneMarker
     let targetMarker
+    let longitude = 0
+    let latitude = 0
+    let mapbox
     const store = useStore()
     const isTakeoff = computed(() => store.getters['drone/getTakeoffStatus'])
     const altitude = computed(() => store.getters['drone/getAltitude'])
     const destination = computed(() => store.getters['drone/getDestination'])
-    const mapbox = new CustomMap()
 
     const missionConfirmHandler = () => {
       const { lng, lat } = cacheTarget
@@ -65,11 +67,19 @@ export default {
       }
     }
 
-    onMounted(async () => {
-      try {
-        await mapbox.initMapbox()
-
-        const [longitude, latitude] = await geolocation
+    getUserCurrentLocation()
+      .then(([lng, lat]) => {
+        longitude = lng
+        latitude = lat
+      })
+      .catch(() => {
+        message.error(
+          'Please accept gps permission to get more accuracy position'
+        )
+      })
+      .finally(() => {
+        mapbox = new CustomMap({ longitude, latitude })
+        mapbox.initMapbox()
         droneMarker = mapbox.createMarker({
           longitude,
           latitude,
@@ -82,7 +92,6 @@ export default {
           latitude,
           map: mapbox.map
         })
-
         mapbox.map.on('contextmenu', ({ lngLat }) => {
           if (isTakeoff.value) {
             cacheTarget = { ...lngLat }
@@ -93,23 +102,20 @@ export default {
           }
           message.error('Please TAKEOFF the drone first')
         })
-
-        watch(
-          () => store.getters['drone/getDroneCoords'],
-          (coords) => {
-            if (!!coords[0] && !!coords[1]) {
-              droneMarker.setLngLat(coords)
-            }
-          }
-        )
-
         setTimeout(() => {
           isLoading.value = false
         }, 1000)
-      } catch (error) {
-        store.dispatch('setLogs', error)
+      })
+
+    watch(
+      () => store.getters['drone/getDroneCoords'],
+      (coords) => {
+        if (!!coords[0] && !!coords[1]) {
+          droneMarker.setLngLat(coords)
+        }
       }
-    })
+    )
+
     return {
       isLoading,
       popEl,
