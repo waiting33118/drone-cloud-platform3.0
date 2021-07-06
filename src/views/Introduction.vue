@@ -14,6 +14,7 @@
       data-aos="zoom-out-down"
       data-aos-delay="500"
       data-aos-easing="ease-in-back"
+      data-aos-once="true"
     >
       Enter Control Panel
     </router-link>
