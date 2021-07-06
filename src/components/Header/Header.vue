@@ -22,8 +22,8 @@
         <a-sub-menu v-if="isAuth">
           <template #title>
             <span>
-              <SettingOutlined />
-              Setting
+              <UserOutlined />
+              {{ username }}
             </span>
           </template>
           <a-menu-item-group>
@@ -43,20 +43,21 @@
 <script>
 import { ref } from '@vue/reactivity'
 import { useRoute } from 'vue-router'
-import { ControlOutlined, SettingOutlined } from '@ant-design/icons-vue'
+import { ControlOutlined, UserOutlined } from '@ant-design/icons-vue'
 import { computed, watch } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 export default {
   name: 'Header',
   components: {
     ControlOutlined,
-    SettingOutlined
+    UserOutlined
   },
   setup() {
     const route = useRoute()
     const store = useStore()
     const current = ref([])
     const isAuth = computed(() => store.getters.getIsAuth)
+    const username = computed(() => store.getters.getUsername)
 
     // header nav link active match
     watch(
@@ -69,7 +70,8 @@ export default {
 
     return {
       current,
-      isAuth
+      isAuth,
+      username
     }
   }
 }
