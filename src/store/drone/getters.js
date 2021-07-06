@@ -3,7 +3,7 @@ export default {
     return {
       ...state.drone,
       isArmed:
-        state.drone.isArmed === ''
+        state.drone.isArmed === '' || state.drone.isArmed === 'null'
           ? ''
           : state.drone.isArmed === '0'
           ? 'DISARM'
