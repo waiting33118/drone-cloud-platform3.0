@@ -19,7 +19,8 @@ import {
   Form,
   Input,
   Result,
-  Divider
+  Divider,
+  Tooltip
 } from 'ant-design-vue'
 
 createApp(App)
@@ -38,6 +39,7 @@ createApp(App)
   .use(Input)
   .use(Result)
   .use(Divider)
+  .use(Tooltip)
   .use(store)
   .use(router)
   .mount('#app')
