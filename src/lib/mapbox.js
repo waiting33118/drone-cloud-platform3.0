@@ -129,6 +129,6 @@ export default class CustomMap {
   }
 
   flyTo(lngLat) {
-    this.map.flyTo({ center: lngLat, zoom: 20 })
+    this.map.flyTo({ center: lngLat, zoom: 19 })
   }
 }

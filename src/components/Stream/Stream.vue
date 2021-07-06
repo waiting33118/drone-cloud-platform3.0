@@ -5,14 +5,24 @@
       poster="../../assets/live-stream.png"
       autoplay
     ></video>
-    <a-button
-      class="video__button"
-      size="small"
-      shape="round"
-      type="primary"
-      @click="startPeerNegotiation"
-      >Connect</a-button
-    >
+    <div class="control__wrapper">
+      <a-tooltip placement="right" color="blue" title="Establish WEBRTC">
+        <a-button
+          class="button"
+          size="small"
+          shape="circle"
+          type="primary"
+          @click="startPeerNegotiation"
+        >
+          <ApiOutlined />
+        </a-button>
+      </a-tooltip>
+      <a-tooltip placement="right" color="blue" title="Start Recording">
+        <a-button class="button" size="small" shape="circle" type="primary">
+          <CameraOutlined />
+        </a-button>
+      </a-tooltip>
+    </div>
   </div>
 </template>
 
@@ -24,11 +34,16 @@ import {
   createOfferAndSetLocalSDP,
   getLocalStream
 } from '../../lib/webRTC'
+import { ApiOutlined, CameraOutlined } from '@ant-design/icons-vue'
 import { onBeforeUnmount, ref } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import { message } from 'ant-design-vue'
 export default {
   name: 'Stream',
+  components: {
+    ApiOutlined,
+    CameraOutlined
+  },
   setup() {
     const remoteVideoEl = ref(null)
     let pc
@@ -138,13 +153,28 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 15px;
   }
 
-  .video__button {
+  .control__wrapper {
     position: absolute;
-    top: 1px;
-    right: 1px;
+    top: -25px;
+    left: 5px;
     z-index: 110;
+    display: flex;
+    flex-direction: row;
+    @media (min-width: 800px) {
+      top: 5px;
+      flex-direction: column;
+    }
+
+    .button {
+      margin-right: 2px;
+      @media (min-width: 800px) {
+        margin-right: 0;
+        margin-bottom: 2px;
+      }
+    }
   }
 }
 </style>

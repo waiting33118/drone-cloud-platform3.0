@@ -1,6 +1,11 @@
 <template>
   <section class="banner">
-    <div class="banner__title" data-aos="fade-down" data-aos-duration="1000">
+    <div
+      class="banner__title"
+      data-aos="fade-down"
+      data-aos-duration="1000"
+      data-aos-once="true"
+    >
       Drone Cloud Platform
     </div>
     <router-link
@@ -9,9 +14,30 @@
       data-aos="zoom-out-down"
       data-aos-delay="500"
       data-aos-easing="ease-in-back"
+      data-aos-once="true"
     >
       Enter Control Panel
     </router-link>
+  </section>
+  <section class="abstract">
+    <iframe
+      class="video__demo"
+      data-aos="fade-left"
+      data-aos-duration="1000"
+      data-aos-once="true"
+      src="https://www.youtube.com/embed/HSsqzzuGTPo"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    />
+    <div
+      class="content"
+      data-aos="fade-right"
+      data-aos-duration="1000"
+      data-aos-once="true"
+    >
+      content
+    </div>
   </section>
   <section class="step">
     <div class="step__items">
@@ -20,36 +46,57 @@
         data-aos="fade-up"
         data-aos-duration="1000"
         data-aos-offset="300"
+        data-aos-once="true"
       >
         install app
       </div>
       <div
         class="step__items--content"
         data-aos="fade-up"
-        data-aos-duration="2000"
+        data-aos-duration="1000"
         data-aos-offset="300"
+        data-aos-once="true"
       >
         signup account
       </div>
       <div
         class="step__items--content"
         data-aos="fade-up"
-        data-aos-duration="3000"
+        data-aos-duration="1000"
         data-aos-offset="300"
+        data-aos-once="true"
       >
         Go discovory
       </div>
     </div>
   </section>
-  <footer>FOOTER</footer>
+  <footer>
+    <small>
+      &copy; 2021 NTUT AiotLab 208 - Drone Cloud Platform. All Rights Reserved
+    </small>
+    <small>
+      Designed by Tony Chung
+      <a
+        class="link__github"
+        target="_blank"
+        rel="noopener"
+        href="https://github.com/waiting33118"
+        ><GithubFilled
+      /></a>
+    </small>
+  </footer>
 </template>
 
 <script>
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import { GithubFilled } from '@ant-design/icons-vue'
 import { onMounted } from '@vue/runtime-core'
 export default {
   name: 'Introduction',
+  components: {
+    GithubFilled
+  },
   setup() {
     onMounted(() => {
       AOS.init()
@@ -60,12 +107,12 @@ export default {
 
 <style lang="scss" scoped>
 .banner {
+  padding: 150px 0;
   background-image: url('../assets/intro.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -86,9 +133,6 @@ export default {
   .banner__title::before {
     content: '';
     position: absolute;
-    // top: 50%;
-    // left: 50%;
-    // transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.15);
@@ -109,9 +153,24 @@ export default {
   }
 }
 
+.abstract {
+  width: 100%;
+  padding: 150px 1rem;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
+
+  .video__demo {
+    width: 500px;
+    aspect-ratio: 16 / 9;
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+  }
+}
+
 .step {
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+  padding: 100px 1rem;
   width: 100%;
   background-image: url('../assets/intro2.jpg');
   background-size: cover;
@@ -120,25 +179,38 @@ export default {
 
   .step__items {
     display: flex;
+    flex-flow: row wrap;
     justify-content: space-evenly;
     align-items: center;
-    flex-wrap: wrap;
-    width: 85%;
-    margin: 0 auto;
     .step__items--content {
-      min-width: 250px;
-      width: 25%;
+      width: 250px;
       height: 450px;
       border-radius: 10px;
       padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 6px 12px 0 rgba(89, 98, 115, 15%);
+      margin-bottom: 2rem;
+      box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 15);
       background-color: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(1.5px);
+
+      &:hover {
+        transform: translate(0, -5%);
+      }
     }
   }
 }
 
 footer {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fab187;
+
+  .link__github {
+    text-decoration: none;
+    color: #000000;
+  }
 }
 </style>

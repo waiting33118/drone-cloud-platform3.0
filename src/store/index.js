@@ -56,6 +56,9 @@ export default createStore({
     getUserInfo(state) {
       return state.user
     },
+    getUsername(state) {
+      return state.user.email.substr(0, state.user.email.indexOf('@'))
+    },
     getIsAuth(state) {
       return state.isAuthenticated
     },
