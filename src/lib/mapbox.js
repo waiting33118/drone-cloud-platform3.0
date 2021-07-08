@@ -1,9 +1,9 @@
 import mapboxgl from 'mapbox-gl'
+const { VUE_APP_MAPBOX_TOKEN } = process.env
 
 const MAPBOX = {
   STYLE: 'mapbox://styles/waiting33118/ckdfkx3t10k9w1irkp8anuy39',
-  TOKEN:
-    'pk.eyJ1Ijoid2FpdGluZzMzMTE4IiwiYSI6ImNrZDVlZWp6MjFxcXQyeHF2bW0xenU4YXoifQ.iGfojLdouAjsovJuRxjYVA'
+  TOKEN: VUE_APP_MAPBOX_TOKEN
 }
 export default class CustomMap {
   constructor({ longitude, latitude }) {
