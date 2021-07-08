@@ -22,7 +22,7 @@ jobs:
       - name: Install node dependencies
         run: npm ci
         
-      - name: Build dependencies
+      - name: Bundle app in production ready
         run: npm run build
         env:
           VUE_APP_MAPBOX_TOKEN: ${{ secrets.VUE_APP_MAPBOX_TOKEN }}
