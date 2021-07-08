@@ -24,6 +24,8 @@ jobs:
         
       - name: Build dependencies
         run: npm run build
+        env:
+          VUE_APP_MAPBOX_TOKEN: ${{ secrets.VUE_APP_MAPBOX_TOKEN }}
         
       - name: Achieve production artifact
         uses: actions/upload-artifact@v2
