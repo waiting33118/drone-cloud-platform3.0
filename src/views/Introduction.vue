@@ -8,35 +8,35 @@
     >
       Drone Cloud Platform
     </div>
-    <router-link
-      to="/drone"
-      class="banner__button"
-      data-aos="zoom-out-down"
-      data-aos-delay="500"
-      data-aos-easing="ease-in-back"
-      data-aos-once="true"
-    >
+    <router-link to="/drone" class="banner__button">
       Enter Control Panel
     </router-link>
   </section>
   <section class="abstract">
     <iframe
-      class="video__demo"
+      class="abstract__video"
       data-aos="fade-left"
       data-aos-duration="1000"
       data-aos-once="true"
-      src="https://www.youtube.com/embed/HSsqzzuGTPo"
+      src="https://www.youtube.com/embed/fAjQ7rRfd60"
       title="YouTube video player"
       frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    />
+      allowfullscreen
+    ></iframe>
     <div
-      class="content"
+      class="abstract__content"
       data-aos="fade-right"
       data-aos-duration="1000"
       data-aos-once="true"
     >
-      content
+      <h1>Drone Cloud Platform</h1>
+      <p>
+        Drone Cloud Platform is a drone control Saas service provider. Pilots
+        can control their drone through our platform, users just need to connect
+        the drone through our android app, after that, you can monitor your
+        drone information on platform.
+      </p>
     </div>
   </section>
   <section class="step">
@@ -107,10 +107,10 @@ export default {
 
 <style lang="scss" scoped>
 .banner {
-  padding: 150px 0;
+  height: 100vh;
   background-image: url('../assets/intro.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: 50% 30%;
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
@@ -119,53 +119,70 @@ export default {
   align-items: center;
 
   .banner__title {
-    position: relative;
+    color: #1890ff;
     text-align: center;
-    font-weight: 600;
-    font-size: 2rem;
-    color: #fff;
+    font-weight: 700;
+    font-size: 3rem;
+    -webkit-text-stroke: 1px #fff;
     margin-bottom: 15rem;
-    @media (min-width: 768px) {
+    @media (min-width: 800px) {
       font-size: 4rem;
     }
   }
 
-  .banner__title::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.15);
-    filter: blur(5px);
-  }
-
   .banner__button {
     z-index: 100;
-    border-radius: 30px;
-    padding: 15px 25px;
-    cursor: pointer;
-    background-color: #fff;
-    color: black;
-    transition: box-shadow 0.2s;
+    border-radius: 500px;
+    text-align: center;
+    line-height: 50px;
+    width: 180px;
+    height: 50px;
+    background-color: #1890ff;
+    color: #fff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
+    transition: all 0.3s ease-in-out;
+
     &:hover {
-      box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 17px rgba(0, 0, 0, 0.7);
+      transform: scale(1.1, 1.1);
     }
   }
 }
 
 .abstract {
   width: 100%;
-  padding: 150px 1rem;
+  padding: 100px 1rem;
   display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
+  flex-flow: column wrap;
   align-items: center;
 
-  .video__demo {
-    width: 500px;
+  @media (min-width: 676px) {
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+
+  .abstract__video {
+    width: 100%;
+    max-width: 500px;
     aspect-ratio: 16 / 9;
     box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.5);
     border-radius: 15px;
+    margin-bottom: 3rem;
+  }
+
+  .abstract__content {
+    width: 100%;
+    @media (min-width: 535px) {
+      width: 500px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    p {
+      font-size: 1rem;
+    }
   }
 }
 
