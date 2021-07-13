@@ -66,7 +66,8 @@
         <a-col flex="auto"
           ><Button
             button-name="Emergency STOP"
-            type="danger"
+            type="primary"
+            danger
             :click-handler="emergencyStopHandler"
         /></a-col>
       </a-row>
