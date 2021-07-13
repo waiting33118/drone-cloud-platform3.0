@@ -17,8 +17,20 @@
           <ApiOutlined />
         </a-button>
       </a-tooltip>
-      <a-tooltip placement="right" color="blue" title="Start Recording">
-        <a-button class="button" size="small" shape="circle" type="primary">
+      <a-tooltip
+        placement="right"
+        color="blue"
+        :title="recordButton.isRecording ? 'Stop recording' : 'Start recording'"
+      >
+        <a-button
+          class="button"
+          size="small"
+          shape="circle"
+          type="primary"
+          :disabled="!recordButton.isReady"
+          :danger="recordButton.isRecording"
+          @click="handleRecording"
+        >
           <CameraOutlined />
         </a-button>
       </a-tooltip>
@@ -35,7 +47,7 @@ import {
   getLocalStream
 } from '../../lib/webRTC'
 import { ApiOutlined, CameraOutlined } from '@ant-design/icons-vue'
-import { onBeforeUnmount, ref } from '@vue/runtime-core'
+import { onBeforeUnmount, reactive, ref } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 import { message } from 'ant-design-vue'
 export default {
@@ -47,9 +59,18 @@ export default {
   setup() {
     const remoteVideoEl = ref(null)
     let pc
+    let recorder
     let localStream
+    let remoteStream
+    let localDisplayStream
     const store = useStore()
+    const recordButton = reactive({
+      isReady: false,
+      isRecording: false
+    })
+
     const setLogs = (log) => store.dispatch('setLogs', log)
+
     const onIceCandidate = (event) => {
       if (event.candidate) {
         socket.emit('send-webrtc', {
@@ -59,15 +80,25 @@ export default {
         setLogs('Send candidate')
       }
     }
+
     const onTrack = (event) => {
       setLogs('Received track')
-      remoteVideoEl.value.srcObject = new MediaStream()
-      remoteVideoEl.value.srcObject = event.streams[0]
+      recordButton.isReady = true
+      remoteStream = event.streams[0]
+      remoteVideoEl.value.srcObject = remoteStream
     }
+
     const onIceConnectionStateChange = (event) => {
       const status = event.target.iceConnectionState
       setLogs(`ICE connection Change: ${status}`)
       if (status === 'disconnected') {
+        if (recordButton.isRecording) {
+          recordButton.isRecording = false
+          recorder.stop()
+          localDisplayStream.getTracks().forEach((track) => track.stop())
+        }
+        recordButton.isReady = false
+        remoteStream.getTracks().forEach((track) => track.stop())
         remoteVideoEl.value.srcObject = new MediaStream()
       }
     }
@@ -92,13 +123,67 @@ export default {
       setLogs('Send offer')
     }
 
+    const recordStarted = () => {
+      setLogs('Start recording')
+      message.success('Start recording')
+    }
+
+    const recordStopped = () => {
+      setLogs('Stop recording')
+      message.warn('Stop recording')
+    }
+
+    const recordDataAvailable = (event) => {
+      const a = document.createElement('a')
+      const timeStamp = new Date().toLocaleString()
+      a.href = URL.createObjectURL(event.data)
+      a.download = `drone-video-${timeStamp}.mp4`
+      a.click()
+    }
+
+    const recordOccurError = (event) => setLogs(event.error.name)
+
+    const initMediaRecorder = async () => {
+      try {
+        localDisplayStream = await navigator.mediaDevices.getDisplayMedia({
+          width: 1920,
+          heigh: 1080
+        })
+        localDisplayStream.addTrack(remoteStream.getAudioTracks()[0])
+        recorder = new MediaRecorder(localDisplayStream, {
+          mimeType: 'video/webm;codecs="h264,opus"',
+          audioBitsPerSecond: 128000,
+          videoBitsPerSecond: 5000000
+        })
+        recorder.onstart = recordStarted
+        recorder.onstop = recordStopped
+        recorder.ondataavailable = recordDataAvailable
+        recorder.onerror = recordOccurError
+        recorder.start()
+      } catch (error) {
+        recordButton.isRecording = false
+        message.error(`Record Canceled by reason of ${error}`)
+      }
+    }
+
+    const handleRecording = () => {
+      if (recordButton.isRecording) {
+        recordButton.isRecording = false
+        recorder.stop()
+        localDisplayStream.getTracks().forEach((track) => track.stop())
+        return
+      }
+      recordButton.isRecording = true
+      initMediaRecorder()
+    }
+
     getLocalStream()
       .then((mediaStream) => {
         localStream = mediaStream
       })
       .catch((error) => {
         message.error(
-          `Cannot add local stream to peer, cause of ${error.message}`
+          `Cannot add local stream to peer by reason of ${error.message}`
         )
       })
       .finally(() => {
@@ -138,7 +223,9 @@ export default {
 
     return {
       remoteVideoEl,
-      startPeerNegotiation
+      startPeerNegotiation,
+      handleRecording,
+      recordButton
     }
   }
 }
@@ -152,7 +239,7 @@ export default {
   video {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 15px;
   }
 

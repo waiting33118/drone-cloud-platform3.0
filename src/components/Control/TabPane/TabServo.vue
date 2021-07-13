@@ -11,9 +11,10 @@
     </Button>
     <Button
       button-name="SERVO STOP"
-      type="danger"
+      type="primary"
       :block="true"
       size="large"
+      danger
       :click-handler="servoStopHandler"
     >
       <PauseCircleOutlined />

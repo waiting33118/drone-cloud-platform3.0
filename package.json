@@ -21,6 +21,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@types/dom-mediacapture-record": "^1.0.10",
     "@types/mapbox-gl": "^2.3.3",
     "@vue/cli-plugin-babel": "~4.5.13",
     "@vue/cli-plugin-eslint": "~4.5.13",
