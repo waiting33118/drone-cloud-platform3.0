@@ -119,10 +119,18 @@ export default class CustomMap {
     })
   }
 
-  createMarker({ color = 'blue', scale = '1', longitude, latitude, map }) {
+  createMarker({
+    color = 'blue',
+    scale = '1',
+    longitude,
+    latitude,
+    draggable = false,
+    map
+  }) {
     return new mapboxgl.Marker({
       color,
-      scale
+      scale,
+      draggable
     })
       .setLngLat([longitude, latitude])
       .addTo(map)
