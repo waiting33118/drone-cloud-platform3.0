@@ -37,22 +37,28 @@ export default {
 <style lang="scss" scoped>
 .info__wrapper {
   width: 220px;
-  height: 100px;
+  height: 110px;
   overflow-y: auto;
   top: 0.5rem;
   left: 0.5rem;
-  position: absolute;
+  position: relative;
   z-index: 150;
   padding: 0.5rem;
   list-style: none;
   font-size: 1rem;
-  background-color: rgba(100, 100, 100, 0.3);
+  font-weight: 600;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
   border-radius: 10px;
   color: #ff0000;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @media (min-width: 800px) {
+    font-size: 1rem;
+    width: 250px;
     height: auto;
-    font-size: 0.5rem;
   }
 
   &::before {

@@ -124,15 +124,16 @@ export default {
 <style lang="scss" scoped>
 .panel {
   height: calc(100vh - 60px);
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 40% 60%;
   @media (min-width: 800px) {
-    display: grid;
     grid-template-columns: 40% 60%;
     grid-template-rows: 50% 50%;
   }
 
   .control {
-    width: 100%;
-    height: 40%;
+    grid-row: 1 / 2;
     @media (min-width: 800px) {
       width: 100%;
       height: 100%;
@@ -142,13 +143,10 @@ export default {
   }
   .map {
     position: relative;
-    width: 100%;
-    height: 60%;
+    grid-row: 2 / 3;
     @media (min-width: 800px) {
       grid-column: 2 / 3;
       grid-row: 1 / span 3;
-      width: 100%;
-      height: 100%;
     }
   }
   .stream {

@@ -247,7 +247,6 @@ export default {
     position: absolute;
     top: -25px;
     left: 5px;
-    z-index: 110;
     display: flex;
     flex-direction: row;
     @media (min-width: 800px) {

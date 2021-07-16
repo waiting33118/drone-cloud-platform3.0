@@ -5,17 +5,15 @@
     :spinning="isLoading"
     tip="Loading map..."
   />
-
-  <a-popconfirm
-    title="Press Start To Start Mission"
-    ok-text="Start"
-    cancel-text="Cancel"
-    @confirm="missionConfirmHandler"
-    @cancel="missionCancelHandler"
-    ><a ref="popEl" class="confirm__dialog"
-  /></a-popconfirm>
-
   <div id="map" :class="{ map: isLoading }">
+    <a-popconfirm
+      title="Press Start To Start Mission"
+      ok-text="Start"
+      cancel-text="Cancel"
+      @confirm="missionConfirmHandler"
+      @cancel="missionCancelHandler"
+      ><a ref="popEl" class="confirm__dialog"
+    /></a-popconfirm>
     <DroneDashBoard />
   </div>
 </template>
@@ -23,7 +21,7 @@
 <script>
 import CustomMap from '../../lib/mapbox'
 import DroneDashBoard from '../Mapbox/DroneDashBoard.vue'
-import { computed, ref, watch } from '@vue/runtime-core'
+import { computed, onMounted, ref, watch } from '@vue/runtime-core'
 import { getUserCurrentLocation } from '../../lib/geolocation'
 import socket from '../../lib/websocket'
 import { useStore } from 'vuex'
@@ -87,25 +85,28 @@ export default {
         })
         targetMarker = mapbox.createMarker({
           color: 'red',
-          scale: '0.5',
+          scale: '0.7',
           longitude,
           latitude,
-          map: mapbox.map
+          map: mapbox.map,
+          draggable: true
         })
-        mapbox.map.on('contextmenu', ({ lngLat }) => {
+
+        targetMarker.on('dragend', () => {
           if (isTakeoff.value) {
-            cacheTarget = { ...lngLat }
+            const lngLat = targetMarker.getLngLat()
+            cacheTarget = lngLat
             mapbox.flyTo([lngLat.lng, lngLat.lat])
-            targetMarker.setLngLat([lngLat.lng, lngLat.lat])
             popEl.value.click()
             return
           }
           message.error('Please TAKEOFF the drone first')
         })
-        setTimeout(() => {
-          isLoading.value = false
-        }, 1000)
       })
+
+    onMounted(() => {
+      isLoading.value = false
+    })
 
     watch(
       () => store.getters['drone/getDroneCoords'],
@@ -127,23 +128,23 @@ export default {
 </script>
 <style lang="scss" scoped>
 #map {
+  position: relative;
   width: 100%;
   height: 100%;
-  position: relative;
+
+  .confirm__dialog {
+    position: absolute;
+    top: 49%;
+    left: 50%;
+  }
 }
 .map {
   visibility: hidden;
 }
 .map__spinner {
-  z-index: 50;
   position: absolute;
+  z-index: 500;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.confirm__dialog {
-  position: absolute;
-  top: 49%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
