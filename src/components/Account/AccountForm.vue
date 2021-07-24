@@ -76,7 +76,7 @@ export default {
           droneId: droneId.value
         })
         store.dispatch('setRabbitmqIsInit', false)
-        socket.emit('close-rabbitmq-channel')
+        socket.emit('cancel-consume')
         const { data } = await user.editUserDroneId({ droneId: droneId.value })
         notification.success({ message: data.msg })
       }

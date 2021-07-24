@@ -13,7 +13,7 @@ const refreshToken = () => {
 const cleanState = async () => {
   await auth.logout()
   clearInterval(intervalTimer)
-  socket.emit('close-rabbitmq-channel')
+  socket.emit('cancel-consume')
   store.dispatch('setRabbitmqIsInit', false)
   store.dispatch('setIsAuth', false)
   store.dispatch('setUserInfo', { email: '', droneId: '' })

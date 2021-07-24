@@ -4,7 +4,7 @@ import { notification } from 'ant-design-vue'
 axios.defaults.baseURL =
   process.env.NODE_ENV === 'production'
     ? 'https://api.aiotlab-drone-cloud.ga/api/v1'
-    : 'http://localhost:3030/api/v1'
+    : `http://${process.env.VUE_APP_BACKEND_SERVICE_SERVICE_HOST}:${process.env.VUE_APP_BACKEND_SERVICE_SERVICE_PORT}/api/v1`
 axios.defaults.withCredentials = true
 
 axios.interceptors.response.use(
