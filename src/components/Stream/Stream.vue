@@ -84,8 +84,7 @@ export default {
     const onTrack = (event) => {
       setLogs('Received track')
       recordButton.isReady = true
-      remoteStream = event.streams[0]
-      remoteVideoEl.value.srcObject = remoteStream
+      remoteVideoEl.value.srcObject = remoteStream = event.streams[0]
     }
 
     const onIceConnectionStateChange = (event) => {
@@ -104,6 +103,7 @@ export default {
     }
 
     const initPeerConnection = () => {
+      if (pc?.connectionState) pc.close()
       pc = createPeerConnection()
       setLogs('Create peer connection')
       pc.onicecandidate = onIceCandidate
@@ -112,7 +112,9 @@ export default {
       if (localStream) {
         localStream.getTracks().forEach((track) => pc.addTrack(track))
         setLogs('Add local tracks to peer connection')
-      }
+      } /*else {     // TODO: handle no camera situation
+        setLogs('No local stream,add dummy tracks to peer connection')
+      }*/
     }
 
     const startPeerNegotiation = async () => {
