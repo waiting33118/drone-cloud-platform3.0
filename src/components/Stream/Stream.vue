@@ -62,6 +62,7 @@ export default {
     let recorder
     let localStream
     let remoteStream
+    let dummyStream
     let localDisplayStream
     const store = useStore()
     const recordButton = reactive({
@@ -84,7 +85,8 @@ export default {
     const onTrack = (event) => {
       setLogs('Received track')
       recordButton.isReady = true
-      remoteVideoEl.value.srcObject = remoteStream = event.streams[0]
+      remoteStream = event.streams[0]
+      remoteVideoEl.value.srcObject = remoteStream
     }
 
     const onIceConnectionStateChange = (event) => {
@@ -112,9 +114,10 @@ export default {
       if (localStream) {
         localStream.getTracks().forEach((track) => pc.addTrack(track))
         setLogs('Add local tracks to peer connection')
-      } /*else {     // TODO: handle no camera situation
-        setLogs('No local stream,add dummy tracks to peer connection')
-      }*/
+      } else {
+        dummyStream.getTracks().forEach((track) => pc.addTrack(track))
+        setLogs('No local stream,add dummy track to peer connection')
+      }
     }
 
     const startPeerNegotiation = async () => {
@@ -187,6 +190,10 @@ export default {
         message.error(
           `Cannot add local stream to peer by reason of ${error.message}`
         )
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        dummyStream = canvas.captureStream()
       })
       .finally(() => {
         socket.on('webrtc-topic', async (data) => {
@@ -217,9 +224,8 @@ export default {
     onBeforeUnmount(() => {
       socket.off('webrtc-topic')
       setTimeout(() => {
-        if (localStream) {
-          localStream.getTracks().forEach((track) => track.stop())
-        }
+        localStream?.getTracks().forEach((track) => track.stop())
+        dummyStream?.getTracks().forEach((track) => track.stop())
       }, 1000)
     })
 
