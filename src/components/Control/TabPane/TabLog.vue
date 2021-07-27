@@ -34,7 +34,7 @@ export default {
     padding: 0;
     list-style: none;
     li {
-      font-size: 12px;
+      font-size: 1rem;
       word-wrap: break-word;
     }
   }
