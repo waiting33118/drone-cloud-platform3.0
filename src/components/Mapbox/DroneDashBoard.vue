@@ -11,7 +11,7 @@
     <li><span>VOLTAGE</span>{{ drone.voltage }}</li>
     <li><span>BATTERY</span>{{ drone.percentage }}</li>
     <li><span>ROLL</span>{{ drone.roll }}</li>
-    <li><span>YAW</span>{{ drone.yaw }}</li>
+    <li><span>PITCH</span>{{ drone.pitch }}</li>
     <li><span>GPS COUNTS</span>{{ drone.gpsCount }}</li>
     <li><span>GPS HPOP</span>{{ drone.hpop }}</li>
   </ul>

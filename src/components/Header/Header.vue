@@ -115,7 +115,7 @@ header {
         }
         @media (min-width: 660px) {
           width: 200px;
-          font-size: 20px;
+          font-size: 1.5rem;
           font-weight: 900;
         }
       }
