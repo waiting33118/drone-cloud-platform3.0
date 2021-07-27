@@ -27,7 +27,6 @@ export default {
     const store = useStore()
     const rabbitmqIsInit = computed(() => store.getters.getRabbitmqIsInit)
     const user = computed(() => store.getters.getUserInfo)
-    const formatCommand = (payload) => payload.split('=')[1]
     const saveLogs = (log) => store.dispatch('setLogs', log)
 
     const rabbitmqInit = () => {
@@ -87,27 +86,25 @@ export default {
       }
 
       if (data.type === 'cmd_ack') {
-        const formattedCmd = formatCommand(data.cmd)
         if (data.cmd_result.includes('ACCEPTED')) {
           message.success(data.cmd_result)
         } else {
           message.error(data.cmd_result)
         }
-        saveLogs(formattedCmd)
+        saveLogs(data.cmd)
       }
 
       if (data.type === 'mission_ack') {
-        const formattedCmd = formatCommand(data.mission_result)
         if (data.mission_result.includes('ACCEPTED')) {
           message.success(data.mission_result)
         } else {
           message.error(data.mission_result)
         }
-        saveLogs(formattedCmd)
+        saveLogs(data.mission_result)
       }
 
       if (data.type === 'apm_text') {
-        saveLogs(formatCommand(data.text))
+        saveLogs(data.text)
       }
     })
 
