@@ -74,11 +74,13 @@ export default {
 
     const onIceCandidate = (event) => {
       if (event.candidate) {
-        socket.emit('send-webrtc', {
-          type: 'candidate',
-          payload: event.candidate
-        })
-        setLogs('Send candidate')
+        setTimeout(() => {
+          socket.emit('send-webrtc', {
+            type: 'candidate',
+            payload: event.candidate
+          })
+          setLogs('Send candidate')
+        }, 1000)
       }
     }
 
@@ -89,10 +91,9 @@ export default {
       remoteVideoEl.value.srcObject = remoteStream
     }
 
-    const onIceConnectionStateChange = (event) => {
-      const status = event.target.iceConnectionState
-      setLogs(`ICE connection Change: ${status}`)
-      if (status === 'disconnected') {
+    const onIceConnectionStateChange = () => {
+      setLogs(`ICE connection Change: ${pc.iceConnectionState}`)
+      if (pc.iceConnectionState === 'disconnected') {
         if (recordButton.isRecording) {
           recordButton.isRecording = false
           recorder.stop()
@@ -104,13 +105,21 @@ export default {
       }
     }
 
+    const onIceConnectionGatheringChange = () => {
+      setLogs(`ICE gathering Change: ${pc.iceGatheringState}`)
+    }
+
     const initPeerConnection = () => {
-      if (pc?.connectionState) pc.close()
+      if (pc?.connectionState) {
+        setLogs('Close previous peer connection')
+        pc.close()
+      }
       pc = createPeerConnection()
       setLogs('Create peer connection')
       pc.onicecandidate = onIceCandidate
       pc.ontrack = onTrack
       pc.oniceconnectionstatechange = onIceConnectionStateChange
+      pc.onicegatheringstatechange = onIceConnectionGatheringChange
       if (localStream) {
         localStream.getTracks().forEach((track) => pc.addTrack(track))
         setLogs('Add local tracks to peer connection')
