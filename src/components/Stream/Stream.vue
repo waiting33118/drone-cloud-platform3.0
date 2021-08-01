@@ -163,7 +163,6 @@ export default {
           width: 1920,
           heigh: 1080
         })
-        localDisplayStream.addTrack(remoteStream.getAudioTracks()[0])
         recorder = new MediaRecorder(localDisplayStream, {
           mimeType: 'video/webm;codecs="h264,opus"',
           audioBitsPerSecond: 128000,
