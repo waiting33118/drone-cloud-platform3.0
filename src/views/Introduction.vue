@@ -48,7 +48,8 @@
         data-aos-offset="300"
         data-aos-once="true"
       >
-        install app
+        <div class="step__items--title">1.Install Our App</div>
+        <img class="step__items--image" src="../assets/drone-cloud-apk.svg" />
       </div>
       <div
         class="step__items--content"
@@ -57,7 +58,8 @@
         data-aos-offset="300"
         data-aos-once="true"
       >
-        signup account
+        <div class="step__items--title">2.Signup our service</div>
+        <img class="step__items--image" src="../assets/sign-up.png" />
       </div>
       <div
         class="step__items--content"
@@ -66,7 +68,8 @@
         data-aos-offset="300"
         data-aos-once="true"
       >
-        Go discovory
+        <div class="step__items--title">3.Take a Flight!</div>
+        <img class="step__items--image" src="../assets/fly-drone.png" />
       </div>
     </div>
   </section>
@@ -200,17 +203,30 @@ export default {
     justify-content: space-evenly;
     align-items: center;
     .step__items--content {
-      width: 250px;
-      height: 450px;
+      width: 290px;
+      height: 300px;
       border-radius: 10px;
       padding: 1rem;
       margin-bottom: 2rem;
       box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 15);
       background-color: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(1.5px);
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
+      justify-content: space-evenly;
 
       &:hover {
         transform: translate(0, -5%);
+      }
+
+      .step__items--title {
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+      .step__items--image {
+        width: 200px;
+        height: 200px;
       }
     }
   }
