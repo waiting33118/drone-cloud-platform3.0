@@ -5,7 +5,7 @@
     :spinning="isLoading"
     tip="Loading map..."
   />
-  <div id="map" :class="{ map: isLoading }">
+  <div id="map">
     <a-popconfirm
       title="Press Start To Start Mission"
       ok-text="Start"
@@ -21,7 +21,7 @@
 <script>
 import CustomMap from '../../lib/mapbox'
 import DroneDashBoard from '../Mapbox/DroneDashBoard.vue'
-import { computed, onMounted, ref, watch } from '@vue/runtime-core'
+import { computed, ref, watch } from '@vue/runtime-core'
 import { getUserCurrentLocation } from '../../lib/geolocation'
 import socket from '../../lib/websocket'
 import { useStore } from 'vuex'
@@ -55,13 +55,27 @@ export default {
         lng,
         lat
       })
+      mapbox.map.zoomTo(17)
       message.success('Start GOTO Mission')
     }
+
     const missionCancelHandler = () => {
       const { lng, lat } = destination.value
       if (lng !== 0 && lat !== 0) {
-        mapbox.flyTo([lng, lat])
+        mapbox.flyTo([lng, lat], 17)
         targetMarker.setLngLat([lng, lat])
+        return
+      }
+      mapbox.map.zoomTo(17)
+    }
+
+    const coordinateRecords = []
+
+    const geoJsonFormatData = {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: coordinateRecords
       }
     }
 
@@ -78,6 +92,12 @@ export default {
       .finally(() => {
         mapbox = new CustomMap({ longitude, latitude })
         mapbox.initMapbox()
+
+        mapbox.map.on('load', () => {
+          mapbox.createGeoJsonSource('real-time-record', geoJsonFormatData)
+          mapbox.createLineLayer('real-time-path', 'real-time-record')
+        })
+
         droneMarker = mapbox.createMarker({
           longitude,
           latitude,
@@ -104,15 +124,28 @@ export default {
         })
       })
 
-    onMounted(() => {
+    setTimeout(() => {
       isLoading.value = false
-    })
+    }, 1000)
 
     watch(
       () => store.getters['drone/getDroneCoords'],
       (coords) => {
         if (!!coords[0] && !!coords[1]) {
           droneMarker.setLngLat(coords)
+
+          const isEqualPreviousCoords = () => {
+            return (
+              coordinateRecords.length !== 0 &&
+              coords[0] ===
+                coordinateRecords[coordinateRecords.length - 1][0] &&
+              coords[1] === coordinateRecords[coordinateRecords.length - 1][1]
+            )
+          }
+          if (!isEqualPreviousCoords()) {
+            coordinateRecords.push(coords)
+            mapbox.updateGeoJsonSource('real-time-record', geoJsonFormatData)
+          }
         }
       }
     )
@@ -137,9 +170,6 @@ export default {
     top: 49%;
     left: 50%;
   }
-}
-.map {
-  visibility: hidden;
 }
 .map__spinner {
   position: absolute;
