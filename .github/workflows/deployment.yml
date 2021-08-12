@@ -20,7 +20,7 @@ jobs:
           node-version: 'lts/*'
       
       - name: Install node dependencies
-        run: npm ci
+        run: npm i
         
       - name: Bundle app in production ready
         run: npm run build
