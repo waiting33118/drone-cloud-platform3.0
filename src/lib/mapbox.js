@@ -91,31 +91,47 @@ export default class CustomMap {
     )
   }
 
-  addRealTimeTracePath() {
-    this.map.addSource('trace', {
+  /**
+   * Create a Geojson source and apply into custom map
+   * @param {string} id source ID
+   * @param {object} geoJsonData
+   */
+  createGeoJsonSource(id, geoJsonData) {
+    this.map.addSource(id, {
       type: 'geojson',
-      data: {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: []
-        }
-      }
+      data: geoJsonData
     })
+  }
+
+  /**
+   * Create a custom map layer
+   * @param {string} id layer ID
+   * @param {string} source source data ID
+   */
+  createLineLayer(id, source) {
     this.map.addLayer({
-      id: 'trace',
+      id,
       type: 'line',
-      source: 'trace',
+      source,
       layout: {
-        'line-join': 'round',
-        'line-cap': 'round'
+        'line-join': 'round'
       },
       paint: {
-        'line-color': 'yellow',
-        'line-opacity': 0.75,
-        'line-width': 5
+        'line-blur': 0.1,
+        'line-color': '#1A73E8',
+        'line-opacity': 0.8,
+        'line-width': 3
       }
     })
+  }
+
+  /**
+   * Update specific map source and re-render map
+   * @param {string} sourceId
+   * @param {object} geoJsonData
+   */
+  updateGeoJsonSource(sourceId, geoJsonData) {
+    this.map.getSource(sourceId)?.setData(geoJsonData)
   }
 
   createMarker({
@@ -135,7 +151,11 @@ export default class CustomMap {
       .addTo(map)
   }
 
-  flyTo(lngLat) {
-    this.map.flyTo({ center: lngLat, zoom: 19 })
+  /**
+   * @param {number[]} lngLat
+   * @param {number} zoomLevel
+   */
+  flyTo(lngLat, zoomLevel = 19) {
+    this.map.flyTo({ center: lngLat, zoom: zoomLevel })
   }
 }
