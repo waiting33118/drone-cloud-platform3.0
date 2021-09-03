@@ -3,11 +3,14 @@
     <a-tab-pane key="1" class="tabs__pane" tab="Control">
       <TabControl />
     </a-tab-pane>
-    <a-tab-pane key="2" class="tabs__pane" tab="Servo"><TabServo /></a-tab-pane>
-    <a-tab-pane key="3" class="tabs__pane" tab="Gimbal"
+    <a-tab-pane key="2" class="tabs__pane" tab="Tweak">
+      <TabTweak />
+    </a-tab-pane>
+    <a-tab-pane key="3" class="tabs__pane" tab="Servo"><TabServo /></a-tab-pane>
+    <a-tab-pane key="4" class="tabs__pane" tab="Gimbal"
       ><TabGimbal
     /></a-tab-pane>
-    <a-tab-pane key="4" class="tabs__pane" tab="Log"><TabLog /></a-tab-pane>
+    <a-tab-pane key="5" class="tabs__pane" tab="Log"><TabLog /></a-tab-pane>
   </a-tabs>
 </template>
 
@@ -16,12 +19,10 @@ import TabControl from './TabPane/TabControl.vue'
 import TabLog from './TabPane/TabLog.vue'
 import TabServo from './TabPane/TabServo.vue'
 import TabGimbal from './TabPane/TabGimbal.vue'
+import TabTweak from './TabPane/TabTweak.vue'
 export default {
   name: 'Control',
-  components: { TabControl, TabLog, TabServo, TabGimbal },
-  setup() {
-    return {}
-  }
+  components: { TabControl, TabLog, TabServo, TabGimbal, TabTweak }
 }
 </script>
 <style lang="scss" scoped>

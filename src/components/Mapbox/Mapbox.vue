@@ -86,7 +86,7 @@ export default {
       })
       .catch(() => {
         message.error(
-          'Please accept gps permission to get more accuracy position'
+          'Please allow gps permission to get more accuracy position'
         )
       })
       .finally(() => {
@@ -122,33 +122,40 @@ export default {
           }
           message.error('Please TAKEOFF the drone first')
         })
+
+        watch(
+          () => store.getters['drone/getDroneCoords'],
+          (coords) => {
+            if (!!coords[0] && !!coords[1]) {
+              droneMarker.setLngLat(coords)
+
+              const isEqualPreviousCoords = () => {
+                return (
+                  coordinateRecords.length !== 0 &&
+                  coords[0] ===
+                    coordinateRecords[coordinateRecords.length - 1][0] &&
+                  coords[1] ===
+                    coordinateRecords[coordinateRecords.length - 1][1]
+                )
+              }
+              if (!isEqualPreviousCoords()) {
+                coordinateRecords.push(coords)
+                mapbox.updateGeoJsonSource(
+                  'real-time-record',
+                  geoJsonFormatData
+                )
+              }
+            }
+          }
+        )
+
+        watch(
+          () => store.getters['drone/getHeading'],
+          (heading) => mapbox.map.setBearing(Number(heading).toFixed(0))
+        )
+
+        isLoading.value = false
       })
-
-    setTimeout(() => {
-      isLoading.value = false
-    }, 1000)
-
-    watch(
-      () => store.getters['drone/getDroneCoords'],
-      (coords) => {
-        if (!!coords[0] && !!coords[1]) {
-          droneMarker.setLngLat(coords)
-
-          const isEqualPreviousCoords = () => {
-            return (
-              coordinateRecords.length !== 0 &&
-              coords[0] ===
-                coordinateRecords[coordinateRecords.length - 1][0] &&
-              coords[1] === coordinateRecords[coordinateRecords.length - 1][1]
-            )
-          }
-          if (!isEqualPreviousCoords()) {
-            coordinateRecords.push(coords)
-            mapbox.updateGeoJsonSource('real-time-record', geoJsonFormatData)
-          }
-        }
-      }
-    )
 
     return {
       isLoading,
