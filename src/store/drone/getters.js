@@ -13,6 +13,9 @@ export default {
   getDroneCoords(state) {
     return [state.drone.longitude, state.drone.latitude]
   },
+  getHeading(state) {
+    return state.drone.heading
+  },
   getAltitude(state) {
     return state.status.altitude
   },
