@@ -49,7 +49,7 @@
         data-aos-once="true"
       >
         <div class="step__items--title">1.Install Our App</div>
-        <img class="step__items--image" src="../assets/drone-cloud-apk.svg" />
+        <img class="step__items--image" src="../assets/qrcode_github.com.png" />
       </div>
       <div
         class="step__items--content"
