@@ -30,6 +30,9 @@
             <a-menu-item key="account">
               <router-link to="account">Account</router-link>
             </a-menu-item>
+            <a-menu-item key="records">
+              <router-link to="records">Records</router-link>
+            </a-menu-item>
             <a-menu-item key="logout">
               <router-link to="logout">Logout</router-link>
             </a-menu-item>
