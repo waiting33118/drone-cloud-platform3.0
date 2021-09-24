@@ -98,7 +98,7 @@ export default {
         duration: 2
       })
       try {
-        const { data } = await droneService.saveFlightRecord(
+        const { data } = await droneService.saveFlightRecords(
           geoJsonFormatData.geometry.coordinates
         )
         notification.success({
@@ -185,7 +185,9 @@ export default {
 
         watch(
           () => store.getters['drone/getHeading'],
-          (heading) => mapbox.map.setBearing(Number(heading).toFixed(0) || 0)
+          (heading) => {
+            mapbox.map.setBearing(Number(heading).toFixed(0))
+          }
         )
 
         isLoading.value = false
