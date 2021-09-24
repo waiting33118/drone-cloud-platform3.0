@@ -4,7 +4,16 @@ export default {
   /**
    * @param {Array} records
    */
-  async saveFlightRecord(records) {
+  async saveFlightRecords(records) {
     return await axios.post('/drone/records', { records })
+  },
+  async getFlightRecords() {
+    return await axios.get('/drone/records')
+  },
+  /**
+   * @param {string} id
+   */
+  async getFlightRecord(id) {
+    return await axios.get(`/drone/records/${id}`)
   }
 }

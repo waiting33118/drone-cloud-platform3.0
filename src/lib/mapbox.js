@@ -158,4 +158,21 @@ export default class CustomMap {
   flyTo(lngLat, zoomLevel = 19) {
     this.map.flyTo({ center: lngLat, zoom: zoomLevel })
   }
+
+  /**
+   * @param {number[]} along
+   * @param {number} cameraAltitude
+   */
+  applyFreeCamera(along, cameraAltitude) {
+    const camera = this.map.getFreeCameraOptions()
+    camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
+      {
+        lng: along[0],
+        lat: along[1]
+      },
+      cameraAltitude
+    )
+    camera.lookAtPoint({ lng: along[0], lat: along[1] })
+    this.map.setFreeCameraOptions(camera)
+  }
 }
