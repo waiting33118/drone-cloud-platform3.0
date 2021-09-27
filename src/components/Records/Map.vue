@@ -69,8 +69,7 @@ export default {
       })
       .finally(() => {
         mapbox = new CustomMap({ longitude, latitude })
-        mapbox.initMapbox()
-        mapbox.map.setZoom(17)
+        mapbox.initMapbox('mapbox://styles/mapbox/satellite-streets-v11')
         mapbox.map.on('load', () => {
           mapbox.map.addLayer({
             id: 'sky',
