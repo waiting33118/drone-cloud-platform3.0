@@ -11,9 +11,9 @@ export default class CustomMap {
     this.map = null
   }
 
-  initMapbox() {
+  initMapbox(mapStyle) {
     this.map = new mapboxgl.Map({
-      style: MAPBOX.STYLE,
+      style: mapStyle || MAPBOX.STYLE,
       center: [this.longitude, this.latitude],
       zoom: 17,
       pitch: 0,
