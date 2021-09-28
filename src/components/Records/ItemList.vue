@@ -42,7 +42,6 @@ export default {
         ...record,
         update: dayjs(record.update)
           .locale('zh-tw')
-          .add(8, 'hour')
           .format('YYYY/MM/DD ddd h:mm A')
       }))
     }
