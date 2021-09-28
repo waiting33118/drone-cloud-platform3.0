@@ -126,7 +126,7 @@ export default {
     text-align: center;
     font-weight: 700;
     font-size: 3rem;
-    -webkit-text-stroke: 1px #fff;
+    text-shadow: 3px 3px 5px rgb(255, 255, 255);
     margin-bottom: 15rem;
     @media (min-width: 800px) {
       font-size: 4rem;
