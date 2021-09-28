@@ -51,6 +51,11 @@ const routes = [
     component: () => import('../views/Drone.vue')
   },
   {
+    path: '/records',
+    name: 'Records',
+    component: () => import('../views/Records.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue')

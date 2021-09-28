@@ -11,9 +11,9 @@ export default class CustomMap {
     this.map = null
   }
 
-  initMapbox() {
+  initMapbox(mapStyle) {
     this.map = new mapboxgl.Map({
-      style: MAPBOX.STYLE,
+      style: mapStyle || MAPBOX.STYLE,
       center: [this.longitude, this.latitude],
       zoom: 17,
       pitch: 0,
@@ -157,5 +157,22 @@ export default class CustomMap {
    */
   flyTo(lngLat, zoomLevel = 19) {
     this.map.flyTo({ center: lngLat, zoom: zoomLevel })
+  }
+
+  /**
+   * @param {number[]} along
+   * @param {number} cameraAltitude
+   */
+  applyFreeCamera(along, cameraAltitude) {
+    const camera = this.map.getFreeCameraOptions()
+    camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
+      {
+        lng: along[0],
+        lat: along[1]
+      },
+      cameraAltitude
+    )
+    camera.lookAtPoint({ lng: along[0], lat: along[1] })
+    this.map.setFreeCameraOptions(camera)
   }
 }

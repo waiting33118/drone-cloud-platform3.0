@@ -15,6 +15,16 @@
       ><a ref="popEl" class="confirm__dialog"
     /></a-popconfirm>
     <DroneDashBoard />
+    <a-tooltip placement="left" color="blue" title="Save & Clear Path">
+      <a-button
+        class="save-btn"
+        shape="circle"
+        size="small"
+        @click="saveAndClearPathHandler"
+      >
+        <SaveOutlined />
+      </a-button>
+    </a-tooltip>
   </div>
 </template>
 
@@ -23,12 +33,14 @@ import CustomMap from '../../lib/mapbox'
 import DroneDashBoard from '../Mapbox/DroneDashBoard.vue'
 import { computed, ref, watch } from '@vue/runtime-core'
 import { getUserCurrentLocation } from '../../lib/geolocation'
+import droneService from '../../services/drone'
 import socket from '../../lib/websocket'
 import { useStore } from 'vuex'
-import { message } from 'ant-design-vue'
+import { message, notification } from 'ant-design-vue'
+import { SaveOutlined } from '@ant-design/icons-vue'
 export default {
   name: 'Mapbox',
-  components: { DroneDashBoard },
+  components: { DroneDashBoard, SaveOutlined },
   setup() {
     const popEl = ref(null)
     const isLoading = ref(true)
@@ -42,6 +54,13 @@ export default {
     const isTakeoff = computed(() => store.getters['drone/getTakeoffStatus'])
     const altitude = computed(() => store.getters['drone/getAltitude'])
     const destination = computed(() => store.getters['drone/getDestination'])
+    const geoJsonFormatData = {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: []
+      }
+    }
 
     const missionConfirmHandler = () => {
       const { lng, lat } = cacheTarget
@@ -69,13 +88,27 @@ export default {
       mapbox.map.zoomTo(17)
     }
 
-    const coordinateRecords = []
-
-    const geoJsonFormatData = {
-      type: 'Feature',
-      geometry: {
-        type: 'LineString',
-        coordinates: coordinateRecords
+    const saveAndClearPathHandler = async () => {
+      if (geoJsonFormatData.geometry.coordinates.length < 10) {
+        notification.warning({ message: 'No flight records can be save!' })
+        return
+      }
+      notification.info({
+        message: 'Saving flight records...',
+        duration: 2
+      })
+      try {
+        const { data } = await droneService.saveFlightRecords(
+          geoJsonFormatData.geometry.coordinates
+        )
+        notification.success({
+          message: data.msg
+        })
+        geoJsonFormatData.geometry.coordinates = []
+      } catch (error) {
+        notification.error({
+          message: 'Oops! Cannot save records, Please try again!'
+        })
       }
     }
 
@@ -123,23 +156,24 @@ export default {
           message.error('Please TAKEOFF the drone first')
         })
 
+        const isEqualPreviousCoords = (newCoords) => {
+          const coordinateRecords = geoJsonFormatData.geometry.coordinates
+          if (coordinateRecords.length === 0) return false
+          return (
+            newCoords[0] ===
+              coordinateRecords[coordinateRecords.length - 1][0] &&
+            newCoords[1] === coordinateRecords[coordinateRecords.length - 1][1]
+          )
+        }
+
         watch(
           () => store.getters['drone/getDroneCoords'],
           (coords) => {
             if (!!coords[0] && !!coords[1]) {
               droneMarker.setLngLat(coords)
 
-              const isEqualPreviousCoords = () => {
-                return (
-                  coordinateRecords.length !== 0 &&
-                  coords[0] ===
-                    coordinateRecords[coordinateRecords.length - 1][0] &&
-                  coords[1] ===
-                    coordinateRecords[coordinateRecords.length - 1][1]
-                )
-              }
-              if (!isEqualPreviousCoords()) {
-                coordinateRecords.push(coords)
+              if (!isEqualPreviousCoords(coords)) {
+                geoJsonFormatData.geometry.coordinates.push(coords)
                 mapbox.updateGeoJsonSource(
                   'real-time-record',
                   geoJsonFormatData
@@ -151,7 +185,9 @@ export default {
 
         watch(
           () => store.getters['drone/getHeading'],
-          (heading) => mapbox.map.setBearing(Number(heading).toFixed(0))
+          (heading) => {
+            mapbox.map.setBearing(Number(heading).toFixed(0))
+          }
         )
 
         isLoading.value = false
@@ -161,7 +197,8 @@ export default {
       isLoading,
       popEl,
       missionConfirmHandler,
-      missionCancelHandler
+      missionCancelHandler,
+      saveAndClearPathHandler
     }
   }
 }
@@ -176,6 +213,13 @@ export default {
     position: absolute;
     top: 49%;
     left: 50%;
+  }
+
+  .save-btn {
+    position: absolute;
+    right: 0.8rem;
+    top: 6.5rem;
+    z-index: 150;
   }
 }
 .map__spinner {
