@@ -30,7 +30,7 @@
 
 <script>
 import CustomMap from '../../lib/mapbox'
-import DroneDashBoard from '../Mapbox/DroneDashBoard.vue'
+import DroneDashBoard from './DroneDashBoard.vue'
 import { computed, ref, watch } from '@vue/runtime-core'
 import { getUserCurrentLocation } from '../../lib/geolocation'
 import droneService from '../../services/drone'
@@ -180,13 +180,6 @@ export default {
                 )
               }
             }
-          }
-        )
-
-        watch(
-          () => store.getters['drone/getHeading'],
-          (heading) => {
-            mapbox.map.setBearing(Number(heading).toFixed(0))
           }
         )
 
