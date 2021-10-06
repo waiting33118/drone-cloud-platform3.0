@@ -19,6 +19,12 @@
             Control Panel
           </router-link>
         </a-menu-item>
+        <a-menu-item v-if="isAuth && isAdmin" key="management">
+          <router-link to="/management">
+            <ClusterOutlined />
+            Drone Management
+          </router-link>
+        </a-menu-item>
         <a-sub-menu v-if="isAuth">
           <template #title>
             <span>
@@ -46,20 +52,26 @@
 <script>
 import { ref } from '@vue/reactivity'
 import { useRoute } from 'vue-router'
-import { ControlOutlined, UserOutlined } from '@ant-design/icons-vue'
+import {
+  ControlOutlined,
+  UserOutlined,
+  ClusterOutlined
+} from '@ant-design/icons-vue'
 import { computed, watch } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 export default {
   name: 'Header',
   components: {
     ControlOutlined,
-    UserOutlined
+    UserOutlined,
+    ClusterOutlined
   },
   setup() {
     const route = useRoute()
     const store = useStore()
     const current = ref([])
     const isAuth = computed(() => store.getters.getIsAuth)
+    const isAdmin = computed(() => store.getters.getIsAdmin)
     const username = computed(() => store.getters.getUsername)
 
     // header nav link active match
@@ -74,6 +86,7 @@ export default {
     return {
       current,
       isAuth,
+      isAdmin,
       username
     }
   }
