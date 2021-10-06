@@ -6,9 +6,11 @@ export default createStore({
     logs: [],
     isAuthenticated: false,
     rabbitmqIsInit: false,
+    rabbitmqAdminIsInit: false,
     user: {
       email: '',
-      droneId: ''
+      droneId: '',
+      isAdmin: false
     }
   },
   actions: {
@@ -30,6 +32,9 @@ export default createStore({
     },
     setRabbitmqIsInit({ commit }, payload) {
       commit('setRabbitmqIsInit', payload)
+    },
+    setRabbitmqAdminIsInit({ commit }, payload) {
+      commit('setRabbitmqAdminIsInit', payload)
     }
   },
   mutations: {
@@ -47,6 +52,9 @@ export default createStore({
     },
     setRabbitmqIsInit(state, payload) {
       state.rabbitmqIsInit = payload
+    },
+    setRabbitmqAdminIsInit(state, payload) {
+      state.rabbitmqAdminIsInit = payload
     }
   },
   getters: {
@@ -62,8 +70,14 @@ export default createStore({
     getIsAuth(state) {
       return state.isAuthenticated
     },
+    getIsAdmin(state) {
+      return state.user.isAdmin
+    },
     getRabbitmqIsInit(state) {
       return state.rabbitmqIsInit
+    },
+    getRabbitmqAdminIsInit(state) {
+      return state.rabbitmqAdminIsInit
     }
   },
   modules: {
