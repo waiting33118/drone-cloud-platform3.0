@@ -25,8 +25,8 @@ export default {
     let longitude = 0
     let latitude = 0
     let animationFrameId
-    const animationDuration = 45000
-    const cameraAltitude = 150
+    const animationDuration = 67000
+    const cameraAltitude = 400
 
     const geoJsonFormatData = {
       type: 'Feature',
@@ -71,15 +71,6 @@ export default {
         mapbox = new CustomMap({ longitude, latitude })
         mapbox.initMapbox('mapbox://styles/mapbox/satellite-streets-v11')
         mapbox.map.on('load', () => {
-          mapbox.map.addLayer({
-            id: 'sky',
-            type: 'sky',
-            paint: {
-              'sky-type': 'atmosphere',
-              'sky-atmosphere-sun': [0.0, 60.0],
-              'sky-atmosphere-sun-intensity': 20
-            }
-          })
           mapbox.createGeoJsonSource('real-time-record', geoJsonFormatData)
           mapbox.createLineLayer('real-time-path', 'real-time-record')
         })
@@ -92,6 +83,5 @@ export default {
 #map {
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
 }
 </style>

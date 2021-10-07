@@ -15,7 +15,7 @@ export default class CustomMap {
     this.map = new mapboxgl.Map({
       style: mapStyle || MAPBOX.STYLE,
       center: [this.longitude, this.latitude],
-      zoom: 17,
+      zoom: 16,
       pitch: 0,
       bearing: 0,
       antialias: false,
@@ -48,7 +48,6 @@ export default class CustomMap {
         'source-layer': 'building',
         filter: ['==', 'extrude', 'true'],
         type: 'fill-extrusion',
-        minzoom: 17,
         paint: {
           'fill-extrusion-color': '#aaa',
           'fill-extrusion-height': [
@@ -74,6 +73,17 @@ export default class CustomMap {
       },
       labelLayerId
     )
+
+    // add sky layer
+    this.map.addLayer({
+      id: 'sky',
+      type: 'sky',
+      paint: {
+        'sky-type': 'atmosphere',
+        'sky-atmosphere-sun': [0.0, 60.0],
+        'sky-atmosphere-sun-intensity': 20
+      }
+    })
   }
 
   _addMapControls() {
@@ -104,7 +114,7 @@ export default class CustomMap {
   }
 
   /**
-   * Create a custom map layer
+   * Create a custom line layer
    * @param {string} id layer ID
    * @param {string} source source data ID
    */
@@ -121,6 +131,30 @@ export default class CustomMap {
         'line-color': '#1A73E8',
         'line-opacity': 0.8,
         'line-width': 3
+      }
+    })
+  }
+
+  /**
+   * Create a custom point layer(drone icon)
+   * @param {string} id layer ID
+   * @param {string} source source data ID
+   */
+  createDroneLayer(id, source) {
+    this.map.addLayer({
+      id,
+      type: 'symbol',
+      source,
+      layout: {
+        'icon-image': 'drone-25-red',
+        'icon-allow-overlap': true,
+        'icon-ignore-placement': true,
+        'text-field': ['get', 'droneId'],
+        'text-offset': [0, 1.3],
+        'text-anchor': 'top'
+      },
+      paint: {
+        'text-color': '#ff0000'
       }
     })
   }

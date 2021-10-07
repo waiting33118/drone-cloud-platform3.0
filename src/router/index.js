@@ -16,7 +16,7 @@ const cleanState = async () => {
   socket.emit('cancel-consume')
   store.dispatch('setRabbitmqIsInit', false)
   store.dispatch('setIsAuth', false)
-  store.dispatch('setUserInfo', { email: '', droneId: '' })
+  store.dispatch('setUserInfo', { email: '', droneId: '', isAdmin: false })
   store.dispatch('drone/updateFlightStatus', { altitude: 3, isTakeoff: false })
   store.dispatch('drone/updateDestination', { lng: 0, lat: 0 })
   store.dispatch('drone/setDroneInfo', {
@@ -77,6 +77,11 @@ const routes = [
     path: '/account',
     name: 'Account',
     component: () => import('../views/Account.vue')
+  },
+  {
+    path: '/management',
+    name: 'Management',
+    component: () => import('../views/Management.vue')
   },
   {
     path: '/:pathMatch(.*)*',
