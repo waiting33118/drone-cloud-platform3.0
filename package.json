@@ -20,7 +20,11 @@
     "socket.io-client": "^4.3.2",
     "vue": "^3.2.20",
     "vue-router": "^4.0.12",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "@tensorflow-models/coco-ssd": "^2.2.2",
+    "@tensorflow/tfjs": "^3.10.0",
+    "@tensorflow/tfjs-backend-cpu": "^3.10.0",
+    "@tensorflow/tfjs-backend-webgl": "^3.10.0"
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.10",
