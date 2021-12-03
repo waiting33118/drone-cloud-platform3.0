@@ -87,7 +87,7 @@ export default {
 
     watch(drone, (drone) => {
       if (
-        drone.mode === 'STABILIZE' ||
+        drone.mode !== 'GUIDED' ||
         (drone.isArmed === 'DISARM' && drone.mode === 'LAND')
       ) {
         flightModeChangeHandler('GUIDED')
@@ -113,8 +113,10 @@ export default {
         return
       }
       sendDroneCommand({ cmd: 'ARM' })
-      sendDroneCommand({ cmd: 'TAKEOFF', altitude: altitude.value })
-      message.success('TAKEOFF')
+      setTimeout(() => {
+        sendDroneCommand({ cmd: 'TAKEOFF', altitude: altitude.value })
+        message.success('TAKEOFF')
+      }, 2000)
     }
 
     const altitudeChangeHandler = (value) => {
