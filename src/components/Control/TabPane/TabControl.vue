@@ -86,8 +86,14 @@ export default {
     )
 
     watch(drone, (drone) => {
+      /*
+        When fulfill below situations, mode will change into GUIDED:
+
+        1. Not in GUIDED mode, but exclude LAND mode
+        2. In LAND mode and the drone is DISARM
+       */
       if (
-        drone.mode !== 'GUIDED' ||
+        (drone.mode !== 'GUIDED' && drone.mode !== 'LAND') ||
         (drone.isArmed === 'DISARM' && drone.mode === 'LAND')
       ) {
         flightModeChangeHandler('GUIDED')
