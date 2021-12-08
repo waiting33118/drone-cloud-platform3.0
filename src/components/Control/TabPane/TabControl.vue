@@ -92,6 +92,7 @@ export default {
         1. Not in GUIDED mode, but exclude LAND mode
         2. In LAND mode and the drone is DISARM
        */
+      if (typeof drone.mode === 'undefined') return
       if (
         (drone.mode !== 'GUIDED' && drone.mode !== 'LAND') ||
         (drone.isArmed === 'DISARM' && drone.mode === 'LAND')
