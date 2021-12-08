@@ -50,6 +50,14 @@
           />
         </a-col>
       </a-row>
+      <a-row justify="center">
+        <a-col>
+          <RadioGroup
+            :mode="flightMode"
+            :change-handler="flightModeChangeHandler"
+          />
+        </a-col>
+      </a-row>
     </div>
   </div>
 </template>
@@ -57,6 +65,7 @@
 <script>
 import Switch from '../../UI/Switch.vue'
 import InputNumber from '../../UI/InputNumber.vue'
+import RadioGroup from '../../UI/RadioGroup.vue'
 import Button from '../../UI/Button.vue'
 import { ref } from '@vue/reactivity'
 import { useStore } from 'vuex'
@@ -68,6 +77,7 @@ export default {
   components: {
     Switch,
     InputNumber,
+    RadioGroup,
     Button
   },
   setup() {
@@ -76,7 +86,7 @@ export default {
     const isLanding = ref(false)
     const altitude = ref(3)
     const speed = ref(3)
-
+    const flightMode = ref('')
     const store = useStore()
     const drone = computed(() => store.getters['drone/getDroneInfo'])
     const destination = computed(() => store.getters['drone/getDestination'])
@@ -89,17 +99,14 @@ export default {
       /*
         When fulfill below situations, mode will change into GUIDED:
 
-        1. Not in GUIDED mode, but exclude LAND mode
-        2. In LAND mode and the drone is DISARM
+        1. In LAND mode and the drone is DISARM
        */
       if (typeof drone.mode === 'undefined') return
-      if (
-        (drone.mode !== 'GUIDED' && drone.mode !== 'LAND') ||
-        (drone.isArmed === 'DISARM' && drone.mode === 'LAND')
-      ) {
+      if (drone.isArmed === 'DISARM' && drone.mode === 'LAND') {
         flightModeChangeHandler('GUIDED')
       }
 
+      flightMode.value = drone.mode
       isArm.value = drone.isArmed === 'ARM' ? true : false
       isTakeoff.value =
         drone.isArmed === 'ARM' && drone.altitude >= 0.5 ? true : false
@@ -173,6 +180,9 @@ export default {
     }
 
     const flightModeChangeHandler = (mode) => {
+      if (typeof mode === 'object') {
+        mode = mode.target.value
+      }
       sendDroneCommand({ cmd: mode })
       message.success(`Change MODE to ${mode}`)
     }
@@ -198,12 +208,14 @@ export default {
       altitude,
       speed,
       confirmText,
+      flightMode,
       flightHandler,
       altitudeChangeHandler,
       altitudeEnterHandler,
       speedChangeHandler,
       speedEnterHandler,
-      emergencyStopHandler
+      emergencyStopHandler,
+      flightModeChangeHandler
     }
   }
 }
