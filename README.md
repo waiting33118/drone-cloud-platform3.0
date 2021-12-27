@@ -70,9 +70,11 @@ firebase deploy --only hosting
 
 ### 2. Open the App to get **Drone ID**
 
+<img src="./public/img/drone_id_step.jpg" height="500">
+
 ### 3. Sign up account
 
 - [Drone Cloud Platform Sign up](https://aiotlab-drone-cloud.web.app/signup)
-- Binding your Drone ID that shows on your App when register account
+- Enter your Drone ID that shows on your App when register account
 
 ![sign_up](./public/img/signup_step.png)
