@@ -5,8 +5,8 @@
 export const createPeerConnection = () => {
   return new RTCPeerConnection({
     iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-  });
-};
+  })
+}
 
 /**
  * Callee create answer and set as local SDP
@@ -14,10 +14,10 @@ export const createPeerConnection = () => {
  * @returns {Promise<RTCSessionDescriptionInit>} answer
  */
 export const createAnswerAndSetLocalSDP = async (pc) => {
-  const answer = await pc.createAnswer();
-  await pc.setLocalDescription(answer);
-  return answer;
-};
+  const answer = await pc.createAnswer()
+  await pc.setLocalDescription(answer)
+  return answer
+}
 
 /**
  * Caller create offer and set as local SDP
@@ -25,10 +25,10 @@ export const createAnswerAndSetLocalSDP = async (pc) => {
  * @returns {Promise<RTCSessionDescriptionInit>} offer
  */
 export const createOfferAndSetLocalSDP = async (pc) => {
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-  return offer;
-};
+  const offer = await pc.createOffer()
+  await pc.setLocalDescription(offer)
+  return offer
+}
 
 /**
  * Get media stream
@@ -46,5 +46,5 @@ export const getLocalStream = () => {
       noiseSuppression: true,
       autoGainControl: true
     }
-  });
-};
+  })
+}
