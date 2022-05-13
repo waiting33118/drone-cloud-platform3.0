@@ -3,10 +3,10 @@
 </template>
 
 <script>
-import socket from '@/lib/websocket'
-import Map from '../components/Management/Map.vue'
-import { computed, onBeforeUnmount, reactive } from '@vue/runtime-core'
-import { useStore } from 'vuex'
+import socket from '@/lib/websocket';
+import Map from '../components/Management/Map.vue';
+import { computed, onBeforeUnmount, reactive } from '@vue/runtime-core';
+import { useStore } from 'vuex';
 
 export default {
   name: 'Management',
@@ -14,10 +14,10 @@ export default {
     Map
   },
   setup() {
-    const store = useStore()
+    const store = useStore();
     const rabbitmqAdminIsInit = computed(
       () => store.getters.getRabbitmqAdminIsInit
-    )
+    );
     let droneInfo = reactive({
       id: '',
       lng: '',
@@ -25,12 +25,15 @@ export default {
       alt: '',
       voltage: '',
       speed: ''
-    })
+    });
 
+    // Create RabbitMQ admin queues
     if (!rabbitmqAdminIsInit.value) {
-      socket.emit('drone-admin')
-      store.dispatch('setRabbitmqAdminIsInit', true)
+      socket.emit('drone-admin');
+      store.dispatch('setRabbitmqAdminIsInit', true);
     }
+
+    // Websocket event listening
     socket.on('admin-drone-topic', (data) => {
       if (data.type === 'message') {
         const {
@@ -38,28 +41,28 @@ export default {
           drone_id: id,
           location: { lng, lat, relative_alt: alt },
           speed: { air_speed: speed }
-        } = data.drone_info
+        } = data.drone_info;
 
         if (voltage) {
-          droneInfo.id = id
-          droneInfo.lng = lng
-          droneInfo.lat = lat
-          droneInfo.alt = alt
-          droneInfo.voltage = voltage
-          droneInfo.speed = speed
+          droneInfo.id = id;
+          droneInfo.lng = lng;
+          droneInfo.lat = lat;
+          droneInfo.alt = alt;
+          droneInfo.voltage = voltage;
+          droneInfo.speed = speed;
         }
       }
-    })
+    });
 
     onBeforeUnmount(() => {
-      socket.off('admin-drone-topic')
-    })
+      socket.off('admin-drone-topic');
+    });
 
     return {
       droneInfo
-    }
+    };
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
