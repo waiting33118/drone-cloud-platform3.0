@@ -27,7 +27,7 @@
 ![real_world_test](./public/img/flight_1.png)
 
 > **SITL infrastructure to simulate multi-drones**
-![](./public/img/multi-drone%20simulation.png)
+![sitl](./public/img/multi-drone%20simulation.png)
 
 > **Multi drones observation**
 ![multi-drone_observation](./public/img/multi-drone%20verification%20by%20sitl.png)
@@ -70,7 +70,7 @@ VUE_APP_BACKEND_SERVICE_SERVICE_PORT=3030
 
 _Generate mapbox token(free, no need credit card) in [mapbox offical website](https://account.mapbox.com/access-tokens/create)_
 
-### 4. Run project
+### 4. Run project (Development mode)
 
 ```bash
 npm run serve
@@ -78,7 +78,7 @@ npm run serve
 
 _Frontend service will now run on http://localhost:8080_
 
-### 5. Build project
+### 5. Build project (Production mode)
 
 ```bash
 npm run build
